@@ -11,7 +11,7 @@ namespace FileRenamer
     /// <summary>
     /// BulkRenamer class.  Contains a list of file metadata and can construct a list of commands for renaming those files.
     /// </summary>
-    public class BulkRenamer
+    public class BulkRenamer 
     {
         private ObservableCollection<FileMetaData> _fileMetaData;
         private List<String> _newFileNames;
@@ -44,6 +44,14 @@ namespace FileRenamer
             }
         }
 
+        public IEnumerable<Tuple<String,String,bool>> GetEnumerator()
+        {
+            for (int i = 0; i < _fileMetaData.Count; i++)
+            {
+                yield return Tuple.Create<String, String, bool>(_fileMetaData[i].Name, _newFileNames[i], _fileMetaData[i].IsDuplicate);
+            }
+        }
+
         /// <summary>
         /// Move an element in the list to another position
         /// </summary>
@@ -57,9 +65,10 @@ namespace FileRenamer
 
         private void GenerateNewFileNames()
         {
+            _newFileNames = new List<string>(_fileMetaData.Count);
             for (int i = 0; i < _fileMetaData.Count; i++)
             {
-                _newFileNames[i] = RenameStrategy.RenameFile(_fileMetaData[i], i);
+                _newFileNames.Add(RenameStrategy.RenameFile(_fileMetaData[i], i));
             }
         }
 
@@ -111,7 +120,7 @@ namespace FileRenamer
             int i = 0;
             for (i=0; i < _fileMetaData.Count; i++)
             {
-                commands[i] = new RenameCommand(_fileMetaData[i].Directory, _fileMetaData[i].Name, _newFileNames[i]);
+                commands.Add(new RenameCommand(_fileMetaData[i].Directory, _fileMetaData[i].Name, _newFileNames[i]));
             }
 
             return commands;
@@ -121,10 +130,11 @@ namespace FileRenamer
         /// Construct a BulkRenamer object.
         /// </summary>
         /// <param name="files">the list of file metadata</param>
-        public BulkRenamer(ObservableCollection<FileMetaData> files)
+        public BulkRenamer(List<FileMetaData> files)
         {
-            _fileMetaData = files;
+            _fileMetaData = new ObservableCollection<FileMetaData>(files);
             _newFileNames = new List<String>(_fileMetaData.Count);
+                
 
             // We will default to the strategy that does nothing
             RenameStrategy = new IdentityStrategy();
@@ -140,6 +150,7 @@ namespace FileRenamer
     {
         private String _name;
         private String _directory;
+        private FileInfo _file;
 
         public String Directory
         {
@@ -159,12 +170,12 @@ namespace FileRenamer
         /// <summary>
         /// Create a FileMetaData Object.  In the future this will automatically load meta data from the given file.
         /// </summary>
-        /// <param name="Directory">Directory in which the file is localted</param>
         /// <param name="Name">The file name</param>
-        public FileMetaData (String Directory, String Name)
+        public FileMetaData (String Name)
         {
-            _name = Name;
-            _directory = Directory;
+            _file = new FileInfo(Name);
+            _directory = _file.DirectoryName;
+            _name = _file.Name;
         }
 
     }
@@ -174,7 +185,7 @@ namespace FileRenamer
     /// </summary>
     public interface IFileRenamer
     {
-        public String RenameFile(FileMetaData FileName, int Position);
+        String RenameFile(FileMetaData FileName, int Position);
     }
 
     /// <summary>
@@ -191,8 +202,8 @@ namespace FileRenamer
 
     public interface ICommand
     {
-        public void Run();
-        public void Undo();
+        void Run();
+        void Undo();
     }
 
     public class RenameCommand : ICommand

@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Microsoft.Win32;
 
 namespace FileRenamer
 {
@@ -20,9 +21,33 @@ namespace FileRenamer
     /// </summary>
     public partial class MainWindow : Window
     {
+        public BulkRenamer _bulkRenamer;
+
         public MainWindow()
         {
             InitializeComponent();
         }
+
+        public void SelectFiles()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Multiselect = true;
+            //openFileDialog.Filter = "*.*";
+            openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            if (openFileDialog.ShowDialog() == true)
+            {
+                var fileMetaInfoList = openFileDialog.FileNames.Select(name => new FileMetaData(name)).ToList();
+                _bulkRenamer = new BulkRenamer(fileMetaInfoList);
+                FileNameListView.ItemsSource = _bulkRenamer.GetEnumerator();
+            }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            SelectFiles();
+        }
+
+
+
     }
 }
