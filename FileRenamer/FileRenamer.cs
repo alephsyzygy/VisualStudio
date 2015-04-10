@@ -16,12 +16,24 @@ namespace FileRenamer
         private ObservableCollection<FileMetaData> _fileMetaData;
         private List<String> _newFileNames;
         private bool _clashes;
+        private IFileRenamer _renameStrategy;
         //private string _directory;
 
         /// <summary>
         /// The strategy used to rename a file
         /// </summary>
-        public IFileRenamer RenameStrategy;
+        public IFileRenamer RenameStrategy
+        {
+            get
+            {
+                return _renameStrategy; 
+            }
+            set
+            {
+                _renameStrategy = value;
+                CheckForClashes();
+            }
+        }
 
         public bool Clashes
         {
@@ -68,7 +80,7 @@ namespace FileRenamer
             _newFileNames = new List<string>(_fileMetaData.Count);
             for (int i = 0; i < _fileMetaData.Count; i++)
             {
-                _newFileNames.Add(RenameStrategy.RenameFile(_fileMetaData[i], i));
+                _newFileNames.Add(_renameStrategy.RenameFile(_fileMetaData[i], i));
             }
         }
 
@@ -137,7 +149,7 @@ namespace FileRenamer
                 
 
             // We will default to the strategy that does nothing
-            RenameStrategy = new IdentityStrategy();
+            _renameStrategy = new IdentityStrategy();
 
             CheckForClashes();
         }
@@ -197,6 +209,34 @@ namespace FileRenamer
         string IFileRenamer.RenameFile(FileMetaData FileName, int Position)
         {
             return FileName.Name;
+        }
+    }
+
+    public class InsertTextStrategy : IFileRenamer
+    {
+        private int _position;
+        private string _text;
+
+        public InsertTextStrategy(int Position, string Text)
+        {
+            _text = Text;
+            _position = Position;
+        }
+
+        public string RenameFile(FileMetaData FileName, int Position)
+        {
+            string newName;
+
+            if (_position < FileName.Name.Length)
+            {
+                newName =  FileName.Name.Insert(_position, _text);
+            }
+            else
+            { 
+                newName = FileName.Name + _text;
+            }
+
+            return newName;
         }
     }
 
