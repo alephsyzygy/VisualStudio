@@ -67,7 +67,8 @@
                             <ComboBoxItem x:Name="chkInsert"  Content="Insert" IsSelected="True" />
                             <ComboBoxItem x:Name="chkOverwrite" Content="Overwrite" />
                         </ComboBox>
-                        <ComboBox x:Name="cmbNameSuffix" Grid.Column="0" HorizontalAlignment="Left" Margin="10,10,10,10" Grid.Row="1" VerticalAlignment="Top" Width="100">
+                        <ComboBox x:Name="cmbNameSuffix" Grid.Column="0" HorizontalAlignment="Left" Margin="10,10,10,10" Grid.Row="1" VerticalAlignment="Top" 
+                                  SelectionChanged="cmbInsertOverwrite_SelectionChanged" Width="100">
                             <ComboBoxItem Content="Name only" IsSelected="True" />
                             <ComboBoxItem Content="Suffix only" />
                             <ComboBoxItem Content="Name &amp; Suffix" />
