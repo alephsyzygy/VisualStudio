@@ -57,6 +57,12 @@ namespace FileRenamer
             e.Handled = !isNonNegative(e.Text);
         }
 
+        private void UpdateView()
+        {
+            ICollectionView view = CollectionViewSource.GetDefaultView(FileNameListView.ItemsSource);
+            view.Refresh();
+        }
+
         private void SetInsertStrategy()
         {
             if (_bulkRenamer != null)
@@ -66,8 +72,23 @@ namespace FileRenamer
                 {
                     bool insertOrOverwrite = (cmbInsertOverwrite.SelectedIndex == 0);
                     _bulkRenamer.RenameStrategy = new InsertTextStrategy(pos, InsertText.Text, insertOrOverwrite, (NameSuffixBehaviour) cmbNameSuffix.SelectedIndex);
-                    ICollectionView view = CollectionViewSource.GetDefaultView(FileNameListView.ItemsSource);
-                    view.Refresh();
+                    UpdateView();
+                }
+            }
+        }
+
+        private void SetRemoveStrategy()
+        {
+            if (_bulkRenamer != null)
+            {
+                int fromPos = 0;
+                int toPos = 0;
+                if (int.TryParse(txtFromPos.Text, out fromPos) && int.TryParse(txtToPos.Text, out toPos))
+                {
+                    bool fromLeft = (cmbFromPos.SelectedIndex == 0);
+                    bool toLeft = (cmbToPos.SelectedIndex == 0);
+                    _bulkRenamer.RenameStrategy = new RemoveCharactersStrategy(fromPos, fromLeft, toPos, toLeft);
+                    UpdateView();
                 }
             }
         }
@@ -95,6 +116,16 @@ namespace FileRenamer
         private void cmbInsertOverwrite_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             SetInsertStrategy();
+        }
+
+        private void RemoveStrategy_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            SetRemoveStrategy();
+        }
+
+        private void RemoveStrategy_ComboChanged(object sender, SelectionChangedEventArgs e)
+        {
+            SetRemoveStrategy();
         }
 
 

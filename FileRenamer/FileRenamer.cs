@@ -16,13 +16,13 @@ namespace FileRenamer
         private ObservableCollection<FileMetaData> _fileMetaData;
         private List<String> _newFileNames;
         private bool _clashes;
-        private IFileRenamer _renameStrategy;
+        private IFileRenamerStrategy _renameStrategy;
         //private string _directory;
 
         /// <summary>
         /// The strategy used to rename a file
         /// </summary>
-        public IFileRenamer RenameStrategy
+        public IFileRenamerStrategy RenameStrategy
         {
             get
             {

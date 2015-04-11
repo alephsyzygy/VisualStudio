@@ -8,7 +8,7 @@ namespace FileRenamer
     /// <summary>
     /// This interface encapsulates a strategy to rename a single file.
     /// </summary>
-    public interface IFileRenamer
+    public interface IFileRenamerStrategy
     {
         String RenameFile(FileMetaData FileName, int Position);
     }
@@ -16,10 +16,10 @@ namespace FileRenamer
     /// <summary>
     /// Just return the name unchanged.
     /// </summary>
-    public class IdentityStrategy : IFileRenamer
+    public class IdentityStrategy : IFileRenamerStrategy
     {
 
-        string IFileRenamer.RenameFile(FileMetaData FileName, int Position)
+        string IFileRenamerStrategy.RenameFile(FileMetaData FileName, int Position)
         {
             return FileName.Name;
         }
@@ -154,17 +154,17 @@ namespace FileRenamer
             switch (_behaviour)
             {
                 case NameSuffixBehaviour.NameOnly:
-                    newName = _name.Insert(Math.Min(Position, _name.Length), Text);
+                    newName = InsertOrAppend(_name, Position, Text);
                     newSuffix = _suffix;
                     return newName + SeparatorString + newSuffix;
                 case NameSuffixBehaviour.SuffixOnly:
                     newName = _name;
-                    newSuffix = _suffix.Insert(Math.Min(Position, _suffix.Length), Text);
+                    newSuffix = InsertOrAppend(_suffix, Position, Text);
                     return newName + SeparatorString + newSuffix;
                 case NameSuffixBehaviour.BothNameSuffix:
                     goto default;
                 default:
-                    return _text.Insert(Math.Min(Position, _text.Length), Text);
+                    return InsertOrAppend(_text, Position, Text);
             }
         }
 
@@ -200,6 +200,18 @@ namespace FileRenamer
         }
 
         /// <summary>
+        /// Internal method for inserting text or append if the position is greater than the input length.
+        /// </summary>
+        /// <param name="InputText">Inial text</param>
+        /// <param name="Position">Position to insert</param>
+        /// <param name="InsertText">Text to insert</param>
+        /// <returns>String</returns>
+        private string InsertOrAppend(string InputText, int Position, string InsertText)
+        {
+            return InputText.Insert(Math.Min(Position, InputText.Length), InsertText);
+        }
+
+        /// <summary>
         /// Internal method to perform the overwrite.
         /// </summary>
         /// <param name="InputText">Inital text to overwrite</param>
@@ -221,7 +233,7 @@ namespace FileRenamer
         }
     }
 
-    public class InsertTextStrategy : IFileRenamer
+    public class InsertTextStrategy : IFileRenamerStrategy
     {
         private int _position;
         private string _text;
@@ -253,5 +265,76 @@ namespace FileRenamer
             return newName;
         }
     }
+
+    public class RemoveCharactersStrategy : IFileRenamerStrategy
+    {
+        private int _fromPos;
+        private int _toPos;
+        private bool _fromLeft;
+        private bool _toLeft;
+
+        public RemoveCharactersStrategy(int FromPos, bool FromLeft, int ToPos, bool ToLeft)
+        {
+            _fromPos = FromPos;
+            _toPos = ToPos;
+            _fromLeft = FromLeft;
+            _toLeft = ToLeft;
+        }
+
+        public string RenameFile(FileMetaData FileName, int Position)
+        {
+            string oldName = FileName.Name;
+            string newName;
+
+            int leftPos;
+            int rightPos;
+
+            // Calculate leftmost character to delete
+            if (_fromLeft)
+            {
+                leftPos = _fromPos;
+            }
+            else
+            {
+                leftPos = oldName.Length - _fromPos;
+            }
+
+            // Calculate rightmost character to delete
+            if (_toLeft)
+            {
+                rightPos = _toPos;
+            }
+            else
+            {
+                rightPos = oldName.Length - _toPos;
+            }
+
+            // Clamp left position
+            if (leftPos < 0)
+            {
+                leftPos = 0;
+            }
+
+            // Clamp right position
+            if (rightPos > oldName.Length)
+            {
+                rightPos = oldName.Length;
+            }
+
+            // Perform deletion
+            if (rightPos - leftPos >= 0)
+            {
+                newName = oldName.Remove(leftPos, rightPos - leftPos);
+            }
+            else
+            {
+                newName = oldName;
+            }
+
+            return newName;
+
+        }
+    }
+
 
 }
