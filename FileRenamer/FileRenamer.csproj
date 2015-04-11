@@ -61,7 +61,10 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Commands.cs" />
+    <Compile Include="FileMetaData.cs" />
     <Compile Include="FileRenamer.cs" />
+    <Compile Include="FileRenamerStrategies.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
