@@ -216,24 +216,39 @@ namespace FileRenamer
     {
         private int _position;
         private string _text;
+        private bool _insert;
 
-        public InsertTextStrategy(int Position, string Text)
+        public InsertTextStrategy(int Position, string Text, bool InsertOrOverwrite)
         {
             _text = Text;
             _position = Position;
+            _insert = InsertOrOverwrite;
         }
 
         public string RenameFile(FileMetaData FileName, int Position)
         {
             string newName;
 
-            if (_position < FileName.Name.Length)
+            if (_insert)
             {
-                newName =  FileName.Name.Insert(_position, _text);
+                if (_position < FileName.Name.Length)
+                {
+                    newName = FileName.Name.Insert(_position, _text);
+                }
+                else
+                {
+                    newName = FileName.Name + _text;
+                }
             }
             else
-            { 
-                newName = FileName.Name + _text;
+            {
+                var newNameBuilder = new StringBuilder(FileName.Name);
+                // Find the right amount of characters to remove.  If we are overwriting with a string longer than
+                // what remains then we just append to the end.
+                var lengthToRemove = Math.Min(_text.Length, FileName.Name.Length - _position);
+                newNameBuilder.Remove(_position, lengthToRemove);
+                newNameBuilder.Insert(_position, _text);
+                newName = newNameBuilder.ToString();
             }
 
             return newName;

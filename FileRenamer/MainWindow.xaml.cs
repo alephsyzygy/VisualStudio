@@ -45,11 +45,6 @@ namespace FileRenamer
             }
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            SelectFiles();
-        }
-
         private static bool isNonNegative(string text)
         {
             int num = 0;
@@ -69,7 +64,8 @@ namespace FileRenamer
                 int pos = 0;
                 if (int.TryParse(InsertPos.Text, out pos))
                 {
-                    _bulkRenamer.RenameStrategy = new InsertTextStrategy(pos, InsertText.Text);
+                    bool insertOrOverwrite = (cmbInsertOverwrite.SelectedIndex == 0);
+                    _bulkRenamer.RenameStrategy = new InsertTextStrategy(pos, InsertText.Text, insertOrOverwrite);
                     ICollectionView view = CollectionViewSource.GetDefaultView(FileNameListView.ItemsSource);
                     view.Refresh();
                 }
@@ -82,6 +78,21 @@ namespace FileRenamer
         }
 
         private void InsertStrategy_TextChanged(object sender, TextCompositionEventArgs e)
+        {
+            SetInsertStrategy();
+        }
+
+        private void btnChooseFiles_Click(object sender, RoutedEventArgs e)
+        {
+            SelectFiles();
+        }
+
+        private void btnQuit_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
+
+        private void cmbInsertOverwrite_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             SetInsertStrategy();
         }
