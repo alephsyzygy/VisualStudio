@@ -87,7 +87,7 @@ namespace FileRenamer
                 {
                     bool fromLeft = (cmbFromPos.SelectedIndex == 0);
                     bool toLeft = (cmbToPos.SelectedIndex == 0);
-                    _bulkRenamer.RenameStrategy = new RemoveCharactersStrategy(fromPos, fromLeft, toPos, toLeft);
+                    _bulkRenamer.RenameStrategy = new RemoveCharactersStrategy(fromPos, fromLeft, toPos, toLeft, (NameSuffixBehaviour) cmbNameSuffix.SelectedIndex);
                     UpdateView();
                 }
             }
@@ -115,7 +115,19 @@ namespace FileRenamer
 
         private void cmbInsertOverwrite_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            SetInsertStrategy();
+            switch (StrategyTabs.SelectedIndex)
+            {
+                case 0:
+                    SetInsertStrategy();
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    SetRemoveStrategy();
+                    break;
+                default:
+                    break;
+            }
         }
 
         private void RemoveStrategy_TextChanged(object sender, TextChangedEventArgs e)

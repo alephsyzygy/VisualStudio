@@ -231,6 +231,84 @@ namespace FileRenamer
             stringBuilder.Insert(Position, OverwriteText);
             return stringBuilder.ToString();
         }
+
+        public string RemoveCharacters(int FromPos, bool FromLeft, int ToPos, bool ToLeft)
+        {
+            string newName;
+
+            int leftPos;
+            int rightPos;
+            int currentLength;
+            string currentString;
+            string finalPrepend = "";
+            string finalAppend = "";
+
+            // Calculate current length of the string we want to remove characters from
+            switch (_behaviour)
+                {
+                    case NameSuffixBehaviour.NameOnly:
+                        currentLength = _name.Length;
+                        currentString = _name;
+                        finalAppend = SeparatorString + _suffix;
+                        break;
+                    case NameSuffixBehaviour.SuffixOnly:
+                        currentLength = _suffix.Length;
+                        currentString = _suffix;
+                        finalPrepend = _name + SeparatorString;
+                        break;
+                    case NameSuffixBehaviour.BothNameSuffix:
+                        goto default;
+                    default:
+                        currentLength = _text.Length;
+                        currentString = _text;
+                        break;
+                }
+
+
+            // Calculate leftmost character to delete
+            if (FromLeft)
+            {
+                leftPos = FromPos;
+            }
+            else
+            {
+                leftPos = currentLength - FromPos;
+            }
+
+            // Calculate rightmost character to delete
+            if (ToLeft)
+            {
+                rightPos = ToPos;
+            }
+            else
+            {
+                rightPos = currentLength - ToPos;
+            }
+
+            // Clamp left position
+            if (leftPos < 0)
+            {
+                leftPos = 0;
+            }
+
+            // Clamp right position
+            if (rightPos > currentLength)
+            {
+                rightPos = currentLength;
+            }
+
+            // Perform deletion
+            if (rightPos - leftPos >= 0)
+            {
+                newName = currentString.Remove(leftPos, rightPos - leftPos);
+            }
+            else
+            {
+                newName = currentString;
+            }
+
+            return finalPrepend + newName + finalAppend;
+        }
     }
 
     public class InsertTextStrategy : IFileRenamerStrategy
@@ -272,67 +350,22 @@ namespace FileRenamer
         private int _toPos;
         private bool _fromLeft;
         private bool _toLeft;
+        private NameSuffixBehaviour _behaviour;
 
-        public RemoveCharactersStrategy(int FromPos, bool FromLeft, int ToPos, bool ToLeft)
+        public RemoveCharactersStrategy(int FromPos, bool FromLeft, int ToPos, bool ToLeft, NameSuffixBehaviour Behaviour)
         {
             _fromPos = FromPos;
             _toPos = ToPos;
             _fromLeft = FromLeft;
             _toLeft = ToLeft;
+            _behaviour = Behaviour;
         }
 
         public string RenameFile(FileMetaData FileName, int Position)
         {
-            string oldName = FileName.Name;
-            string newName;
+            NameSuffixHelper nameSuffix = new NameSuffixHelper(FileName.Name, _behaviour);
 
-            int leftPos;
-            int rightPos;
-
-            // Calculate leftmost character to delete
-            if (_fromLeft)
-            {
-                leftPos = _fromPos;
-            }
-            else
-            {
-                leftPos = oldName.Length - _fromPos;
-            }
-
-            // Calculate rightmost character to delete
-            if (_toLeft)
-            {
-                rightPos = _toPos;
-            }
-            else
-            {
-                rightPos = oldName.Length - _toPos;
-            }
-
-            // Clamp left position
-            if (leftPos < 0)
-            {
-                leftPos = 0;
-            }
-
-            // Clamp right position
-            if (rightPos > oldName.Length)
-            {
-                rightPos = oldName.Length;
-            }
-
-            // Perform deletion
-            if (rightPos - leftPos >= 0)
-            {
-                newName = oldName.Remove(leftPos, rightPos - leftPos);
-            }
-            else
-            {
-                newName = oldName;
-            }
-
-            return newName;
-
+            return nameSuffix.RemoveCharacters(_fromPos, _fromLeft, _toPos, _toLeft);
         }
     }
 
