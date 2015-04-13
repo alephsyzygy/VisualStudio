@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using System.Text.RegularExpressions;
 namespace FileRenamer
 {
 
@@ -366,6 +367,78 @@ namespace FileRenamer
             NameSuffixHelper nameSuffix = new NameSuffixHelper(FileName.Name, _behaviour);
 
             return nameSuffix.RemoveCharacters(_fromPos, _fromLeft, _toPos, _toLeft);
+        }
+    }
+
+    public enum NumberingFormat
+    {
+        NoZeros,
+        OneZero,
+        TwoZero,
+        ThreeZero,
+        LowercaseLetters
+    }
+
+    public enum NumberingTextFormat
+    {
+        OldNameTextNumber,
+        NumberTextOldName,
+        TextNumber,
+        NumberText
+    }
+
+    public class NumberingStrategy : IFileRenamerStrategy
+    {
+        private NameSuffixBehaviour _behaviour;
+        private NumberingFormat _numberFormat;
+        private NumberingTextFormat _textFormat;
+        private string _start;
+        private string _text;
+
+        public NumberingStrategy(NumberingFormat NumberFormat, NumberingTextFormat TextFormat, string Start, string Text, NameSuffixBehaviour Behaviour)
+        {
+            _behaviour = Behaviour;
+            _numberFormat = NumberFormat;
+            _textFormat = TextFormat;
+            _start = Start;
+            _text = Text;
+        }
+
+        public string RenameFile(FileMetaData FileName, int Position)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Convert a string into the equivalent integer.
+        /// First converts to lowercase, then removes non-lowercase characters, before converting to a number.
+        /// </summary>
+        /// <param name="Input"></param>
+        /// <returns></returns>
+        private int StringToNumber(string Input)
+        {
+            // Convert to lowercase
+            var lowercase = Input.ToLower();
+            // Strip out non lowercase characters
+            Regex rgx = new Regex("[^a-z]");
+            var str = rgx.Replace(lowercase, "");
+            int result = 0;
+            // Convert to ASCII for value access
+            byte[] asciiBytes = Encoding.ASCII.GetBytes(str);
+            for (int i = 0; i < str.Length; i++)
+            {
+                // Subtract 96 since 'a' has value 97 in ASCII
+                result = result * 26 + (asciiBytes[i] - 96);
+                
+            }
+            return result;
+        }
+
+        private string NumberToString(int Num)
+        {
+            const string digits = "abcdefghiklmnopqrstuvwxyz";
+
+            return "";
         }
     }
 
