@@ -44,15 +44,25 @@ namespace FileRenamer
 
     /// <summary>
     /// A class to help deal with names and suffixes.
+    /// This class is a template, the different behaviours will be given by subclasses
     /// </summary>
-    public class NameSuffixHelper
+    abstract internal class NameSuffixHelper
     {
-        private string _text;
-        private bool _hasSeparator;
-        private string _name;
-        private string _suffix;
-        private int _suffixPos;
-        private NameSuffixBehaviour _behaviour;
+        protected string _text;
+        protected bool _hasSeparator;
+        protected string _name;
+        protected string _suffix;
+        protected int _suffixPos;
+        // _workingString is not set by the constructor of this class.
+        // Further subclasses should set this in their constructors.
+        protected string _workingString;
+
+        /// <summary>
+        /// This method will be overriden by subclasses in order to compute the final string.
+        /// </summary>
+        /// <param name="Input">The name with which we need modify</param>
+        /// <returns>String with name, suffix, and/or separator added to it, depending on which subclass is used</returns>
+        abstract protected string FinalString(string Input);
 
         /// <summary>
         /// Where in the original text the suffix starts
@@ -121,9 +131,8 @@ namespace FileRenamer
         /// </summary>
         /// <param name="Text">The filename</param>
         /// <param name="Behaviour">What behaviour to use for inserting and overwriting</param>
-        public NameSuffixHelper(string Text, NameSuffixBehaviour Behaviour)
+        public NameSuffixHelper(string Text)
         {
-            _behaviour = Behaviour;
             _text = Text;
             _hasSeparator = _text.Contains(".");
             int finalDotPos = _text.LastIndexOf(".");
@@ -149,24 +158,7 @@ namespace FileRenamer
         /// <returns>New filename</returns>
         public string Insert(int Position, string Text)
         {
-            string newName;
-            string newSuffix;
-
-            switch (_behaviour)
-            {
-                case NameSuffixBehaviour.NameOnly:
-                    newName = InsertOrAppend(_name, Position, Text);
-                    newSuffix = _suffix;
-                    return newName + SeparatorString + newSuffix;
-                case NameSuffixBehaviour.SuffixOnly:
-                    newName = _name;
-                    newSuffix = InsertOrAppend(_suffix, Position, Text);
-                    return newName + SeparatorString + newSuffix;
-                case NameSuffixBehaviour.BothNameSuffix:
-                    goto default;
-                default:
-                    return InsertOrAppend(_text, Position, Text);
-            }
+            return FinalString(InsertOrAppend(_workingString, Position, Text));
         }
 
         /// <summary>
@@ -180,24 +172,7 @@ namespace FileRenamer
         /// <returns>New filename</returns>
         public string Overwrite(int Position, string Text)
         {
-            string newName;
-            string newSuffix;
-
-            switch (_behaviour)
-            {
-                case NameSuffixBehaviour.NameOnly:
-                    newName = OverwriteOrAppend(_name, Position, Text);
-                    newSuffix = _suffix;
-                    return newName + SeparatorString + newSuffix;
-                case NameSuffixBehaviour.SuffixOnly:
-                    newName = _name;
-                    newSuffix = OverwriteOrAppend(_suffix, Position, Text);
-                    return newName + SeparatorString + newSuffix;
-                case NameSuffixBehaviour.BothNameSuffix:
-                    goto default;
-                default:
-                    return OverwriteOrAppend(_text, Position, Text);
-            }
+            return FinalString(OverwriteOrAppend(_workingString, Position, Text));
         }
 
         /// <summary>
@@ -233,38 +208,22 @@ namespace FileRenamer
             return stringBuilder.ToString();
         }
 
+        /// <summary>
+        /// Remove Characters from the name
+        /// </summary>
+        /// <param name="FromPos">Deletion starts from this position</param>
+        /// <param name="FromLeft">Is the leftmost position calculated from the start of the string(true) or the end?</param>
+        /// <param name="ToPos">Deletion ends at this position</param>
+        /// <param name="ToLeft">Is the rightmost position calculated from start of string(true) or the end?</param>
+        /// <returns>Filename with characters removed</returns>
         public string RemoveCharacters(int FromPos, bool FromLeft, int ToPos, bool ToLeft)
         {
             string newName;
-
             int leftPos;
             int rightPos;
             int currentLength;
-            string currentString;
-            string finalPrepend = "";
-            string finalAppend = "";
 
-            // Calculate current length of the string we want to remove characters from
-            switch (_behaviour)
-                {
-                    case NameSuffixBehaviour.NameOnly:
-                        currentLength = _name.Length;
-                        currentString = _name;
-                        finalAppend = SeparatorString + _suffix;
-                        break;
-                    case NameSuffixBehaviour.SuffixOnly:
-                        currentLength = _suffix.Length;
-                        currentString = _suffix;
-                        finalPrepend = _name + SeparatorString;
-                        break;
-                    case NameSuffixBehaviour.BothNameSuffix:
-                        goto default;
-                    default:
-                        currentLength = _text.Length;
-                        currentString = _text;
-                        break;
-                }
-
+            currentLength = _workingString.Length;
 
             // Calculate leftmost character to delete
             if (FromLeft)
@@ -301,17 +260,98 @@ namespace FileRenamer
             // Perform deletion
             if (rightPos - leftPos >= 0)
             {
-                newName = currentString.Remove(leftPos, rightPos - leftPos);
+                newName = _workingString.Remove(leftPos, rightPos - leftPos);
             }
             else
             {
-                newName = currentString;
+                newName = _workingString;
             }
 
-            return finalPrepend + newName + finalAppend;
+            // Get final string via subclasses
+            return FinalString(newName);
         }
     }
 
+    /// <summary>
+    /// A NameSuffixHelper which only modifies the name of a filename.
+    /// </summary>
+    internal class NameHelper : NameSuffixHelper 
+    { 
+        public NameHelper(string Text) : base(Text)
+        {
+            _workingString = _name;
+        }
+
+        override protected string FinalString(string Input)
+        {
+            return Input + SeparatorString + _suffix;
+        }
+    }
+
+    /// <summary>
+    /// A NameSuffixHelper which only modifies the suffix of a filename.
+    /// </summary>
+    internal class SuffixHelper : NameSuffixHelper
+    {
+        public SuffixHelper(string Text)
+            : base(Text)
+        {
+            _workingString = _suffix;
+        }
+
+        override protected string FinalString(string Input)
+        {
+            return _name + SeparatorString + Input;
+        }
+    }
+
+    /// <summary>
+    /// A NameSuffixHelper which modifies any part of a filename.
+    /// </summary>
+    internal class BothHelper : NameSuffixHelper
+    {
+        public BothHelper(string Text)
+            : base(Text)
+        {
+            _workingString = _text;
+        }
+
+        override protected string FinalString(string Input)
+        {
+            return Input;
+        }
+    }
+
+    /// <summary>
+    /// A static class of build NameSuffixHelpers
+    /// </summary>
+    internal static class NameSuffixHelperFactory
+    {
+        /// <summary>
+        /// A static method to build the correct NameSuffixHelper object
+        /// </summary>
+        /// <param name="Text">The filename to pass to the NameSuffixHelper object</param>
+        /// <param name="Behaviour">The type of NameSuffixHelper object to construct</param>
+        /// <returns>A NameSuffixHelper</returns>
+        public static NameSuffixHelper CreateNameSuffixHelper(string Text, NameSuffixBehaviour Behaviour)
+        {
+            switch (Behaviour)
+            {
+                case NameSuffixBehaviour.NameOnly:
+                    return new NameHelper(Text);
+                case NameSuffixBehaviour.SuffixOnly:
+                    return new SuffixHelper(Text);
+                case NameSuffixBehaviour.BothNameSuffix:
+                    goto default;
+                default:
+                    return new BothHelper(Text);
+            }
+        }
+    }
+
+    /// <summary>
+    /// A IFileRenamerStrategy to insert text into a filename.
+    /// </summary>
     public class InsertTextStrategy : IFileRenamerStrategy
     {
         private int _position;
@@ -319,6 +359,13 @@ namespace FileRenamer
         private bool _insert;
         private NameSuffixBehaviour _behaviour;
 
+        /// <summary>
+        /// The constructor
+        /// </summary>
+        /// <param name="Position">Position to insert the text</param>
+        /// <param name="Text">Text to insert into the filename</param>
+        /// <param name="InsertOrOverwrite">Insert text (true) or overwrite? (false)</param>
+        /// <param name="Behaviour">Affect the name only, suffix only, or both</param>
         public InsertTextStrategy(int Position, string Text, bool InsertOrOverwrite, NameSuffixBehaviour Behaviour)
         {
             _text = Text;
@@ -327,10 +374,16 @@ namespace FileRenamer
             _behaviour = Behaviour;
         }
 
+        /// <summary>
+        /// Perform the renaming
+        /// </summary>
+        /// <param name="FileName">The name of the file</param>
+        /// <param name="Position">Position in the sequence (not used in this class)</param>
+        /// <returns>The new filename</returns>
         public string RenameFile(FileMetaData FileName, int Position)
         {
             string newName;
-            NameSuffixHelper nameSuffix = new NameSuffixHelper(FileName.Name, _behaviour);
+            NameSuffixHelper nameSuffix = NameSuffixHelperFactory.CreateNameSuffixHelper(FileName.Name, _behaviour);
 
             if (_insert)
             {
@@ -345,6 +398,9 @@ namespace FileRenamer
         }
     }
 
+    /// <summary>
+    /// A IFileRenamerStrategy to remove characters from a filename
+    /// </summary>
     public class RemoveCharactersStrategy : IFileRenamerStrategy
     {
         private int _fromPos;
@@ -353,6 +409,14 @@ namespace FileRenamer
         private bool _toLeft;
         private NameSuffixBehaviour _behaviour;
 
+        /// <summary>
+        /// The constructor
+        /// </summary>
+        /// <param name="FromPos">The character position from which to start removing characters</param>
+        /// <param name="FromLeft">Is the leftmost position calculated from the start(true) or the end?(false)</param>
+        /// <param name="ToPos">The final character position we remove</param>
+        /// <param name="ToLeft">Is the final position calculated from the start(true) or the end?(false)</param>
+        /// <param name="Behaviour">Affect the name only, the suffix only, or both?</param>
         public RemoveCharactersStrategy(int FromPos, bool FromLeft, int ToPos, bool ToLeft, NameSuffixBehaviour Behaviour)
         {
             _fromPos = FromPos;
@@ -362,14 +426,23 @@ namespace FileRenamer
             _behaviour = Behaviour;
         }
 
+        /// <summary>
+        /// Rename the file
+        /// </summary>
+        /// <param name="FileName">The filename</param>
+        /// <param name="Position">Position in the sequence (not used in this class)</param>
+        /// <returns>The new filename.</returns>
         public string RenameFile(FileMetaData FileName, int Position)
         {
-            NameSuffixHelper nameSuffix = new NameSuffixHelper(FileName.Name, _behaviour);
+            NameSuffixHelper nameSuffix = NameSuffixHelperFactory.CreateNameSuffixHelper(FileName.Name, _behaviour);
 
             return nameSuffix.RemoveCharacters(_fromPos, _fromLeft, _toPos, _toLeft);
         }
     }
 
+    /// <summary>
+    /// The different numbering formats we can have
+    /// </summary>
     public enum NumberingFormat
     {
         NoZeros,
@@ -379,6 +452,9 @@ namespace FileRenamer
         LowercaseLetters
     }
 
+    /// <summary>
+    /// The different ways in which a numbering format may be added to a filename.
+    /// </summary>
     public enum NumberingTextFormat
     {
         OldNameTextNumber,
@@ -387,6 +463,9 @@ namespace FileRenamer
         NumberText
     }
 
+    /// <summary>
+    /// An IFileRenamerStrategy to add a number to a filename.
+    /// </summary>
     public class NumberingStrategy : IFileRenamerStrategy
     {
         private NameSuffixBehaviour _behaviour;
@@ -395,6 +474,14 @@ namespace FileRenamer
         private string _start;
         private string _text;
 
+        /// <summary>
+        /// The constructor.
+        /// </summary>
+        /// <param name="NumberFormat">Which number format to use</param>
+        /// <param name="TextFormat">How to insert the numbering into a filename</param>
+        /// <param name="Start">The starting number</param>
+        /// <param name="Text">Any extra text to add</param>
+        /// <param name="Behaviour">Affect the name only, the suffix only, or both</param>
         public NumberingStrategy(NumberingFormat NumberFormat, NumberingTextFormat TextFormat, string Start, string Text, NameSuffixBehaviour Behaviour)
         {
             _behaviour = Behaviour;
