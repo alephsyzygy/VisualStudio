@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileRenamer", "FileRenamer\FileRenamer.csproj", "{68694031-A8FA-4DC9-867A-CBCFEB8A773F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileRenamerTest", "FileRenamerTest\FileRenamerTest.csproj", "{0AA156DF-C036-4F4E-A9C4-0428B0E232D6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{68694031-A8FA-4DC9-867A-CBCFEB8A773F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{68694031-A8FA-4DC9-867A-CBCFEB8A773F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{68694031-A8FA-4DC9-867A-CBCFEB8A773F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0AA156DF-C036-4F4E-A9C4-0428B0E232D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0AA156DF-C036-4F4E-A9C4-0428B0E232D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0AA156DF-C036-4F4E-A9C4-0428B0E232D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0AA156DF-C036-4F4E-A9C4-0428B0E232D6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

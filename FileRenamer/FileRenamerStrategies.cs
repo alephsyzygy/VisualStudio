@@ -127,11 +127,11 @@ namespace FileRenamer
         }
 
         /// <summary>
-        /// Constructor
+        /// Constructor.  Cannot be constructed by otherclasses, instead use the static method CreateNameSuffixHelper.
         /// </summary>
         /// <param name="Text">The filename</param>
         /// <param name="Behaviour">What behaviour to use for inserting and overwriting</param>
-        public NameSuffixHelper(string Text)
+        protected NameSuffixHelper(string Text)
         {
             _text = Text;
             _hasSeparator = _text.Contains(".");
@@ -146,6 +146,21 @@ namespace FileRenamer
             {
                 _name = _text;
                 _suffixPos = _text.Length;
+            }
+        }
+
+        public static NameSuffixHelper CreateNameSuffixHelper(string Text, NameSuffixBehaviour Behaviour)
+        {
+            switch (Behaviour)
+            {
+                case NameSuffixBehaviour.NameOnly:
+                    return new NameHelper(Text);
+                case NameSuffixBehaviour.SuffixOnly:
+                    return new SuffixHelper(Text);
+                case NameSuffixBehaviour.BothNameSuffix:
+                    goto default;
+                default:
+                    return new BothHelper(Text);
             }
         }
 
@@ -277,7 +292,7 @@ namespace FileRenamer
     /// </summary>
     internal class NameHelper : NameSuffixHelper 
     { 
-        public NameHelper(string Text) : base(Text)
+        protected internal NameHelper(string Text) : base(Text)
         {
             _workingString = _name;
         }
@@ -293,7 +308,7 @@ namespace FileRenamer
     /// </summary>
     internal class SuffixHelper : NameSuffixHelper
     {
-        public SuffixHelper(string Text)
+        protected internal SuffixHelper(string Text)
             : base(Text)
         {
             _workingString = _suffix;
@@ -310,7 +325,7 @@ namespace FileRenamer
     /// </summary>
     internal class BothHelper : NameSuffixHelper
     {
-        public BothHelper(string Text)
+        protected internal BothHelper(string Text)
             : base(Text)
         {
             _workingString = _text;
@@ -322,32 +337,6 @@ namespace FileRenamer
         }
     }
 
-    /// <summary>
-    /// A static class of build NameSuffixHelpers
-    /// </summary>
-    internal static class NameSuffixHelperFactory
-    {
-        /// <summary>
-        /// A static method to build the correct NameSuffixHelper object
-        /// </summary>
-        /// <param name="Text">The filename to pass to the NameSuffixHelper object</param>
-        /// <param name="Behaviour">The type of NameSuffixHelper object to construct</param>
-        /// <returns>A NameSuffixHelper</returns>
-        public static NameSuffixHelper CreateNameSuffixHelper(string Text, NameSuffixBehaviour Behaviour)
-        {
-            switch (Behaviour)
-            {
-                case NameSuffixBehaviour.NameOnly:
-                    return new NameHelper(Text);
-                case NameSuffixBehaviour.SuffixOnly:
-                    return new SuffixHelper(Text);
-                case NameSuffixBehaviour.BothNameSuffix:
-                    goto default;
-                default:
-                    return new BothHelper(Text);
-            }
-        }
-    }
 
     /// <summary>
     /// A IFileRenamerStrategy to insert text into a filename.
@@ -383,7 +372,7 @@ namespace FileRenamer
         public string RenameFile(FileMetaData FileName, int Position)
         {
             string newName;
-            NameSuffixHelper nameSuffix = NameSuffixHelperFactory.CreateNameSuffixHelper(FileName.Name, _behaviour);
+            NameSuffixHelper nameSuffix = NameSuffixHelper.CreateNameSuffixHelper(FileName.Name, _behaviour);
 
             if (_insert)
             {
@@ -434,8 +423,8 @@ namespace FileRenamer
         /// <returns>The new filename.</returns>
         public string RenameFile(FileMetaData FileName, int Position)
         {
-            NameSuffixHelper nameSuffix = NameSuffixHelperFactory.CreateNameSuffixHelper(FileName.Name, _behaviour);
-
+            NameSuffixHelper nameSuffix = NameSuffixHelper.CreateNameSuffixHelper(FileName.Name, _behaviour);
+            NameSuffixHelper test = new NameHelper("");
             return nameSuffix.RemoveCharacters(_fromPos, _fromLeft, _toPos, _toLeft);
         }
     }
@@ -496,14 +485,25 @@ namespace FileRenamer
             throw new NotImplementedException();
         }
 
+
+
+        
+    }
+
+    /// <summary>
+    /// A static class to help convert between strings and numbers, using the same numbering system as spreadsheet columns
+    /// </summary>
+    public static class StringNumberConversions
+    {
         /// <summary>
         /// Convert a string into the equivalent integer.
         /// First converts to lowercase, then removes non-lowercase characters, before converting to a number.
         /// </summary>
         /// <param name="Input"></param>
         /// <returns></returns>
-        private int StringToNumber(string Input)
+        public static int StringToNumber(string Input)
         {
+            const int ASCIIvaluefora = 97;
             // Convert to lowercase
             var lowercase = Input.ToLower();
             // Strip out non lowercase characters
@@ -515,19 +515,56 @@ namespace FileRenamer
             for (int i = 0; i < str.Length; i++)
             {
                 // Subtract 96 since 'a' has value 97 in ASCII
-                result = result * 26 + (asciiBytes[i] - 96);
-                
+                result = result * 26 + (asciiBytes[i] - ASCIIvaluefora + 1);
+
             }
             return result;
         }
 
-        private string NumberToString(int Num)
+        /// <summary>
+        /// Convert a number into the equivalent string.
+        /// Note: this is not equivalent to any number base, in particular it is NOT base 26
+        /// There is no zero in this system: a stands for 1, but aa stands for 27
+        /// In a based system 
+        /// </summary>
+        /// <param name="Num">The number to convert</param>
+        /// <returns>The corresponding string</returns>
+        public static string NumberToString(int Num)
         {
-            const string digits = "abcdefghiklmnopqrstuvwxyz";
+            const string DIGITS = "abcdefghijklmnopqrstuvwxyz";
+            const int BASE = 26;
 
-            return "";
+            string output = "";
+
+            // Since this system is not a standard base we have to 'cut away' some numbers
+            // to find the length of the resulting number.
+            // For example, aa should correspond to 27.  We see that it is bigger 26, yet
+            // smaller than 26^2 = 676.  Hence it has length 2.
+            int y = 1;
+            int x = Num;
+            int count = 0;
+            while (y <= x)
+            {
+                x = x - y;
+                y = y * BASE;
+                count++;
+            }
+
+
+            // Standard base conversion technique
+            int rem;
+            for (int i = 0; i < count; i++)
+            {
+                x = Math.DivRem(x, BASE, out rem);
+                output = output + DIGITS[rem];
+
+            }
+
+            // Now reverse the string
+            char[] charArray = output.ToCharArray();
+            Array.Reverse(charArray);
+            return new string(charArray);
         }
     }
-
 
 }
