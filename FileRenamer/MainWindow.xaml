@@ -91,21 +91,21 @@
                         <Label Content="Text Format:" Grid.Row="1" Grid.Column="0" Margin="10,10,10,10"/>
                         <Label Content="Start With:" Grid.Row="0" Grid.Column="2" Margin="10,10,10,10"/>
                         <Label Content="Text:" Grid.Row="1" Grid.Column="2" Margin="10,10,10,10"/>
-                        <ComboBox x:Name="cmbNumberFormat" Grid.Row="0" Grid.Column="1" Margin="10,10,10,10">
+                        <ComboBox x:Name="cmbNumberFormat" Grid.Row="0" Grid.Column="1" Margin="10,10,10,10" SelectionChanged="NumberingStrategy_ComboChanged">
                             <ComboBoxItem Content="1, 2, 3, ..." IsSelected="True"/>
                             <ComboBoxItem Content="01, 02, 03, ..." />
                             <ComboBoxItem Content="001, 002, 003, ..." />
                             <ComboBoxItem Content="0001, 0002, 0003, ..." />
                             <ComboBoxItem Content="a, b, c, ..." />
                         </ComboBox>
-                        <ComboBox x:Name="cmbTextFormat" Grid.Row="1" Grid.Column="1" Margin="10,10,10,10">
+                        <ComboBox x:Name="cmbTextFormat" Grid.Row="1" Grid.Column="1" Margin="10,10,10,10" SelectionChanged="NumberingStrategy_ComboChanged" >
                             <ComboBoxItem Content="Old Name - Text - Number" IsSelected="True"/>
                             <ComboBoxItem Content="Number - Text - Old Name" />
                             <ComboBoxItem Content="Text - Number" />
                             <ComboBoxItem Content="Number - Text" />
                         </ComboBox>
-                        <TextBox x:Name="txtStartWith" Text="1" Grid.Column="3" Grid.Row="0" Margin="10,10,10,10" /><!-- PreviewTextInput="TextBox_PreviewTextInput" -->
-                        <TextBox x:Name="txtNumberText" Text="" Grid.Column="3" Grid.Row="1" Margin="10,10,10,10"/>
+                        <TextBox x:Name="txtStartWith" Text="1" Grid.Column="3" Grid.Row="0" Margin="10,10,10,10" TextChanged="NumberingStrategy_TextChanged" /><!-- PreviewTextInput="TextBox_PreviewTextInput" -->
+                        <TextBox x:Name="txtNumberText" Text="" Grid.Column="3" Grid.Row="1" Margin="10,10,10,10" TextChanged="NumberingStrategy_TextChanged" />
                     </Grid>
                 </TabItem>
                 <TabItem Header="Remove Characters">

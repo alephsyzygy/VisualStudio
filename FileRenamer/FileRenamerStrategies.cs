@@ -285,6 +285,18 @@ namespace FileRenamer
             // Get final string via subclasses
             return FinalString(newName);
         }
+
+        /// <summary>
+        /// Run a function on the part we want to modify, then reassemble into our filename
+        /// </summary>
+        /// <param name="ReplaceFn">Function which takes a string and returns a string</param>
+        /// <returns>The new filename</returns>
+        public string Replace(Func<string,string> ReplaceFn)
+        {
+            string newStr = ReplaceFn(_workingString);
+
+            return FinalString(newStr);
+        }
     }
 
     /// <summary>
@@ -424,7 +436,6 @@ namespace FileRenamer
         public string RenameFile(FileMetaData FileName, int Position)
         {
             NameSuffixHelper nameSuffix = NameSuffixHelper.CreateNameSuffixHelper(FileName.Name, _behaviour);
-            NameSuffixHelper test = new NameHelper("");
             return nameSuffix.RemoveCharacters(_fromPos, _fromLeft, _toPos, _toLeft);
         }
     }
@@ -436,8 +447,8 @@ namespace FileRenamer
     {
         NoZeros,
         OneZero,
-        TwoZero,
-        ThreeZero,
+        TwoZeros,
+        ThreeZeros,
         LowercaseLetters
     }
 
@@ -460,7 +471,9 @@ namespace FileRenamer
         private NameSuffixBehaviour _behaviour;
         private NumberingFormat _numberFormat;
         private NumberingTextFormat _textFormat;
-        private string _start;
+        private NumberingTextHelper _textFormatHelper;
+        private NumberingFormatHelper _numberingFormatHelper;
+        private int _start;
         private string _text;
 
         /// <summary>
@@ -476,17 +489,187 @@ namespace FileRenamer
             _behaviour = Behaviour;
             _numberFormat = NumberFormat;
             _textFormat = TextFormat;
-            _start = Start;
             _text = Text;
+            _textFormatHelper = NumberingTextHelper.ConstructNumberingTextHelper(_textFormat);
+            _numberingFormatHelper = NumberingFormatHelper.ConstructNumberingFormatHelper(_numberFormat);
+
+            // First try to parse start as an int.
+            if (!Int32.TryParse(Start, out _start))
+            {
+                // if that fails, see if we are using the lowercase numbering format
+                if (_numberFormat == NumberingFormat.LowercaseLetters)
+                {
+                    _start = StringNumberConversions.StringToNumber(Start);
+                }
+                else
+                {
+                    // otherwise default to starting at 1
+                    _start = 1;
+                }
+            }
         }
 
         public string RenameFile(FileMetaData FileName, int Position)
         {
-            throw new NotImplementedException();
+            NameSuffixHelper nameSuffix = NameSuffixHelper.CreateNameSuffixHelper(FileName.Name, _behaviour);
+            string numberString = _numberingFormatHelper.Output(Position + _start);
+
+            string newName = nameSuffix.Replace((s) => _textFormatHelper.Output(s, _text, numberString));
+
+            return newName;
+        }
+
+        private abstract class NumberingTextHelper
+        {
+            abstract public string Output(string OldName, string Text, string NumberString);
+
+            public static NumberingTextHelper ConstructNumberingTextHelper(NumberingTextFormat TextFormat)
+            {
+                switch (TextFormat)
+                {
+                    case NumberingTextFormat.OldNameTextNumber:
+                        return new OldNameTextNumber();
+                    case NumberingTextFormat.NumberTextOldName:
+                        return new NumberTextOldName();
+                    case NumberingTextFormat.TextNumber:
+                        return new TextNumber();
+                    case NumberingTextFormat.NumberText:
+                        goto default;
+                    default:
+                        return new NumberText();
+                }
+            }
+
+        }
+
+        private class OldNameTextNumber : NumberingTextHelper
+        {
+            override public string Output(string OldName, string Text, string NumberString)
+            {
+                return OldName + Text + NumberString;
+            }
+        }
+
+        private class NumberTextOldName : NumberingTextHelper
+        {
+            override public string Output(string OldName, string Text, string NumberString)
+            {
+                return NumberString + Text + OldName;
+            }
+        }
+
+        private class TextNumber : NumberingTextHelper
+        {
+            override public string Output(string OldName, string Text, string NumberString)
+            {
+                return Text + NumberString;
+            }
+        }
+
+        private class NumberText : NumberingTextHelper
+        {
+            override public string Output(string OldName, string Text, string NumberString)
+            {
+                return NumberString + Text;
+            }
         }
 
 
+        private abstract class NumberingFormatHelper
+        {
+            abstract public string Output(int Number);
 
+            public static NumberingFormatHelper ConstructNumberingFormatHelper (NumberingFormat Format)
+            {
+                switch (Format)
+                {
+                    case NumberingFormat.NoZeros:
+                        return new NoZeros();
+                    case NumberingFormat.OneZero:
+                        return new OneZero();
+                    case NumberingFormat.TwoZeros:
+                        return new TwoZeros();
+                    case NumberingFormat.ThreeZeros:
+                        return new ThreeZeros();
+                    case NumberingFormat.LowercaseLetters:
+                        goto default;
+                    default:
+                        return new LowercaseLetters();
+                }
+            }
+        }
+
+        private class NoZeros : NumberingFormatHelper
+        {
+            override public string Output(int Number)
+            {
+                return Number.ToString();
+            }
+        }
+
+        private class OneZero : NumberingFormatHelper
+        {
+            override public string Output(int Number)
+            {
+                if (Number < 10 && Number > 0)
+                {
+                    return "0" + Number.ToString();
+                }
+                else
+                {
+                    return Number.ToString();
+                }
+            }
+        }
+
+        private class TwoZeros : NumberingFormatHelper
+        {
+            override public string Output(int Number)
+            {
+                if (Number < 10 && Number > 0)
+                {
+                    return "00" + Number.ToString();
+                }
+                else if (Number < 100 & Number > 9)
+                {
+                    return "0" + Number.ToString();
+                }
+                else
+                {
+                    return Number.ToString();
+                }
+            }
+        }
+
+        private class ThreeZeros : NumberingFormatHelper
+        {
+            override public string Output(int Number)
+            {
+                if (Number < 10 && Number > 0)
+                {
+                    return "000" + Number.ToString();
+                }
+                else if (Number < 100 & Number > 9)
+                {
+                    return "00" + Number.ToString();
+                }
+                else if (Number < 1000 & Number > 99)
+                {
+                    return "0" + Number.ToString();
+                }
+                {
+                    return Number.ToString();
+                }
+            }
+        }
+
+        private class LowercaseLetters : NumberingFormatHelper
+        {
+            override public string Output(int Number)
+            {
+                return StringNumberConversions.NumberToString(Number);
+            }
+        }
         
     }
 

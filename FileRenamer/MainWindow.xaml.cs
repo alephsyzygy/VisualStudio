@@ -93,6 +93,26 @@ namespace FileRenamer
             }
         }
 
+        private void SetNumberingStrategy()
+        {
+            if (_bulkRenamer != null)
+            {
+                _bulkRenamer.RenameStrategy = new NumberingStrategy((NumberingFormat)cmbNumberFormat.SelectedIndex, (NumberingTextFormat)cmbTextFormat.SelectedIndex,
+                                                                    txtStartWith.Text, txtNumberText.Text, (NameSuffixBehaviour)cmbNameSuffix.SelectedIndex);
+                UpdateView();
+            }
+        }
+
+        private void NumberingStrategy_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            SetNumberingStrategy();
+        }
+
+        private void NumberingStrategy_ComboChanged(object sender, SelectionChangedEventArgs e)
+        {
+            SetNumberingStrategy();
+        }
+
         private void InsertStrategy_TextChanged(object sender, TextChangedEventArgs e)
         {
             SetInsertStrategy();
@@ -121,6 +141,7 @@ namespace FileRenamer
                     SetInsertStrategy();
                     break;
                 case 1:
+                    SetNumberingStrategy();
                     break;
                 case 2:
                     SetRemoveStrategy();
