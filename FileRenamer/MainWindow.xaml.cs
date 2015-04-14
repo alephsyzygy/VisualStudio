@@ -40,7 +40,7 @@ namespace FileRenamer
             {
                 var fileMetaInfoList = openFileDialog.FileNames.Select(name => new FileMetaData(name)).ToList();
                 _bulkRenamer = new BulkRenamer(fileMetaInfoList);
-                FileNameListView.ItemsSource = _bulkRenamer.GetEnumerator();
+                FileNameListView.ItemsSource = _bulkRenamer.Collection;
                 StrategyTabs.IsEnabled = true;
             }
         }
@@ -57,12 +57,6 @@ namespace FileRenamer
             e.Handled = !isNonNegative(e.Text);
         }
 
-        private void UpdateView()
-        {
-            ICollectionView view = CollectionViewSource.GetDefaultView(FileNameListView.ItemsSource);
-            view.Refresh();
-        }
-
         private void SetInsertStrategy()
         {
             if (_bulkRenamer != null)
@@ -73,7 +67,6 @@ namespace FileRenamer
                     bool insertOrOverwrite = (cmbInsertOverwrite.SelectedIndex == 0);
                     bool fromLeft = cmbInsertPos.SelectedIndex == 0;
                     _bulkRenamer.RenameStrategy = new InsertTextStrategy(pos, InsertText.Text, fromLeft, insertOrOverwrite, (NameSuffixBehaviour) cmbNameSuffix.SelectedIndex);
-                    UpdateView();
                 }
             }
         }
@@ -89,7 +82,6 @@ namespace FileRenamer
                     bool fromLeft = (cmbFromPos.SelectedIndex == 0);
                     bool toLeft = (cmbToPos.SelectedIndex == 0);
                     _bulkRenamer.RenameStrategy = new RemoveCharactersStrategy(fromPos, fromLeft, toPos, toLeft, (NameSuffixBehaviour) cmbNameSuffix.SelectedIndex);
-                    UpdateView();
                 }
             }
         }
@@ -100,7 +92,19 @@ namespace FileRenamer
             {
                 _bulkRenamer.RenameStrategy = new NumberingStrategy((NumberingFormat)cmbNumberFormat.SelectedIndex, (NumberingTextFormat)cmbTextFormat.SelectedIndex,
                                                                     txtStartWith.Text, txtNumberText.Text, (NameSuffixBehaviour)cmbNameSuffix.SelectedIndex);
-                UpdateView();
+            }
+        }
+
+        private void SetDateStrategy()
+        {
+            if (_bulkRenamer != null)
+            {
+                int pos = 0;
+                if (int.TryParse(txtDatePos.Text, out pos))
+                {
+                    bool fromLeft = (cmbDatePos.SelectedIndex == 0);
+                    _bulkRenamer.RenameStrategy = new DateInserterStrategy((DateTimeType)cmbInsertTime.SelectedIndex, pos, fromLeft, txtDateFormat.Text, (NameSuffixBehaviour)cmbNameSuffix.SelectedIndex);
+                }
             }
         }
 
@@ -109,7 +113,6 @@ namespace FileRenamer
             if (_bulkRenamer != null)
             {
                 _bulkRenamer.RenameStrategy = new CaseChangerStrategy((CaseTypes)cmbConvertTo.SelectedIndex, (NameSuffixBehaviour)cmbNameSuffix.SelectedIndex);
-                UpdateView();
             }
         }
 

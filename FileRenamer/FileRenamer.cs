@@ -17,6 +17,11 @@ namespace FileRenamer
         private List<String> _newFileNames;
         private bool _clashes;
         private IFileRenamerStrategy _renameStrategy;
+        private ObservableCollection<Tuple<String, String, bool>> _collection;
+
+        public ObservableCollection<Tuple<String,String,bool>> Collection
+        { get { return _collection; } }
+
         //private string _directory;
 
         /// <summary>
@@ -78,9 +83,11 @@ namespace FileRenamer
         private void GenerateNewFileNames()
         {
             _newFileNames = new List<string>(_fileMetaData.Count);
+            _collection.Clear();
             for (int i = 0; i < _fileMetaData.Count; i++)
             {
                 _newFileNames.Add(_renameStrategy.RenameFile(_fileMetaData[i], i));
+                _collection.Add(Tuple.Create<String, String, bool>(_fileMetaData[i].Name, _newFileNames[i], _fileMetaData[i].IsDuplicate));
             }
         }
 
@@ -150,6 +157,8 @@ namespace FileRenamer
 
             // We will default to the strategy that does nothing
             _renameStrategy = new IdentityStrategy();
+
+            _collection = new ObservableCollection<Tuple<string,string,bool>>();
 
             CheckForClashes();
         }

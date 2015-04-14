@@ -202,13 +202,13 @@
                         <Label Content="InsertTime:" Grid.Row="0" Grid.Column="0" />
                         <Label Content="At position:" Grid.Row="1" Grid.Column="0" />
                         <Label Content="Format:" Grid.Row="0" Grid.Column="2" />
-                        
-                        <TextBox x:Name="txtDateFormat" Grid.Row="0" Grid.Column="3" />
+
+                        <TextBox x:Name="txtDateFormat" Grid.Row="0" Grid.Column="3" Text="yyyy/M/d HH:mm:ss" />
                         <TextBox x:Name="txtDatePos" Grid.Row="1" Grid.Column="1" PreviewTextInput="TextBox_PreviewTextInput" Text="0" />
 
                         <ComboBox x:Name="cmbInsertTime" Grid.Row="0" Grid.Column="1">
                             <ComboBoxItem Content="Current" IsSelected="True"/>
-                            <ComboBoxItem Content="Date Accessed" />
+                            <ComboBoxItem Content="Date Created" />
                             <ComboBoxItem Content="Date Modified" />
                             <ComboBoxItem Content="Date Photo Taken" />
                         </ComboBox>

@@ -12,6 +12,8 @@ namespace FileRenamer
         private String _name;
         private String _directory;
         private FileInfo _file;
+        private DateTime _modified;
+        private DateTime _created;
 
         public String Directory
         {
@@ -22,6 +24,10 @@ namespace FileRenamer
         {
             get { return _name; }
         }
+
+        public DateTime Modified { get { return _modified;  } }
+
+        public DateTime Created { get { return _created; } }
 
         /// <summary>
         /// Is this entry a duplicate?
@@ -37,6 +43,8 @@ namespace FileRenamer
             _file = new FileInfo(Name);
             _directory = _file.DirectoryName;
             _name = _file.Name;
+            _modified = File.GetLastWriteTime(Name);
+            _created = File.GetCreationTime(Name);
         }
 
     }

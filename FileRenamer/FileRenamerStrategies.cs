@@ -900,5 +900,57 @@ namespace FileRenamer
         }
     }
 
+    public enum DateTimeType
+    {
+        Current,
+        Created,
+        Modified,
+        PhotoTaken
+    }
+
+    public class DateInserterStrategy : IFileRenamerStrategy
+    {
+        private DateTimeType _dateType;
+        private int _position;
+        private bool _fromLeft;
+        private string _dateFormat;
+        private NameSuffixBehaviour _behaviour;
+
+        public DateInserterStrategy(DateTimeType DateType, int Position, bool FromLeft, string DateFormat, NameSuffixBehaviour Behaviour)
+        {
+            _dateType = DateType;
+            _position = Position;
+            _fromLeft = FromLeft;
+            _dateFormat = DateFormat;
+            _behaviour = Behaviour;
+        }
+
+        public string RenameFile(FileMetaData FileName, int Position)
+        {
+            NameSuffixHelper nameSuffix = NameSuffixHelper.CreateNameSuffixHelper(FileName.Name, _behaviour);
+            DateTime date;
+            switch (_dateType)
+            {
+                case DateTimeType.Current:
+                    date = DateTime.Now;
+                    break;
+                case DateTimeType.Created:
+                    date = FileName.Created;
+                    break;
+                case DateTimeType.Modified:
+                    date = FileName.Modified;
+                    break;
+                case DateTimeType.PhotoTaken:
+                    goto default;
+                default:
+                    date = DateTime.Now;
+                    break;
+            }
+            string dateString = String.Format("{0" + _dateFormat + "}", date);
+            return nameSuffix.Insert(_position, _fromLeft, dateString);
+        }
+    }
+
+
 
 }
