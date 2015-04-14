@@ -176,6 +176,15 @@ namespace FileRenamer
             return FinalString(InsertOrAppend(_workingString, Position, Text));
         }
 
+        public string Insert (int Position, bool FromLeft, string Text)
+        {
+            if (!FromLeft)
+            {
+                Position = _workingString.Length - Position;
+            }
+            return Insert(Position, Text);
+        }
+
         /// <summary>
         /// Overwrite parts of the filename with the given text, at the given position.
         /// The name/suffix behaviour is determined by the constructor.
@@ -190,6 +199,15 @@ namespace FileRenamer
             return FinalString(OverwriteOrAppend(_workingString, Position, Text));
         }
 
+        public string Overwrite(int Position, bool FromLeft, string Text)
+        {
+            if (!FromLeft)
+            {
+                Position = _workingString.Length - Position;
+            }
+            return Overwrite(Position, Text);
+        }
+
         /// <summary>
         /// Internal method for inserting text or append if the position is greater than the input length.
         /// </summary>
@@ -199,7 +217,7 @@ namespace FileRenamer
         /// <returns>String</returns>
         private string InsertOrAppend(string InputText, int Position, string InsertText)
         {
-            return InputText.Insert(Math.Min(Position, InputText.Length), InsertText);
+            return InputText.Insert(Math.Max(0,Math.Min(Position, InputText.Length)), InsertText);
         }
 
         /// <summary>
@@ -212,6 +230,8 @@ namespace FileRenamer
         private string OverwriteOrAppend(string InputText, int Position, string OverwriteText)
         {
             var stringBuilder = new StringBuilder(InputText);
+            // Clamp Position to a sensible value
+            Position = Math.Max(0, Math.Min(Position, InputText.Length));
             // Find the right amount of characters to remove.  If we are overwriting with a string longer than
             // what remains then we just append to the end.
             var lengthToRemove = Math.Min(OverwriteText.Length, Math.Max(0, InputText.Length - Position));
@@ -358,6 +378,7 @@ namespace FileRenamer
         private int _position;
         private string _text;
         private bool _insert;
+        private bool _fromLeft;
         private NameSuffixBehaviour _behaviour;
 
         /// <summary>
@@ -367,12 +388,13 @@ namespace FileRenamer
         /// <param name="Text">Text to insert into the filename</param>
         /// <param name="InsertOrOverwrite">Insert text (true) or overwrite? (false)</param>
         /// <param name="Behaviour">Affect the name only, suffix only, or both</param>
-        public InsertTextStrategy(int Position, string Text, bool InsertOrOverwrite, NameSuffixBehaviour Behaviour)
+        public InsertTextStrategy(int Position, string Text, bool FromLeft, bool InsertOrOverwrite, NameSuffixBehaviour Behaviour)
         {
             _text = Text;
             _position = Position;
             _insert = InsertOrOverwrite;
             _behaviour = Behaviour;
+            _fromLeft = FromLeft;
         }
 
         /// <summary>
@@ -388,11 +410,11 @@ namespace FileRenamer
 
             if (_insert)
             {
-                newName = nameSuffix.Insert(_position, _text);
+                newName = nameSuffix.Insert(_position, _fromLeft, _text);
             }
             else
             {
-                newName = nameSuffix.Overwrite(_position, _text);
+                newName = nameSuffix.Overwrite(_position,_fromLeft, _text);
             }
 
             return newName;

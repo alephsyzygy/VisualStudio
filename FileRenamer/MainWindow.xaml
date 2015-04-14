@@ -67,24 +67,29 @@
                     <Grid Background="#FFE5E5E5" >
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        <ComboBox x:Name="cmbInsertOverwrite" Grid.Column="2" Grid.Row="0" Grid.RowSpan="1" HorizontalAlignment="Right"  Margin="10,10,10,10" VerticalAlignment="Top" 
+                        <ComboBox x:Name="cmbInsertOverwrite" Grid.Column="3" Grid.Row="0"  HorizontalAlignment="Right"  Margin="10,10,10,10" 
                                   SelectionChanged="cmbInsertOverwrite_SelectionChanged" Width="100">
                             <ComboBoxItem x:Name="chkInsert"  Content="Insert" IsSelected="True" />
                             <ComboBoxItem x:Name="chkOverwrite" Content="Overwrite" />
                         </ComboBox>
 
                         <Label Content="Text:" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" Margin="10,10,10,10" VerticalAlignment="Top"/>
-                        <TextBox x:Name="InsertText" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Height="23" Margin="10,10,10,10" TextWrapping="Wrap" Text="" VerticalAlignment="Top" TextChanged="InsertStrategy_TextChanged" TextInput="InsertStrategy_TextChanged"/>
+                        <TextBox x:Name="InsertText" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Height="23" Margin="10,10,10,10" TextWrapping="Wrap" Text="" VerticalAlignment="Top" TextChanged="InsertStrategy_TextChanged" TextInput="InsertStrategy_TextChanged"/>
                         <Label Content="Position:" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" Margin="10,10,10,10" VerticalAlignment="Top" RenderTransformOrigin="0.616,-0.363"/>
                         <TextBox x:Name="InsertPos" Grid.Row="0" Grid.Column="1"  MinWidth="100" Margin="10,10,10,10" TextWrapping="Wrap" Text="0" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="InsertStrategy_TextChanged"/>
 
+                        <ComboBox x:Name="cmbInsertPos" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Left" Margin="10,10,10,10" SelectionChanged="cmbInsertOverwrite_SelectionChanged">
+                            <ComboBoxItem Content="From the left" IsSelected="True"/>
+                            <ComboBoxItem Content="From the right" />
+                        </ComboBox>
                     </Grid>
                 </TabItem>
                 <TabItem Header="Numbering">

@@ -71,7 +71,8 @@ namespace FileRenamer
                 if (int.TryParse(InsertPos.Text, out pos))
                 {
                     bool insertOrOverwrite = (cmbInsertOverwrite.SelectedIndex == 0);
-                    _bulkRenamer.RenameStrategy = new InsertTextStrategy(pos, InsertText.Text, insertOrOverwrite, (NameSuffixBehaviour) cmbNameSuffix.SelectedIndex);
+                    bool fromLeft = cmbInsertPos.SelectedIndex == 0;
+                    _bulkRenamer.RenameStrategy = new InsertTextStrategy(pos, InsertText.Text, fromLeft, insertOrOverwrite, (NameSuffixBehaviour) cmbNameSuffix.SelectedIndex);
                     UpdateView();
                 }
             }
