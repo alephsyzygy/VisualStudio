@@ -165,6 +165,7 @@ namespace FileRenamer
                     SetCaseChangeStrategy();
                     break;
                 case 5:
+                    SetDateStrategy();
                     break;
                 default:
                     break;
@@ -186,8 +187,15 @@ namespace FileRenamer
             SetCaseChangeStrategy();
         }
 
+        private void DateStrategy_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            SetDateStrategy();
+        }
 
-
+        private void DateStrategy_ComboChanged(object sender, SelectionChangedEventArgs e)
+        {
+            SetDateStrategy();
+        }
 
 
     }

@@ -946,7 +946,14 @@ namespace FileRenamer
                     date = DateTime.Now;
                     break;
             }
-            string dateString = String.Format("{0" + _dateFormat + "}", date);
+            string dateString;
+            try
+            {
+                dateString = String.Format("{0:" + _dateFormat + "}", date);
+            } catch (FormatException)
+            {
+                dateString = "";
+            }
             return nameSuffix.Insert(_position, _fromLeft, dateString);
         }
     }
