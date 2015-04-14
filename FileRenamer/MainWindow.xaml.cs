@@ -103,6 +103,15 @@ namespace FileRenamer
             }
         }
 
+        private void SetCaseChangeStrategy()
+        {
+            if (_bulkRenamer != null)
+            {
+                _bulkRenamer.RenameStrategy = new CaseChangerStrategy((CaseTypes)cmbConvertTo.SelectedIndex, (NameSuffixBehaviour)cmbNameSuffix.SelectedIndex);
+                UpdateView();
+            }
+        }
+
         private void NumberingStrategy_TextChanged(object sender, TextChangedEventArgs e)
         {
             SetNumberingStrategy();
@@ -146,6 +155,13 @@ namespace FileRenamer
                 case 2:
                     SetRemoveStrategy();
                     break;
+                case 3:
+                    break;
+                case 4:
+                    SetCaseChangeStrategy();
+                    break;
+                case 5:
+                    break;
                 default:
                     break;
             }
@@ -159,6 +175,11 @@ namespace FileRenamer
         private void RemoveStrategy_ComboChanged(object sender, SelectionChangedEventArgs e)
         {
             SetRemoveStrategy();
+        }
+
+        private void CaseChangeStrategy_ComboChanged(object sender, SelectionChangedEventArgs e)
+        {
+            SetCaseChangeStrategy();
         }
 
 

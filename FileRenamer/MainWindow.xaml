@@ -174,7 +174,7 @@
                             <RowDefinition/>
                         </Grid.RowDefinitions>
                         <Label Content="Convert to:" Grid.Row="0" Grid.Column="0" />
-                        <ComboBox x:Name="cmbConvertTo" Grid.Row="0" Grid.Column="1">
+                        <ComboBox x:Name="cmbConvertTo" Grid.Row="0" Grid.Column="1" SelectionChanged="CaseChangeStrategy_ComboChanged">
                             <ComboBoxItem Content="lowercase" IsSelected="True"/>
                             <ComboBoxItem Content="UPPERCASE" />
                             <ComboBoxItem Content="Camelcase" />

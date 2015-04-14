@@ -750,4 +750,133 @@ namespace FileRenamer
         }
     }
 
+    public enum CaseTypes
+    {
+        Lowercase,
+        Uppercase,
+        Camelcase,
+        Sentencecase
+    }
+
+    public class CaseChangerStrategy : IFileRenamerStrategy
+    {
+        private CaseTypes _caseType;
+        private NameSuffixBehaviour _behaviour;
+
+        public CaseChangerStrategy(CaseTypes CaseType, NameSuffixBehaviour Behaviour)
+        {
+            _caseType = CaseType;
+            _behaviour = Behaviour;
+        }
+
+        public string RenameFile(FileMetaData FileName, int Position)
+        {
+            NameSuffixHelper nameSuffix = NameSuffixHelper.CreateNameSuffixHelper(FileName.Name, _behaviour);
+
+            switch (_caseType)
+            {
+                case CaseTypes.Lowercase:
+                    return nameSuffix.Replace((s) => s.ToLower());
+                case CaseTypes.Uppercase:
+                    return nameSuffix.Replace((s) => s.ToUpper());
+                case CaseTypes.Camelcase:
+                    return nameSuffix.Replace((s) => toCamelCase(s));
+                case CaseTypes.Sentencecase:
+                    goto default;
+                default:
+                    return nameSuffix.Replace((s) => toSentenceCase(s));
+            }
+
+        }
+
+        private string toCamelCase(string Input)
+        {
+            bool seenWhitespace = true;
+            StringBuilder output = new StringBuilder();
+            for (int i = 0; i < Input.Length; i++)
+            {
+                if (Char.IsWhiteSpace(Input, i))
+                {
+                    seenWhitespace = true;
+                    output.Append(Input[i]);
+                }
+                else if (Char.IsLower(Input, i))
+                {
+                    if (seenWhitespace)
+                    {
+                        seenWhitespace = false;
+                        output.Append(Input[i].ToString().ToUpper());
+                    }
+                    else
+                    {
+                        output.Append(Input[i]);
+                    }
+                }
+                else if (Char.IsUpper(Input,i))
+                {
+                    if (seenWhitespace)
+                    {
+                        seenWhitespace = false;
+                        output.Append(Input[i]);
+                    }
+                    else
+                    {
+                        output.Append(Input[i].ToString().ToLower());
+                    }
+                }
+                else
+                {
+                    output.Append(Input[i]);
+                }
+            }
+
+            return output.ToString();
+        }
+
+        private string toSentenceCase(string Input)
+        {
+            bool seenPeriod = true;
+            StringBuilder output = new StringBuilder();
+            for (int i = 0; i < Input.Length; i++)
+            {
+                if (Input[i] == '.')
+                {
+                    seenPeriod = true;
+                    output.Append(Input[i]);
+                }
+                else if (Char.IsLower(Input, i))
+                {
+                    if (seenPeriod)
+                    {
+                        seenPeriod = false;
+                        output.Append(Input[i].ToString().ToUpper());
+                    }
+                    else
+                    {
+                        output.Append(Input[i]);
+                    }
+                }
+                else if (Char.IsUpper(Input, i))
+                {
+                    if (seenPeriod)
+                    {
+                        seenPeriod = false;
+                        output.Append(Input[i]);
+                    }
+                    else
+                    {
+                        output.Append(Input[i].ToString().ToLower());
+                    }
+                }
+                else
+                {
+                    output.Append(Input[i]);
+                }
+            }
+
+            return output.ToString();
+        }
+    }
+
+
 }
