@@ -163,10 +163,10 @@
                         </Grid.RowDefinitions>
                         <Label Content="Search For:" Grid.Row="0" Grid.Column="0" />
                         <Label Content="Replace With:" Grid.Row="1" Grid.Column="0" />
-                        <CheckBox Content="Regular Expression" Grid.Row="0" Grid.Column="2" />
-                        <CheckBox Content="Case Sensitive Search" Grid.Row="1" Grid.Column="2" />
-                        <TextBox x:Name="txtSearchFor" Grid.Row="0" Grid.Column="1" />
-                        <TextBox x:Name="txtReplaceWith" Grid.Row="1" Grid.Column="1" />
+                        <CheckBox x:Name="chkRegex" Content="Regular Expression" Grid.Row="0" Grid.Column="2" Checked="SearchReplaceStrategy_Checked" Unchecked="SearchReplaceStrategy_Checked" />
+                        <CheckBox x:Name="chkCaseSensitive" Content="Case Sensitive Search" Grid.Row="1" Grid.Column="2" Checked="SearchReplaceStrategy_Checked" Unchecked="SearchReplaceStrategy_Checked"/>
+                        <TextBox x:Name="txtSearchFor" Grid.Row="0" Grid.Column="1" TextChanged="SearchReplaceStrategy_TextChanged" LostFocus="SearchReplaceStrategy_LostFocus"/>
+                        <TextBox x:Name="txtReplaceWith" Grid.Row="1" Grid.Column="1" TextChanged="SearchReplaceStrategy_TextChanged" LostFocus="SearchReplaceStrategy_LostFocus" />
                     </Grid>
                 </TabItem>
                 <TabItem Header="Uppercase / Lowercase">
@@ -203,7 +203,7 @@
                         <Label Content="At position:" Grid.Row="1" Grid.Column="0" />
                         <Label Content="Format:" Grid.Row="0" Grid.Column="2" />
 
-                        <TextBox x:Name="txtDateFormat" Grid.Row="0" Grid.Column="3" Text="yyyy/M/d HH:mm:ss" TextChanged="DateStrategy_TextChanged"/>
+                        <TextBox x:Name="txtDateFormat" Grid.Row="0" Grid.Column="3" Text="yyyy/MM/dd HH:mm:ss" TextChanged="DateStrategy_TextChanged"/>
                         <TextBox x:Name="txtDatePos" Grid.Row="1" Grid.Column="1" PreviewTextInput="TextBox_PreviewTextInput" Text="0" TextChanged="DateStrategy_TextChanged" />
 
                         <ComboBox x:Name="cmbInsertTime" Grid.Row="0" Grid.Column="1" SelectionChanged="DateStrategy_ComboChanged">

@@ -309,13 +309,75 @@ namespace FileRenamer
         /// <summary>
         /// Run a function on the part we want to modify, then reassemble into our filename
         /// </summary>
-        /// <param name="ReplaceFn">Function which takes a string and returns a string</param>
+        /// <param name="ModifyFn">Function which takes a string and returns a string</param>
         /// <returns>The new filename</returns>
-        public string Replace(Func<string,string> ReplaceFn)
+        public string Modify(Func<string,string> ModifyFn)
         {
-            string newStr = ReplaceFn(_workingString);
+            string newStr = ModifyFn(_workingString);
 
             return FinalString(newStr);
+        }
+
+        public string RegexReplace(string Find, string Replace, bool IsCaseSensitive)
+        {
+            RegexOptions options = RegexOptions.None;
+            if (IsCaseSensitive)
+            {
+                options = RegexOptions.IgnoreCase;
+            }
+            try
+            {
+                Regex regex = new Regex(Find, options);
+
+                return FinalString(regex.Replace(_workingString, Replace));
+            }
+            catch (System.ArgumentException)
+            {
+                return FinalString(_workingString);
+            }
+        }
+
+        public string Replace(string Find, string Replace, bool IsCaseSensitive)
+        {
+            if (!IsCaseSensitive)
+            {
+                return FinalString(_workingString.Replace(Find, Replace));
+            }
+            else
+            {
+                return FinalString(CaseInsensitiveReplace(_workingString, Find, Replace));
+            }
+        }
+
+        private string CaseInsensitiveReplace(string Input, string Find, string Replace)
+        {
+            int position = 0;   // Where we have checked up to
+            int index = 0; // Index of next match
+
+            if (Input == "")
+            {
+                return Input;
+            }
+
+            if (Find == null || Find == "")
+            {
+                return Input;
+            }
+
+            StringBuilder Output = new StringBuilder();
+            while (true)
+            {
+                index = Input.IndexOf(Find, position, StringComparison.CurrentCultureIgnoreCase);
+                if (index < 0)
+                {
+                    break;
+                }
+                Output.Append(Input, position, index - position);
+                Output.Append(Replace);
+                position = index + Find.Length;
+            }
+            Output.Append(Input, position, Input.Length - position);
+            return Output.ToString();
         }
     }
 
@@ -493,10 +555,12 @@ namespace FileRenamer
         private NameSuffixBehaviour _behaviour;
         private NumberingFormat _numberFormat;
         private NumberingTextFormat _textFormat;
-        private NumberingTextHelper _textFormatHelper;
-        private NumberingFormatHelper _numberingFormatHelper;
         private int _start;
         private string _text;
+        private delegate string TextFormatFn(string OldName, string Text, string NumberString);
+        private delegate string NumberFormatFn(int Number);
+        private TextFormatFn _textFormatFn;
+        private NumberFormatFn _numberFormatFn;
 
         /// <summary>
         /// The constructor.
@@ -512,8 +576,47 @@ namespace FileRenamer
             _numberFormat = NumberFormat;
             _textFormat = TextFormat;
             _text = Text;
-            _textFormatHelper = NumberingTextHelper.ConstructNumberingTextHelper(_textFormat);
-            _numberingFormatHelper = NumberingFormatHelper.ConstructNumberingFormatHelper(_numberFormat);
+
+            // Set function which returns the correct text format
+            switch (_textFormat)
+            {
+                case NumberingTextFormat.NumberText:
+                    _textFormatFn = (OldName, FText, NumberString) => NumberString + FText;
+                    break;
+                case NumberingTextFormat.NumberTextOldName:
+                    _textFormatFn = (OldName, FText, NumberString) => NumberString + FText + OldName;
+                    break;
+                case NumberingTextFormat.OldNameTextNumber:
+                    _textFormatFn = (OldName, FText, NumberString) => OldName + FText + NumberString;
+                    break;
+                case NumberingTextFormat.TextNumber:
+                    goto default;
+                default:
+                    _textFormatFn = (OldName, FText, NumberString) => FText + NumberString;
+                    break;
+            }
+
+            // Set function which converts the input number into the correct text format
+            switch (_numberFormat)
+            {
+                case NumberingFormat.LowercaseLetters:
+                    _numberFormatFn = (Num) => StringNumberConversions.NumberToString(Num);
+                    break;
+                case NumberingFormat.OneZero:
+                    _numberFormatFn = (Number) => InsertZeros(Number, 1);
+                    break;
+                case NumberingFormat.TwoZeros:
+                    _numberFormatFn = (Number) => InsertZeros(Number, 2);
+                    break;
+                case NumberingFormat.ThreeZeros:
+                    _numberFormatFn = (Number) => InsertZeros(Number, 3);
+                    break;
+                case NumberingFormat.NoZeros:
+                    goto default;
+                default:
+                    _numberFormatFn = (Num) => Num.ToString();
+                    break;
+            }
 
             // First try to parse start as an int.
             if (!Int32.TryParse(Start, out _start))
@@ -531,166 +634,47 @@ namespace FileRenamer
             }
         }
 
-        public string RenameFile(FileMetaData FileName, int Position)
+        /// <summary>
+        /// Internal method to print numbers with the given number of zeros out the front.
+        /// e.g. if MaxZeros is 1, then 1 -> 01, 2 -> 02, 10 -> 10, 11 -> 11 and so on.
+        /// </summary>
+        /// <param name="Number">The number to format</param>
+        /// <param name="MaxZeros">The maximum number of zeros to append to the start</param>
+        /// <returns>The formated number</returns>
+        private string InsertZeros(int Number, int MaxZeros)
         {
-            NameSuffixHelper nameSuffix = NameSuffixHelper.CreateNameSuffixHelper(FileName.Name, _behaviour);
-            string numberString = _numberingFormatHelper.Output(Position + _start);
-
-            string newName = nameSuffix.Replace((s) => _textFormatHelper.Output(s, _text, numberString));
-
-            return newName;
-        }
-
-        private abstract class NumberingTextHelper
-        {
-            abstract public string Output(string OldName, string Text, string NumberString);
-
-            public static NumberingTextHelper ConstructNumberingTextHelper(NumberingTextFormat TextFormat)
-            {
-                switch (TextFormat)
-                {
-                    case NumberingTextFormat.OldNameTextNumber:
-                        return new OldNameTextNumber();
-                    case NumberingTextFormat.NumberTextOldName:
-                        return new NumberTextOldName();
-                    case NumberingTextFormat.TextNumber:
-                        return new TextNumber();
-                    case NumberingTextFormat.NumberText:
-                        goto default;
-                    default:
-                        return new NumberText();
-                }
-            }
-
-        }
-
-        private class OldNameTextNumber : NumberingTextHelper
-        {
-            override public string Output(string OldName, string Text, string NumberString)
-            {
-                return OldName + Text + NumberString;
-            }
-        }
-
-        private class NumberTextOldName : NumberingTextHelper
-        {
-            override public string Output(string OldName, string Text, string NumberString)
-            {
-                return NumberString + Text + OldName;
-            }
-        }
-
-        private class TextNumber : NumberingTextHelper
-        {
-            override public string Output(string OldName, string Text, string NumberString)
-            {
-                return Text + NumberString;
-            }
-        }
-
-        private class NumberText : NumberingTextHelper
-        {
-            override public string Output(string OldName, string Text, string NumberString)
-            {
-                return NumberString + Text;
-            }
-        }
-
-
-        private abstract class NumberingFormatHelper
-        {
-            abstract public string Output(int Number);
-
-            public static NumberingFormatHelper ConstructNumberingFormatHelper (NumberingFormat Format)
-            {
-                switch (Format)
-                {
-                    case NumberingFormat.NoZeros:
-                        return new NoZeros();
-                    case NumberingFormat.OneZero:
-                        return new OneZero();
-                    case NumberingFormat.TwoZeros:
-                        return new TwoZeros();
-                    case NumberingFormat.ThreeZeros:
-                        return new ThreeZeros();
-                    case NumberingFormat.LowercaseLetters:
-                        goto default;
-                    default:
-                        return new LowercaseLetters();
-                }
-            }
-        }
-
-        private class NoZeros : NumberingFormatHelper
-        {
-            override public string Output(int Number)
+            if (Number <= 0)
             {
                 return Number.ToString();
             }
+
+            // find the length of the input number in base 10
+            int length = (int)Math.Truncate(Math.Log10(Number));
+            // find how many zeros to append
+            int numZeros = MaxZeros - length;
+            string zeros;
+
+            if (numZeros > 0)
+            {
+                // create the string of zeros
+                zeros = new string('0', numZeros);
+            } 
+            else
+            {
+                zeros = "";
+            }
+
+            return zeros + Number.ToString();
         }
 
-        private class OneZero : NumberingFormatHelper
+        public string RenameFile(FileMetaData FileName, int Position)
         {
-            override public string Output(int Number)
-            {
-                if (Number < 10 && Number > 0)
-                {
-                    return "0" + Number.ToString();
-                }
-                else
-                {
-                    return Number.ToString();
-                }
-            }
-        }
+            NameSuffixHelper nameSuffix = NameSuffixHelper.CreateNameSuffixHelper(FileName.Name, _behaviour);
+            string numberString = _numberFormatFn(Position + _start);
 
-        private class TwoZeros : NumberingFormatHelper
-        {
-            override public string Output(int Number)
-            {
-                if (Number < 10 && Number > 0)
-                {
-                    return "00" + Number.ToString();
-                }
-                else if (Number < 100 & Number > 9)
-                {
-                    return "0" + Number.ToString();
-                }
-                else
-                {
-                    return Number.ToString();
-                }
-            }
-        }
+            string newName = nameSuffix.Modify((s) => _textFormatFn(s, _text, numberString));
 
-        private class ThreeZeros : NumberingFormatHelper
-        {
-            override public string Output(int Number)
-            {
-                if (Number < 10 && Number > 0)
-                {
-                    return "000" + Number.ToString();
-                }
-                else if (Number < 100 & Number > 9)
-                {
-                    return "00" + Number.ToString();
-                }
-                else if (Number < 1000 & Number > 99)
-                {
-                    return "0" + Number.ToString();
-                }
-                {
-                    return Number.ToString();
-                }
-            }
-        }
-
-        private class LowercaseLetters : NumberingFormatHelper
-        {
-            override public string Output(int Number)
-            {
-                return StringNumberConversions.NumberToString(Number);
-            }
+            return newName;
         }
         
     }
@@ -798,15 +782,15 @@ namespace FileRenamer
             switch (_caseType)
             {
                 case CaseTypes.Lowercase:
-                    return nameSuffix.Replace((s) => s.ToLower());
+                    return nameSuffix.Modify((s) => s.ToLower());
                 case CaseTypes.Uppercase:
-                    return nameSuffix.Replace((s) => s.ToUpper());
+                    return nameSuffix.Modify((s) => s.ToUpper());
                 case CaseTypes.Camelcase:
-                    return nameSuffix.Replace((s) => toCamelCase(s));
+                    return nameSuffix.Modify((s) => toCamelCase(s));
                 case CaseTypes.Sentencecase:
                     goto default;
                 default:
-                    return nameSuffix.Replace((s) => toSentenceCase(s));
+                    return nameSuffix.Modify((s) => toSentenceCase(s));
             }
 
         }
@@ -958,6 +942,38 @@ namespace FileRenamer
         }
     }
 
+    public class SearchReplaceStrategy : IFileRenamerStrategy
+    {
+        private string _searchRegex;
+        private string _replaceRegex;
+        private bool _useRegex;
+        private bool _caseSensitive;
+        private NameSuffixBehaviour _behaviour;
+
+        public SearchReplaceStrategy(string Find, string Replace, bool useRegex, bool caseSensitive, NameSuffixBehaviour Behaviour)
+        {
+            _searchRegex = Find;
+            _replaceRegex = Replace;
+            _useRegex = useRegex;
+            _caseSensitive = caseSensitive;
+            _behaviour = Behaviour;
+        }
+
+        public string RenameFile(FileMetaData FileName, int Position)
+        {
+            NameSuffixHelper nameSuffix = NameSuffixHelper.CreateNameSuffixHelper(FileName.Name, _behaviour);
+
+            if (_useRegex)
+            {
+                return nameSuffix.RegexReplace(_searchRegex, _replaceRegex, _caseSensitive);
+            }
+            else
+            {
+                return nameSuffix.Replace(_searchRegex, _replaceRegex, _caseSensitive);
+            }
+
+        }
+    }
 
 
 }

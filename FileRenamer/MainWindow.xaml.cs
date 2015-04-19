@@ -108,11 +108,29 @@ namespace FileRenamer
             }
         }
 
+        private void SetSearchReplaceStrategy()
+        {
+            if (_bulkRenamer != null)
+            {
+                _bulkRenamer.RenameStrategy = new SearchReplaceStrategy(txtSearchFor.Text, txtReplaceWith.Text, chkRegex.IsChecked ?? false, 
+                                                                        chkCaseSensitive.IsChecked ?? false, (NameSuffixBehaviour)cmbNameSuffix.SelectedIndex);
+            }
+        }
+
         private void SetCaseChangeStrategy()
         {
             if (_bulkRenamer != null)
             {
                 _bulkRenamer.RenameStrategy = new CaseChangerStrategy((CaseTypes)cmbConvertTo.SelectedIndex, (NameSuffixBehaviour)cmbNameSuffix.SelectedIndex);
+            }
+        }
+
+        private void SearchReplaceStrategy_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            // Regexs are slow to check, so don't modify when the textbox is changed.
+            if (!(chkRegex.IsChecked ?? false))
+            {
+                SetSearchReplaceStrategy();
             }
         }
 
@@ -160,6 +178,7 @@ namespace FileRenamer
                     SetRemoveStrategy();
                     break;
                 case 3:
+                    SetSearchReplaceStrategy();
                     break;
                 case 4:
                     SetCaseChangeStrategy();
@@ -195,6 +214,16 @@ namespace FileRenamer
         private void DateStrategy_ComboChanged(object sender, SelectionChangedEventArgs e)
         {
             SetDateStrategy();
+        }
+
+        private void SearchReplaceStrategy_Checked(object sender, RoutedEventArgs e)
+        {
+            SetSearchReplaceStrategy();
+        }
+
+        private void SearchReplaceStrategy_LostFocus(object sender, RoutedEventArgs e)
+        {
+            SetSearchReplaceStrategy();
         }
 
 
