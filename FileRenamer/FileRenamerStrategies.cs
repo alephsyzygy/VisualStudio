@@ -557,10 +557,6 @@ namespace FileRenamer
         private NumberingTextFormat _textFormat;
         private int _start;
         private string _text;
-        private delegate string TextFormatFn(string OldName, string Text, string NumberString);
-        private delegate string NumberFormatFn(int Number);
-        private TextFormatFn _textFormatFn;
-        private NumberFormatFn _numberFormatFn;
 
         /// <summary>
         /// The constructor.
@@ -576,47 +572,6 @@ namespace FileRenamer
             _numberFormat = NumberFormat;
             _textFormat = TextFormat;
             _text = Text;
-
-            // Set function which returns the correct text format
-            switch (_textFormat)
-            {
-                case NumberingTextFormat.NumberText:
-                    _textFormatFn = (OldName, FText, NumberString) => NumberString + FText;
-                    break;
-                case NumberingTextFormat.NumberTextOldName:
-                    _textFormatFn = (OldName, FText, NumberString) => NumberString + FText + OldName;
-                    break;
-                case NumberingTextFormat.OldNameTextNumber:
-                    _textFormatFn = (OldName, FText, NumberString) => OldName + FText + NumberString;
-                    break;
-                case NumberingTextFormat.TextNumber:
-                    goto default;
-                default:
-                    _textFormatFn = (OldName, FText, NumberString) => FText + NumberString;
-                    break;
-            }
-
-            // Set function which converts the input number into the correct text format
-            switch (_numberFormat)
-            {
-                case NumberingFormat.LowercaseLetters:
-                    _numberFormatFn = (Num) => StringNumberConversions.NumberToString(Num);
-                    break;
-                case NumberingFormat.OneZero:
-                    _numberFormatFn = (Number) => InsertZeros(Number, 1);
-                    break;
-                case NumberingFormat.TwoZeros:
-                    _numberFormatFn = (Number) => InsertZeros(Number, 2);
-                    break;
-                case NumberingFormat.ThreeZeros:
-                    _numberFormatFn = (Number) => InsertZeros(Number, 3);
-                    break;
-                case NumberingFormat.NoZeros:
-                    goto default;
-                default:
-                    _numberFormatFn = (Num) => Num.ToString();
-                    break;
-            }
 
             // First try to parse start as an int.
             if (!Int32.TryParse(Start, out _start))
@@ -670,11 +625,53 @@ namespace FileRenamer
         public string RenameFile(FileMetaData FileName, int Position)
         {
             NameSuffixHelper nameSuffix = NameSuffixHelper.CreateNameSuffixHelper(FileName.Name, _behaviour);
-            string numberString = _numberFormatFn(Position + _start);
+            string numberString;
+            int num = Position + _start;
 
-            string newName = nameSuffix.Modify((s) => _textFormatFn(s, _text, numberString));
+            // Format the position number into the correct format
+            switch (_numberFormat)
+            {
+                case NumberingFormat.LowercaseLetters:
+                    numberString = StringNumberConversions.NumberToString(num);
+                    break;
+                case NumberingFormat.OneZero:
+                    numberString = InsertZeros(num, 1);
+                    break;
+                case NumberingFormat.TwoZeros:
+                    numberString =  InsertZeros(num, 2);
+                    break;
+                case NumberingFormat.ThreeZeros:
+                    numberString =  InsertZeros(num, 3);
+                    break;
+                case NumberingFormat.NoZeros:
+                    goto default;
+                default:
+                    numberString = num.ToString();
+                    break;
+            }
 
-            return newName;
+            // This function determines the text format, we will pass it to modify in the NameSuffixHelper
+            Func<String, String> _textFormatFn;
+
+            switch (_textFormat)
+            {
+                case NumberingTextFormat.NumberText:
+                    _textFormatFn = (OldName) => numberString + _text;
+                    break;
+                case NumberingTextFormat.NumberTextOldName:
+                    _textFormatFn = (OldName) => numberString + _text + OldName;
+                    break;
+                case NumberingTextFormat.OldNameTextNumber:
+                    _textFormatFn = (OldName) => OldName + _text + numberString;
+                    break;
+                case NumberingTextFormat.TextNumber:
+                    goto default;
+                default:
+                    _textFormatFn = (OldName) => _text + numberString;
+                    break;
+            }
+
+            return nameSuffix.Modify(_textFormatFn);
         }
         
     }
