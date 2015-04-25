@@ -62,7 +62,7 @@
         </ListView>
         <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="1">
 
-            <TabControl x:Name="StrategyTabs" IsEnabled="False" VerticalAlignment="Stretch" VerticalContentAlignment="Stretch">
+            <TabControl x:Name="StrategyTabs" IsEnabled="False" VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" SelectionChanged="cmbInsertOverwrite_SelectionChanged">
                 <TabItem Header="Insert / Overwrite">
                     <Grid Background="#FFE5E5E5" >
                         <Grid.ColumnDefinitions>
