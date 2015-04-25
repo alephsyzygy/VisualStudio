@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 namespace FileRenamer
 {
     public interface ICommand
@@ -81,6 +83,7 @@ namespace FileRenamer
         private RenameFailureBehaviour _behaviour;
         private Func<RenameFailureBehaviour> _showDialog;
         private bool _successful;
+        private List<bool> _skipped;
 
         public bool Successful
         {
@@ -95,6 +98,7 @@ namespace FileRenamer
             _behaviour = RenameFailureBehaviour.Dialog;
             _showDialog = ShowDialog;
             _successful = false;
+            _skipped = new List<bool>(Enumerable.Repeat(false, Commands.Count));
         }
 
         public void Run()
@@ -124,6 +128,7 @@ namespace FileRenamer
                                 return;
                             case RenameFailureBehaviour.Skip:
                                 _behaviour = RenameFailureBehaviour.Dialog;
+                                _skipped[i] = true;
                                 break;
                             case RenameFailureBehaviour.SilentContinue:
                                 break;
@@ -147,7 +152,10 @@ namespace FileRenamer
             {
                 for (int i = _pos - 1; i >= 0; i--)
                 {
-                    _commands[i].Undo();
+                    if (!_skipped[i])
+                    {
+                        _commands[i].Undo();
+                    }
                 }
                 _hasRun = false;
                 _successful = false;
