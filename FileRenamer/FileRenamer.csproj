@@ -53,6 +53,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="ErrorDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -62,6 +66,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Commands.cs" />
+    <Compile Include="ErrorDialog.xaml.cs">
+      <DependentUpon>ErrorDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="FileMetaData.cs" />
     <Compile Include="FileRenamer.cs" />
     <Compile Include="FileRenamerStrategies.cs" />

@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 namespace FileRenamer
 {
     public interface ICommand
@@ -29,7 +31,7 @@ namespace FileRenamer
             get { return _directory; }
         }
 
-        public RenameCommand(string Directoy, string OldName, string NewName)
+        public RenameCommand(string Directory, string OldName, string NewName)
         {
             _originalName = OldName;
             _newName = NewName;
@@ -40,7 +42,7 @@ namespace FileRenamer
         public void Run()
         {
             _hasRun = true;
-            File.Move(_directory + _originalName, _directory + _newName);
+            File.Move(_directory + Path.DirectorySeparatorChar + _originalName, _directory + Path.DirectorySeparatorChar + _newName);
         }
 
         public void Undo()
@@ -48,9 +50,108 @@ namespace FileRenamer
             if (_hasRun)
             {
                 _hasRun = false;
-                File.Move(_directory + _newName, _directory + _originalName);
+                File.Move(_directory + Path.DirectorySeparatorChar + _newName, _directory + Path.DirectorySeparatorChar + _originalName);
             }
 
+        }
+    }
+
+    /// <summary>
+    /// Possible failure modes when renaming.
+    /// </summary>
+    public enum RenameFailureBehaviour
+    {
+        Dialog,         // Show a dialog
+        Undo,           // Undo everything
+        Skip,           // Skip this file
+        SilentContinue, // Skip all errors
+        Abort           // Abort, do no cleaning up
+    }
+
+    /// <summary>
+    /// Command which does all the remaining.
+    /// Has to be given a list of RenameCommands and an action to take when an error occurs.
+    /// This action returns a RenameFailureBehaviour.
+    /// </summary>
+    public class RenameAllCommand : ICommand
+    {
+        private List<RenameCommand> _commands;
+        private bool _hasRun;
+        private int _pos;
+        private RenameFailureBehaviour _behaviour;
+        private Func<RenameFailureBehaviour> _showDialog;
+        private bool _successful;
+
+        public bool Successful
+        {
+            get { return _successful; }
+        }
+
+        public RenameAllCommand(List<RenameCommand> Commands, Func<RenameFailureBehaviour> ShowDialog)
+        {
+            _commands = Commands;
+            _hasRun = false;
+            _pos = 0;
+            _behaviour = RenameFailureBehaviour.Dialog;
+            _showDialog = ShowDialog;
+            _successful = false;
+        }
+
+        public void Run()
+        {
+            if (!_hasRun)
+            {
+                for (int i = 0; i < _commands.Count; i++)
+                {
+                    try
+                    {
+                        _commands[i].Run();
+                    }
+                    catch (Exception e)
+                    {
+                        _pos = i;
+                        if (_behaviour == RenameFailureBehaviour.Dialog)
+                        {
+                            _behaviour = _showDialog();
+                        }
+                        switch (_behaviour)
+                        {
+                            case RenameFailureBehaviour.Dialog:
+                                goto default;
+                            case RenameFailureBehaviour.Undo:
+                                _hasRun = true;
+                                Undo();
+                                return;
+                            case RenameFailureBehaviour.Skip:
+                                _behaviour = RenameFailureBehaviour.Dialog;
+                                break;
+                            case RenameFailureBehaviour.SilentContinue:
+                                break;
+                            case RenameFailureBehaviour.Abort:
+                                return;
+                            default:
+                                throw new Exception("Dialog should return a result");
+                        }
+                    }
+
+                }
+                _hasRun = true;
+                _successful = true;
+            }
+        }
+
+
+        public void Undo()
+        {
+            if (_hasRun)
+            {
+                for (int i = _pos - 1; i >= 0; i--)
+                {
+                    _commands[i].Undo();
+                }
+                _hasRun = false;
+                _successful = false;
+            }
         }
     }
 }

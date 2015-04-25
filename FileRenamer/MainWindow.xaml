@@ -235,7 +235,7 @@
                 <StackPanel Orientation="Horizontal" Margin="10,10,10,0" HorizontalAlignment="Right" Grid.Column="2">
 
                     <Button x:Name="btnChooseFiles" Content="Choose Files" Margin="10,0,5,0" Click="btnChooseFiles_Click"/>
-                    <Button x:Name="btnRenameFiles" Content="Rename Files" Margin="5,0,5,0" />
+                    <Button x:Name="btnRenameFiles" Content="Rename Files" Margin="5,0,5,0" Click="btnRenameFiles_Click" />
                     <Button x:Name="btnQuit" Content="Quit" Margin="5,0,10,0" Click="btnQuit_Click" />
                 </StackPanel>
             </Grid>

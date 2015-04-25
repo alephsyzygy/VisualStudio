@@ -136,8 +136,8 @@ namespace FileRenamer
 
             List<RenameCommand> commands = new List<RenameCommand>(_fileMetaData.Count);
 
-            int i = 0;
-            for (i=0; i < _fileMetaData.Count; i++)
+
+            for (int i=0; i < _fileMetaData.Count; i++)
             {
                 commands.Add(new RenameCommand(_fileMetaData[i].Directory, _fileMetaData[i].Name, _newFileNames[i]));
             }

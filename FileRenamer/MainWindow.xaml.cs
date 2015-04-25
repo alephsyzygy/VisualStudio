@@ -226,6 +226,46 @@ namespace FileRenamer
             SetSearchReplaceStrategy();
         }
 
+        private void btnRenameFiles_Click(object sender, RoutedEventArgs e)
+        {
+            if (_bulkRenamer != null && !_bulkRenamer.Clashes)
+            {
+                RenameAllCommand renameAllCommand = new RenameAllCommand(_bulkRenamer.GenerateRenameCommands(), showDialog);
+
+                renameAllCommand.Run();
+
+                if (renameAllCommand.Successful)
+                {
+                    MessageBox.Show("Files renamed.");
+                        
+                }
+                else
+                {
+                    MessageBox.Show("File renaming cancelled.");
+                }
+
+                Application.Current.Shutdown();
+            }
+            else
+            {
+                MessageBox.Show("Cannot rename files since some clash.");
+            }
+
+        }
+
+        private RenameFailureBehaviour showDialog()
+        {
+            ErrorDialog errorDialog = new ErrorDialog();
+            if (errorDialog.ShowDialog() == true)
+            {
+                return (RenameFailureBehaviour)errorDialog.Result;
+            }
+            else
+            {
+                return RenameFailureBehaviour.Undo;
+            }
+        }
+
 
     }
 
