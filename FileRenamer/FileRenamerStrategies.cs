@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.Text.RegularExpressions;
-namespace FileRenamer
+namespace FileRenamer.Old
 {
 
 

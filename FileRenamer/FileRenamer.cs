@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 
-namespace FileRenamer
+namespace FileRenamer.Old
 {
     /// <summary>
     /// BulkRenamer class.  Contains a list of file metadata and can construct a list of commands for renaming those files.
