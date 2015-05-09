@@ -1,0 +1,29 @@
+﻿<UserControl x:Class="FileRenamer.View.RemoveCharactersView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="100" d:DesignWidth="400">
+    <Grid Background="#FFE5E5E5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Label Content="From Position:" Grid.Row="0" Grid.Column="0" Margin="10,10,10,10"/>
+        <Label Content="To Position:" Grid.Row="1" Grid.Column="0" Margin="10,10,10,10"/>
+        <TextBox x:Name="txtFromPos" Grid.Row="0" Grid.Column="1" Margin="10,10,10,10"
+                 Text="{Binding Path=FromPosition, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBox x:Name="txtToPos" Grid.Row="1" Grid.Column="1" Margin="10,10,10,10"
+                 Text="{Binding Path=ToPosition, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"/>
+        <ComboBox x:Name="cmbFromPos" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right" Width="100" Margin="10,10,10,10"
+                  SelectedIndex="{Binding Path=FromLeft, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Path=LocationOptions, Mode=OneTime}"/>
+        <ComboBox x:Name="cmbToPos" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right" Width="100" Margin="10,10,10,10" 
+                  SelectedIndex="{Binding Path=ToLeft, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Path=LocationOptions, Mode=OneTime}"/>
+    </Grid>
+</UserControl>

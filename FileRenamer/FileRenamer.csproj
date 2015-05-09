@@ -58,21 +58,46 @@
     <Compile Include="Model\FileModel.cs" />
     <Compile Include="Model\RenamerModel.cs" />
     <Compile Include="RelayCommand.cs" />
+    <Compile Include="Strategies\CaseChangingStrategy.cs" />
+    <Compile Include="Strategies\DateInserterStrategy.cs" />
     <Compile Include="Strategies\FileRenamerStrategy.cs" />
     <Compile Include="Strategies\InsertTextStrategy.cs" />
     <Compile Include="Strategies\NameSuffixHelper.cs" />
+    <Compile Include="Strategies\NumberingStrategy.cs" />
+    <Compile Include="Strategies\RemoveCharactersStrategy.cs" />
+    <Compile Include="Strategies\SearchReplaceStrategy.cs" />
+    <Compile Include="ViewModel\CaseChangingViewModel.cs" />
     <Compile Include="ViewModel\CommandViewModel.cs" />
+    <Compile Include="ViewModel\DateInserterViewModel.cs" />
     <Compile Include="ViewModel\FileListViewModel.cs" />
     <Compile Include="ViewModel\FileViewModel.cs" />
     <Compile Include="ViewModel\InsertTextViewModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
+    <Compile Include="ViewModel\NumberingViewModel.cs" />
+    <Compile Include="ViewModel\RemoveCharactersViewModel.cs" />
+    <Compile Include="ViewModel\SearchReplaceViewModel.cs" />
     <Compile Include="ViewModel\StrategyViewModel.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
+    <Compile Include="View\CaseChangingView.xaml.cs">
+      <DependentUpon>CaseChangingView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\DateInserterView.xaml.cs">
+      <DependentUpon>DateInserterView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\FileListView.xaml.cs">
       <DependentUpon>FileListView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\InsertTextView.xaml.cs">
       <DependentUpon>InsertTextView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\NumberingView.xaml.cs">
+      <DependentUpon>NumberingView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\RemoveCharactersView.xaml.cs">
+      <DependentUpon>RemoveCharactersView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\SearchReplaceView.xaml.cs">
+      <DependentUpon>SearchReplaceView.xaml</DependentUpon>
     </Compile>
     <Page Include="ErrorDialog.xaml">
       <SubType>Designer</SubType>
@@ -99,11 +124,31 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\CaseChangingView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\DateInserterView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\FileListView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\InsertTextView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\NumberingView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\RemoveCharactersView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\SearchReplaceView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

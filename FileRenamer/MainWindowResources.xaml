@@ -11,6 +11,26 @@
         <vw:InsertTextView />
     </DataTemplate>
 
+    <DataTemplate DataType="{x:Type vm:RemoveCharactersViewModel}">
+        <vw:RemoveCharactersView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:NumberingViewModel}">
+        <vw:NumberingView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:CaseChangingViewModel}">
+        <vw:CaseChangingView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:DateInserterViewModel}">
+        <vw:DateInserterView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:SearchReplaceViewModel}">
+        <vw:SearchReplaceView />
+    </DataTemplate>
+
     <DataTemplate x:Key="TabItemTemplate">
         <ContentPresenter 
         Content="{Binding Path=DisplayName}" 

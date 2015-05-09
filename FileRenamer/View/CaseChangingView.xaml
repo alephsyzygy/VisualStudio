@@ -1,0 +1,21 @@
+﻿<UserControl x:Class="FileRenamer.View.CaseChangingView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="79" d:DesignWidth="439">
+    <Grid Background="#FFE5E5E5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Label Content="Convert to:" Grid.Row="0" Grid.Column="0" />
+        <ComboBox x:Name="cmbConvertTo" Grid.Row="0" Grid.Column="1" 
+                  SelectedIndex="{Binding Path=Case, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Path=CaseOptions, Mode=OneTime}"/>
+
+    </Grid>
+</UserControl>
