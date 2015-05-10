@@ -1,0 +1,36 @@
+﻿<UserControl x:Class="FileRenamer.View.InsertTextView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="100" d:DesignWidth="500">
+    <Grid Background="#FFE5E5E5" >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <ComboBox x:Name="cmbInsertOverwrite" Grid.Column="3" Grid.Row="0"  HorizontalAlignment="Right"  Margin="10,10,10,10" Width="100"
+                  SelectedIndex="{Binding Path=InsertOrOverwrite, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Path=InsertOptions, Mode=OneTime}"/>
+
+
+        <Label Content="Text:" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" Margin="10,10,10,10" VerticalAlignment="Top"/>
+        <TextBox x:Name="InsertText" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Height="23" Margin="10,10,10,10" TextWrapping="Wrap" VerticalAlignment="Top" 
+                 Text="{Binding Path=Text, ValidatesOnDataErrors=False, UpdateSourceTrigger=PropertyChanged}"/>
+        <Label Content="Position:" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" Margin="10,10,10,10" VerticalAlignment="Top" />
+        <TextBox x:Name="InsertPos" Grid.Row="0" Grid.Column="1"  MinWidth="100" Margin="10,10,10,10" TextWrapping="Wrap"
+                 Text="{Binding Path=Position, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <ComboBox x:Name="cmbInsertPos" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Left" Margin="10,10,10,10" 
+                  SelectedIndex="{Binding Path=FromLeft, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Path=LocationOptions, Mode=OneTime}"/>
+        <!--<ComboBoxItem Content="From the left" IsSelected="True"/>
+        <ComboBoxItem Content="From the right" />-->
+
+    </Grid>
+</UserControl>
