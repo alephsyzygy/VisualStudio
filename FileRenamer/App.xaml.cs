@@ -36,6 +36,10 @@ namespace FileRenamer
                 window.DataContext = renamerModel;
                 window.Show();
             }
+            else
+            {
+                Application.Current.Shutdown();
+            }
 
 
         }
