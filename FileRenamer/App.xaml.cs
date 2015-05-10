@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using FileRenamer.ViewModel;
+using System.IO;
 
 namespace FileRenamer
 {
@@ -20,25 +21,35 @@ namespace FileRenamer
         {
             base.OnStartup(e);
 
-            MainWindow window = new MainWindow();
+            string[] args = Environment.GetCommandLineArgs();
 
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Multiselect = true;
-            //openFileDialog.Filter = "*.*";
-            openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            if (openFileDialog.ShowDialog() == true)
+            if (args.Count() > 1)
             {
-                //var fileMetaInfoList = openFileDialog.FileNames.Select(name => new FileMetaData(name)).ToList();
-                var renamerModel = new MainWindowViewModel(openFileDialog.FileNames);
-                //FileNameListView.ItemsSource = _bulkRenamer.Collection;
-                //StrategyTabs.IsEnabled = true;
-
+                // We are given some command line arguments
+                MainWindowViewModel renamerModel = new MainWindowViewModel(args.Skip(1)
+                                                                               .Select(file => Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + file)
+                                                                               .ToArray());
+                MainWindow window = new MainWindow();
                 window.DataContext = renamerModel;
                 window.Show();
             }
             else
             {
-                Application.Current.Shutdown();
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.Multiselect = true;
+                //openFileDialog.Filter = "*.*";
+                openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                if (openFileDialog.ShowDialog() == true)
+                {
+                    MainWindowViewModel renamerModel = new MainWindowViewModel(openFileDialog.FileNames);
+                    MainWindow window = new MainWindow();
+                    window.DataContext = renamerModel;
+                    window.Show();
+                }
+                else
+                {
+                    Application.Current.Shutdown();
+                }
             }
 
 
