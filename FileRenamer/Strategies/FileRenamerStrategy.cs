@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FileRenamer.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -33,7 +34,12 @@ namespace FileRenamer.Strategies
 
         #region Events
 
-        public event EventHandler<EventArgs> StrategyChanged;
+        // Event not used, since nothing changes in this strategy
+        public event EventHandler<EventArgs> StrategyChanged
+        {
+            add { }
+            remove { }
+        }
 
         #endregion
     }

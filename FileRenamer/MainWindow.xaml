@@ -4,10 +4,12 @@
         xmlns:local="clr-namespace:FileRenamer"
         xmlns:view="clr-namespace:FileRenamer.View"
         Title="File Renamer" Height="600" Width="550">
+    
     <Window.Resources>
         <ResourceDictionary Source="MainWindowResources.xaml" />
     </Window.Resources>
-    <Grid Margin="10,10,10,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+    
+    <Grid Margin="7,7,7,7" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
@@ -16,22 +18,29 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
+        
+        <!-- Show the list of files -->
         <view:FileListView DataContext="{Binding Path=FileList}"/>
+        
+        <!-- Show the barious strategies -->
         <TabControl x:Name="StrategyTabs" VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" Grid.Row="1"
                     ItemsSource="{Binding Path=Strategies}" SelectedIndex="{Binding Path=SelectedStrategy}"
             ItemTemplate="{StaticResource TabItemTemplate}"/>
+        
+        <!-- Remaining controls at the bottom -->
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <ComboBox x:Name="cmbNameSuffix" Grid.Column="0" HorizontalAlignment="Left" Margin="10,10,10,0" Grid.Row="1" VerticalAlignment="Bottom" 
-                                  ItemsSource="{Binding Path=NameSuffixOptions, Mode=OneTime}"
+            
+            <!-- Name/Suffix selection combo box -->
+            <ComboBox x:Name="cmbNameSuffix" Grid.Column="0" HorizontalAlignment="Left" Margin="5,5,5,0" VerticalAlignment="Top" 
+                       ItemsSource="{Binding Path=NameSuffixOptions, Mode=OneTime}"
                        SelectedIndex="{Binding Path=NameSuffixSelection}" Width="100"/>
-            <!--<ItemsControl Margin="10,10,10,0" HorizontalAlignment="Right" Grid.Column="2"
-                        DataContext="{Binding Path=Commands}" 
-                        ItemTemplate="{StaticResource CommandsTemplate}" />-->
+
+            <!-- All the commands in button form -->
             <ItemsControl IsTabStop="False" ItemsSource="{Binding Path=Commands}" Grid.Column="2">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -40,205 +49,11 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Button Margin="10,10,10,10" Content="{Binding Path=DisplayName}" Command="{Binding Path=Command}" />
+                        <Button Margin="5,5,5,0" Content="{Binding Path=DisplayName}" Command="{Binding Path=Command}" />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-            <!--    <ComboBoxItem Content="Name only" IsSelected="True" />
-                <ComboBoxItem Content="Suffix only" />
-                <ComboBoxItem Content="Name &amp; Suffix" />
-            </ComboBox> -->
-            <!--
-            <StackPanel Orientation="Horizontal" Margin="10,10,10,0" HorizontalAlignment="Right" Grid.Column="2">
 
-                <Button x:Name="btnChooseFiles" Content="Choose Files" Margin="10,0,5,0" Click="btnChooseFiles_Click"/>
-                <Button x:Name="btnRenameFiles" Content="Rename Files" Margin="5,0,5,0" Click="btnRenameFiles_Click" />
-                <Button x:Name="btnQuit" Content="Quit" Margin="5,0,10,0" Click="btnQuit_Click" />
-            </StackPanel> -->
         </Grid>
-
-        <!--
-        <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="1">
-
-            <TabControl x:Name="StrategyTabs" IsEnabled="False" VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" SelectionChanged="cmbInsertOverwrite_SelectionChanged">
-                <TabItem Header="Insert / Overwrite">
-                    <Grid Background="#FFE5E5E5" >
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-                        <ComboBox x:Name="cmbInsertOverwrite" Grid.Column="3" Grid.Row="0"  HorizontalAlignment="Right"  Margin="10,10,10,10" 
-                                  SelectionChanged="cmbInsertOverwrite_SelectionChanged" Width="100">
-                            <ComboBoxItem x:Name="chkInsert"  Content="Insert" IsSelected="True" />
-                            <ComboBoxItem x:Name="chkOverwrite" Content="Overwrite" />
-                        </ComboBox>
-
-                        <Label Content="Text:" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" Margin="10,10,10,10" VerticalAlignment="Top"/>
-                        <TextBox x:Name="InsertText" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Height="23" Margin="10,10,10,10" TextWrapping="Wrap" Text="" VerticalAlignment="Top" TextChanged="InsertStrategy_TextChanged" TextInput="InsertStrategy_TextChanged"/>
-                        <Label Content="Position:" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" Margin="10,10,10,10" VerticalAlignment="Top" RenderTransformOrigin="0.616,-0.363"/>
-                        <TextBox x:Name="InsertPos" Grid.Row="0" Grid.Column="1"  MinWidth="100" Margin="10,10,10,10" TextWrapping="Wrap" Text="0" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="InsertStrategy_TextChanged"/>
-
-                        <ComboBox x:Name="cmbInsertPos" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Left" Margin="10,10,10,10" SelectionChanged="cmbInsertOverwrite_SelectionChanged">
-                            <ComboBoxItem Content="From the left" IsSelected="True"/>
-                            <ComboBoxItem Content="From the right" />
-                        </ComboBox>
-                    </Grid>
-                </TabItem>
-                <TabItem Header="Numbering">
-                    <Grid Background="#FFE5E5E5">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="190"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                        </Grid.RowDefinitions>
-                        <Label Content="Number Format:" Grid.Row="0" Grid.Column="0" Margin="10,10,10,10"/>
-                        <Label Content="Text Format:" Grid.Row="1" Grid.Column="0" Margin="10,10,10,10"/>
-                        <Label Content="Start With:" Grid.Row="0" Grid.Column="2" Margin="10,10,10,10"/>
-                        <Label Content="Text:" Grid.Row="1" Grid.Column="2" Margin="10,10,10,10"/>
-                        <ComboBox x:Name="cmbNumberFormat" Grid.Row="0" Grid.Column="1" Margin="10,10,10,10" SelectionChanged="NumberingStrategy_ComboChanged">
-                            <ComboBoxItem Content="1, 2, 3, ..." IsSelected="True"/>
-                            <ComboBoxItem Content="01, 02, 03, ..." />
-                            <ComboBoxItem Content="001, 002, 003, ..." />
-                            <ComboBoxItem Content="0001, 0002, 0003, ..." />
-                            <ComboBoxItem Content="a, b, c, ..." />
-                        </ComboBox>
-                        <ComboBox x:Name="cmbTextFormat" Grid.Row="1" Grid.Column="1" Margin="10,10,10,10" SelectionChanged="NumberingStrategy_ComboChanged" >
-                            <ComboBoxItem Content="Old Name - Text - Number" IsSelected="True"/>
-                            <ComboBoxItem Content="Number - Text - Old Name" />
-                            <ComboBoxItem Content="Text - Number" />
-                            <ComboBoxItem Content="Number - Text" />
-                        </ComboBox>
-                        <TextBox x:Name="txtStartWith" Text="1" Grid.Column="3" Grid.Row="0" Margin="10,10,10,10" TextChanged="NumberingStrategy_TextChanged" />
-                        <TextBox x:Name="txtNumberText" Text="" Grid.Column="3" Grid.Row="1" Margin="10,10,10,10" TextChanged="NumberingStrategy_TextChanged" />
-                    </Grid>
-                </TabItem>
-                <TabItem Header="Remove Characters">
-                    <Grid Background="#FFE5E5E5">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                        </Grid.RowDefinitions>
-                        <Label Content="From Position:" Grid.Row="0" Grid.Column="0" Margin="10,10,10,10"/>
-                        <Label Content="To Position:" Grid.Row="1" Grid.Column="0" Margin="10,10,10,10"/>
-                        <TextBox x:Name="txtFromPos" Text="0"  Grid.Row="0" Grid.Column="1" PreviewTextInput="TextBox_PreviewTextInput" Margin="10,10,10,10" TextChanged="RemoveStrategy_TextChanged"/>
-                        <TextBox x:Name="txtToPos" Text="0" Grid.Row="1" Grid.Column="1" PreviewTextInput="TextBox_PreviewTextInput" Margin="10,10,10,10" TextChanged="RemoveStrategy_TextChanged"/>
-                        <ComboBox x:Name="cmbFromPos" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right" Width="100" Margin="10,10,10,10" SelectionChanged="RemoveStrategy_ComboChanged">
-                            <ComboBoxItem Content="From the left" IsSelected="True"/>
-                            <ComboBoxItem Content="From the right" />
-                        </ComboBox>
-                        <ComboBox x:Name="cmbToPos" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right" Width="100" Margin="10,10,10,10" SelectionChanged="RemoveStrategy_ComboChanged">
-                            <ComboBoxItem Content="From the left" IsSelected="True"/>
-                            <ComboBoxItem Content="From the right" />
-                        </ComboBox>
-                    </Grid>
-                </TabItem>
-                <TabItem Header="Search &amp; Replace">
-                    <Grid Background="#FFE5E5E5">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                        </Grid.RowDefinitions>
-                        <Label Content="Search For:" Grid.Row="0" Grid.Column="0" />
-                        <Label Content="Replace With:" Grid.Row="1" Grid.Column="0" />
-                        <CheckBox x:Name="chkRegex" Content="Regular Expression" Grid.Row="0" Grid.Column="2" Checked="SearchReplaceStrategy_Checked" Unchecked="SearchReplaceStrategy_Checked" />
-                        <CheckBox x:Name="chkCaseSensitive" Content="Case Sensitive Search" Grid.Row="1" Grid.Column="2" Checked="SearchReplaceStrategy_Checked" Unchecked="SearchReplaceStrategy_Checked"/>
-                        <TextBox x:Name="txtSearchFor" Grid.Row="0" Grid.Column="1" TextChanged="SearchReplaceStrategy_TextChanged" LostFocus="SearchReplaceStrategy_LostFocus"/>
-                        <TextBox x:Name="txtReplaceWith" Grid.Row="1" Grid.Column="1" TextChanged="SearchReplaceStrategy_TextChanged" LostFocus="SearchReplaceStrategy_LostFocus" />
-                    </Grid>
-                </TabItem>
-                <TabItem Header="Uppercase / Lowercase">
-                    <Grid Background="#FFE5E5E5">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition/>
-                        </Grid.RowDefinitions>
-                        <Label Content="Convert to:" Grid.Row="0" Grid.Column="0" />
-                        <ComboBox x:Name="cmbConvertTo" Grid.Row="0" Grid.Column="1" SelectionChanged="CaseChangeStrategy_ComboChanged">
-                            <ComboBoxItem Content="lowercase" IsSelected="True"/>
-                            <ComboBoxItem Content="UPPERCASE" />
-                            <ComboBoxItem Content="Camelcase" />
-                            <ComboBoxItem Content="Sentence case" />
-                        </ComboBox>
-                    </Grid>
-                </TabItem>
-                <TabItem Header="Insert Date / Time">
-                    <Grid Background="#FFE5E5E5">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                        </Grid.RowDefinitions>
-                        <Label Content="InsertTime:" Grid.Row="0" Grid.Column="0" />
-                        <Label Content="At position:" Grid.Row="1" Grid.Column="0" />
-                        <Label Content="Format:" Grid.Row="0" Grid.Column="2" />
-
-                        <TextBox x:Name="txtDateFormat" Grid.Row="0" Grid.Column="3" Text="yyyy/MM/dd HH:mm:ss" TextChanged="DateStrategy_TextChanged"/>
-                        <TextBox x:Name="txtDatePos" Grid.Row="1" Grid.Column="1" PreviewTextInput="TextBox_PreviewTextInput" Text="0" TextChanged="DateStrategy_TextChanged" />
-
-                        <ComboBox x:Name="cmbInsertTime" Grid.Row="0" Grid.Column="1" SelectionChanged="DateStrategy_ComboChanged">
-                            <ComboBoxItem Content="Current Date" IsSelected="True"/>
-                            <ComboBoxItem Content="Date Created" />
-                            <ComboBoxItem Content="Date Modified" />
-                            <ComboBoxItem Content="Date Photo Taken" />
-                        </ComboBox>
-
-                        <ComboBox x:Name="cmbDatePos" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right" Width="100" Margin="10,10,10,10" SelectionChanged="DateStrategy_ComboChanged">
-                            <ComboBoxItem Content="From the left" IsSelected="True"/>
-                            <ComboBoxItem Content="From the right" />
-                        </ComboBox>
-                    </Grid>
-                </TabItem>
-            </TabControl>
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <ComboBox x:Name="cmbNameSuffix" Grid.Column="0" HorizontalAlignment="Left" Margin="10,0,10,0" Grid.Row="1" VerticalAlignment="Bottom" 
-                                  SelectionChanged="cmbInsertOverwrite_SelectionChanged" Width="100">
-                    <ComboBoxItem Content="Name only" IsSelected="True" />
-                    <ComboBoxItem Content="Suffix only" />
-                    <ComboBoxItem Content="Name &amp; Suffix" />
-                </ComboBox>
-                <StackPanel Orientation="Horizontal" Margin="10,10,10,0" HorizontalAlignment="Right" Grid.Column="2">
-
-                    <Button x:Name="btnChooseFiles" Content="Choose Files" Margin="10,0,5,0" Click="btnChooseFiles_Click"/>
-                    <Button x:Name="btnRenameFiles" Content="Rename Files" Margin="5,0,5,0" Click="btnRenameFiles_Click" />
-                    <Button x:Name="btnQuit" Content="Quit" Margin="5,0,10,0" Click="btnQuit_Click" />
-                </StackPanel>
-            </Grid>
-        </StackPanel>
--->
-
     </Grid>
 </Window>

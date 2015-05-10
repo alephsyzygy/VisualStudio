@@ -115,7 +115,7 @@ ShowDialog)
                     {
                         _commands[i].Run();
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {
                         _pos = i;
                         if (_behaviour == RenameFailureBehaviour.Dialog)

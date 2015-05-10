@@ -3,57 +3,37 @@
                     xmlns:vm="clr-namespace:FileRenamer.ViewModel"
                     xmlns:vw="clr-namespace:FileRenamer.View">
 
+    <!-- The data templates to link the viewmodels with the views -->
     <DataTemplate DataType="{x:Type vm:FileListViewModel}">
         <vw:FileListView />
     </DataTemplate>
-    
     <DataTemplate DataType="{x:Type vm:InsertTextViewModel}">
         <vw:InsertTextView />
     </DataTemplate>
-
     <DataTemplate DataType="{x:Type vm:RemoveCharactersViewModel}">
         <vw:RemoveCharactersView />
     </DataTemplate>
-
     <DataTemplate DataType="{x:Type vm:NumberingViewModel}">
         <vw:NumberingView />
     </DataTemplate>
-
     <DataTemplate DataType="{x:Type vm:CaseChangingViewModel}">
         <vw:CaseChangingView />
     </DataTemplate>
-
     <DataTemplate DataType="{x:Type vm:DateInserterViewModel}">
         <vw:DateInserterView />
     </DataTemplate>
-
     <DataTemplate DataType="{x:Type vm:SearchReplaceViewModel}">
         <vw:SearchReplaceView />
     </DataTemplate>
 
+    <!-- Set up the tab control so the names are displayed in the tabs -->
     <DataTemplate x:Key="TabItemTemplate">
         <ContentPresenter 
         Content="{Binding Path=DisplayName}" 
-        VerticalAlignment="Center" 
-        />
+        VerticalAlignment="Center" />
     </DataTemplate>
 
-    <DataTemplate x:Key="CommandsTemplate">
-        
-        <ItemsControl IsTabStop="False" ItemsSource="{Binding}" Margin="6,2"> 
-        <ItemsControl.ItemsPanel>
-            <ItemsPanelTemplate>
-                <StackPanel Orientation="Horizontal"/>
-            </ItemsPanelTemplate>
-        </ItemsControl.ItemsPanel>
-        <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <Button Margin="10,10,10,10" Content="{Binding Path=DisplayName}" Command="{Binding Path=Command}" />
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-       </ItemsControl>
-    </DataTemplate>
-
+    <!-- Various styles -->
     <Style TargetType="CheckBox">
         <Setter Property="Margin" Value="10,10,10,10" />
     </Style>
@@ -66,4 +46,5 @@
     <Style TargetType="ComboBox">
         <Setter Property="Margin" Value="10,10,10,10" />
     </Style>
+    
 </ResourceDictionary>
