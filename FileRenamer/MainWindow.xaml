@@ -35,10 +35,10 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             
-            <!-- Name/Suffix selection combo box -->
-            <ComboBox x:Name="cmbNameSuffix" Grid.Column="0" HorizontalAlignment="Left" Margin="5,5,5,0" VerticalAlignment="Top" 
-                       ItemsSource="{Binding Path=NameSuffixOptions, Mode=OneTime}"
-                       SelectedIndex="{Binding Path=NameSuffixSelection}" Width="100"/>
+            <!-- Name/Extension selection combo box -->
+            <ComboBox x:Name="cmbNameExtension" Grid.Column="0" HorizontalAlignment="Left" Margin="5,5,5,0" VerticalAlignment="Top" 
+                       ItemsSource="{Binding Path=NameExtensionOptions, Mode=OneTime}"
+                       SelectedIndex="{Binding Path=NameExtensionSelection}" Width="100"/>
 
             <!-- All the commands in button form -->
             <ItemsControl IsTabStop="False" ItemsSource="{Binding Path=Commands}" Grid.Column="2">

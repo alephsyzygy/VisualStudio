@@ -24,7 +24,7 @@ namespace FileRenamer.Strategies
         /// <param name="FromLeft">Is the leftmost position calculated from the start(true) or the end?(false)</param>
         /// <param name="ToPos">The final character position we remove</param>
         /// <param name="ToLeft">Is the final position calculated from the start(true) or the end?(false)</param>
-        /// <param name="Behaviour">Affect the name only, the suffix only, or both?</param>
+        /// <param name="Behaviour">Affect the name only, the Extension only, or both?</param>
         public RemoveCharactersStrategy(int FromPos, bool FromLeft, int ToPos, bool ToLeft)
         {
             _fromPos = FromPos;
@@ -45,7 +45,7 @@ namespace FileRenamer.Strategies
         /// <param name="FileName">The filename</param>
         /// <param name="Position">Position in the sequence (not used in this class)</param>
         /// <returns>The new filename.</returns>
-        public string RenameFile(FileMetaData FileName, int Position, NameSuffixHelper Helper)
+        public string RenameFile(FileMetaData FileName, int Position, NameExtensionHelper Helper)
         {
             Helper.Text = FileName.Name;
             return Helper.RemoveCharacters(_fromPos, _fromLeft, _toPos, _toLeft);

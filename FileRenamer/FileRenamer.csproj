@@ -63,7 +63,7 @@
     <Compile Include="Strategies\DateInserterStrategy.cs" />
     <Compile Include="Strategies\FileRenamerStrategy.cs" />
     <Compile Include="Strategies\InsertTextStrategy.cs" />
-    <Compile Include="Strategies\NameSuffixHelper.cs" />
+    <Compile Include="Strategies\NameExtensionHelper.cs" />
     <Compile Include="Strategies\NumberingStrategy.cs" />
     <Compile Include="Strategies\RemoveCharactersStrategy.cs" />
     <Compile Include="Strategies\SearchReplaceStrategy.cs" />

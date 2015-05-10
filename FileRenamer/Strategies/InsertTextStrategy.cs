@@ -28,7 +28,7 @@ namespace FileRenamer.Strategies
         /// <param name="Position">Position to insert the text</param>
         /// <param name="Text">Text to insert into the filename</param>
         /// <param name="InsertOrOverwrite">Insert text (true) or overwrite? (false)</param>
-        /// <param name="Behaviour">Affect the name only, suffix only, or both</param>
+        /// <param name="Behaviour">Affect the name only, Extension only, or both</param>
         public InsertTextStrategy(int Position, string Text, bool FromLeft, bool InsertOrOverwrite)
         {
             this.Text = Text;
@@ -43,11 +43,11 @@ namespace FileRenamer.Strategies
         /// <param name="FileName">The name of the file</param>
         /// <param name="Position">Position in the sequence (not used in this class)</param>
         /// <returns>The new filename</returns>
-        public string RenameFile(FileMetaData FileName, int Position, NameSuffixHelper Helper)
+        public string RenameFile(FileMetaData FileName, int Position, NameExtensionHelper Helper)
         {
             string newName;
             Helper.Text = FileName.Name;
-            //NameSuffixHelper nameSuffix = NameSuffixHelper.CreateNameSuffixHelper(FileName.Name, _behaviour);
+            //NameExtensionHelper nameExtension = NameExtensionHelper.CreateNameExtensionHelper(FileName.Name, _behaviour);
 
             if (InsertOrOverwrite)
             {

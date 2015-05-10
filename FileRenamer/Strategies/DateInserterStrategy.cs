@@ -35,7 +35,7 @@ namespace FileRenamer.Strategies
             _dateFormat = DateFormat;
         }
 
-        public string RenameFile(FileMetaData FileName, int Position, NameSuffixHelper Helper)
+        public string RenameFile(FileMetaData FileName, int Position, NameExtensionHelper Helper)
         {
             Helper.Text = FileName.Name;
             DateTime date;

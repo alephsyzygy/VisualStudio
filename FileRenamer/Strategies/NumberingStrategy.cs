@@ -54,7 +54,7 @@ namespace FileRenamer.Strategies
         /// <param name="TextFormat">How to insert the numbering into a filename</param>
         /// <param name="Start">The starting number</param>
         /// <param name="Text">Any extra text to add</param>
-        /// <param name="Behaviour">Affect the name only, the suffix only, or both</param>
+        /// <param name="Behaviour">Affect the name only, the Extension only, or both</param>
         public NumberingStrategy(NumberingFormat NumberFormat, NumberingTextFormat TextFormat, string Start, string Text)
         {
             _numberFormat = NumberFormat;
@@ -115,7 +115,7 @@ namespace FileRenamer.Strategies
             return zeros + Number.ToString();
         }
 
-        public string RenameFile(FileMetaData FileName, int Position, NameSuffixHelper Helper)
+        public string RenameFile(FileMetaData FileName, int Position, NameExtensionHelper Helper)
         {
             Helper.Text = FileName.Name;
             string numberString;
@@ -143,7 +143,7 @@ namespace FileRenamer.Strategies
                     break;
             }
 
-            // This function determines the text format, we will pass it to modify in the NameSuffixHelper
+            // This function determines the text format, we will pass it to modify in the NameExtensionHelper
             Func<String, String> _textFormatFn;
 
             switch (_textFormat)
