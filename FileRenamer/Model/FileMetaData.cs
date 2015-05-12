@@ -14,6 +14,8 @@ namespace FileRenamer.Model
         private FileInfo _file;
         private DateTime _modified;
         private DateTime _created;
+        private bool _isMP3;
+        private ID3Tag _tag;
 
         public String Directory
         {
@@ -45,6 +47,12 @@ namespace FileRenamer.Model
             _name = _file.Name;
             _modified = File.GetLastWriteTime(Name);
             _created = File.GetCreationTime(Name);
+            _isMP3 = false;
+            _tag = ID3Tag.Read(Name);
+            if (_tag != null)
+            {
+                _isMP3 = true;
+            }
         }
 
     }
