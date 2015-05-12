@@ -22,6 +22,7 @@ namespace FileRenamer.ViewModel
         string[] _nameExtensionOptions;
         int _selectedNameExtensionHelper;
         readonly NameExtensionHelper[] _helpers;
+        CommandViewModel _move;
 
         #endregion // Fields
 
@@ -39,7 +40,10 @@ namespace FileRenamer.ViewModel
             };
 
             _renamerModel = new RenamerModel(Files.Select(name => new FileMetaData(name)).ToList());
-            FileList = new FileListViewModel(_renamerModel);
+
+            _move = new CommandViewModel("Move", new RelayCommand(param => this.Move(param)));
+
+            FileList = new FileListViewModel(_renamerModel, _move);
             _renamerModel.StrategyChanged += FileList.OnStrategyChanged;
             _renamerModel.FilesChanged += FileList.OnStrategyChanged;
             _renamerModel.Helper = _helpers[0];
@@ -164,6 +168,11 @@ namespace FileRenamer.ViewModel
 
         #region Private Helpers
 
+        void Move(Object param)
+        {
+        }
+
+
         void RenameFiles()
         {
                         
@@ -208,6 +217,11 @@ namespace FileRenamer.ViewModel
         void Quit()
         {
             Application.Current.Shutdown();
+        }
+
+        void Move(Tuple<int,int> Pair)
+        {
+
         }
 
         #endregion

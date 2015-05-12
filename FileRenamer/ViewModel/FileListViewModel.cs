@@ -14,16 +14,19 @@ namespace FileRenamer.ViewModel
         #region Fields
 
         RenamerModel _fileRenamerModel;
+        CommandViewModel _move;
 
         #endregion
 
         #region Constructor
 
-        public FileListViewModel(RenamerModel FileRenamerModel)
+        public FileListViewModel(RenamerModel FileRenamerModel, CommandViewModel Move)
         {
             _fileRenamerModel = FileRenamerModel;
             _fileRenamerModel.Files.CollectionChanged += OnCollectionChanged;
             _fileRenamerModel.StrategyChanged += OnStrategyChanged;
+
+            _move = Move;
 
             AllFiles = new ObservableCollection<FileViewModel>();
 
@@ -35,6 +38,12 @@ namespace FileRenamer.ViewModel
         #region Properties
 
         public ObservableCollection<FileViewModel> AllFiles { get; private set; }
+
+        #endregion
+
+        #region Commands
+
+        public CommandViewModel Move { get { return _move; } }
 
         #endregion
 
@@ -65,5 +74,6 @@ namespace FileRenamer.ViewModel
         }
 
         #endregion
+
     }
 }

@@ -27,8 +27,11 @@
     
     <Grid>
         <ListView x:Name="FileNameListView" HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
-                  VerticalContentAlignment="Stretch" Grid.Row="0" MinHeight="300" Margin="0,0,0,10" AlternationCount="2" ItemContainerStyle="{StaticResource alternatingStyle}"
-                  DataContext="{StaticResource Files}" ItemsSource="{Binding}">
+                  VerticalContentAlignment="Stretch" Grid.Row="0" MinHeight="300" Margin="0,0,0,10" AlternationCount="2" 
+                  AllowDrop="False"
+                  ItemContainerStyle="{StaticResource alternatingStyle}"
+                  DataContext="{StaticResource Files}" 
+                  ItemsSource="{Binding}" Drop="FileNameListView_Drop" DragEnter="FileNameListView_DragEnter" PreviewMouseMove="FileNameListView_PreviewMouseMove" PreviewMouseLeftButtonDown="FileNameListView_PreviewMouseLeftButtonDown">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Original Filename" TextElement.Foreground="Red" DisplayMemberBinding="{Binding Path=OriginalFileName}" 
