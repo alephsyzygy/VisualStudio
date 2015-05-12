@@ -56,6 +56,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="IO\IOCommand.cs" />
+    <Compile Include="Model\EXIFData.cs" />
     <Compile Include="Model\FileModel.cs" />
     <Compile Include="Model\ID3Tag.cs" />
     <Compile Include="Model\RenamerModel.cs" />

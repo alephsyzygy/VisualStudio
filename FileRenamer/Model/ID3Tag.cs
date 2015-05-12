@@ -31,12 +31,12 @@ namespace FileRenamer.Model
 
         #region Public Fields
 
-        public string Title;
-        public string Artist;
-        public string Album;
-        public string Year;
-        public string Comment;
-        public string Genre;
+        public string Title {get; private set;}
+        public string Artist { get; private set; }
+        public string Album { get; private set; }
+        public string Year { get; private set; }
+        public string Comment { get; private set; }
+        public string Genre { get; private set; }
 
         #endregion
 

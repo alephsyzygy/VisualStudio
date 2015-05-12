@@ -16,6 +16,7 @@ namespace FileRenamer.Model
         private DateTime _created;
         private bool _isMP3;
         private ID3Tag _tag;
+        private EXIFData _exifData;
 
         public String Directory
         {
@@ -53,6 +54,7 @@ namespace FileRenamer.Model
             {
                 _isMP3 = true;
             }
+            _exifData = EXIFData.Read(Name);
         }
 
     }
