@@ -13,6 +13,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+#if DEBUG
+using System.Diagnostics;
+using FileRenamer.ViewModel;
+#endif
 
 namespace FileRenamer.View
 {
@@ -35,27 +39,41 @@ namespace FileRenamer.View
 
         private void FileNameListView_Drop(object sender, DragEventArgs e)
         {
-            if (e.Data.GetDataPresent("myFormat"))
+            var viewModel = this.DataContext as FileListViewModel;
+            if (e.Data.GetDataPresent("myFormat") && viewModel != null)
             {
-                object name = e.Data.GetData("myFormat");
+                int? fromIndex = e.Data.GetData("myFormat") as int?;
                 ListViewItem listViewItem = FindAncestor<ListViewItem>((DependencyObject)e.OriginalSource);
 
                 if (listViewItem != null)
                 {
-                    object nameToReplace = FileNameListView.ItemContainerGenerator.ItemFromContainer(listViewItem);
-                    int index = FileNameListView.Items.IndexOf(nameToReplace);
+                    //object nameToReplace = FileNameListView.ItemContainerGenerator.ItemFromContainer(listViewItem);
+                    //int index = FileNameListView.Items.IndexOf(nameToReplace);
 
-                    if (index >= 0)
+                    int toIndex = FileNameListView.ItemContainerGenerator.IndexFromContainer(listViewItem);
+
+                    if (toIndex >= 0 && fromIndex.HasValue)
                     {
                         // Have to setup a command here to move the elements.
-                        FileNameListView.Items.Remove(name);
-                        FileNameListView.Items.Insert(index, name);
+                        //FileNameListView.Items.Remove(name);
+                        //FileNameListView.Items.Insert(index, name);
+#if DEBUG
+                        Debug.WriteLine("{0} {1}", fromIndex.Value, toIndex);
+#endif
+                        viewModel.Move.Command.Execute(new Tuple<int, int>(fromIndex.Value, toIndex));
                     }
                 }
                 else
                 {
-                    FileNameListView.Items.Remove(name);
-                    FileNameListView.Items.Add(name);
+                    //FileNameListView.Items.Remove(name);
+                    //FileNameListView.Items.Add(name);
+                    if (fromIndex.HasValue)
+                    {
+#if DEBUG
+                        Debug.WriteLine("{0}", fromIndex.Value);
+#endif
+                        viewModel.Move.Command.Execute(new Tuple<int, int>(fromIndex.Value, -1));
+                    }
                 }
             }
         }
@@ -97,7 +115,8 @@ namespace FileRenamer.View
                 return;
 
             // get the data for the ListViewItem
-            object name = listView.ItemContainerGenerator.ItemFromContainer(listViewItem);
+            //object name = listView.ItemContainerGenerator.ItemFromContainer(listViewItem);
+            int index = listView.ItemContainerGenerator.IndexFromContainer(listViewItem);
 
             //setup the drag adorner.
             InitialiseAdorner(listViewItem);
@@ -107,7 +126,7 @@ namespace FileRenamer.View
             listView.DragLeave += FileNameListView_DragLeave;
             listView.DragEnter += FileNameListView_DragEnter;
 
-            DataObject data = new DataObject("myFormat", name);
+            DataObject data = new DataObject("myFormat", index);
             DragDropEffects de = DragDrop.DoDragDrop(this.FileNameListView, data, DragDropEffects.Move);
 
             //cleanup

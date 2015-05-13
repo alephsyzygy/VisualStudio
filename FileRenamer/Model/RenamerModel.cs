@@ -76,9 +76,13 @@ namespace FileRenamer.Model
         /// Move an element in the list to another position
         /// </summary>
         /// <param name="from">index of element to move</param>
-        /// <param name="to">index it moves to</param>
+        /// <param name="to">index it moves to.  If this is negative then move to end</param>
         public void Move(int from, int to)
         {
+            if (to < 0)
+            {
+                to = _fileMetaData.Count - 1;  // Move to last location
+            }
             _fileMetaData.Move(from, to);
             Files.Move(from, to);
             UpdateFiles();

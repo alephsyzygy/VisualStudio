@@ -169,6 +169,11 @@ namespace FileRenamer.ViewModel
 
         void Move(Object param)
         {
+            var data = param as Tuple<int, int>;
+            if (data != null)
+            {
+                _renamerModel.Move(data.Item1, data.Item2);
+            }
         }
 
 

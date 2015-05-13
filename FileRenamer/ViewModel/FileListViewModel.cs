@@ -26,7 +26,7 @@ namespace FileRenamer.ViewModel
             _fileRenamerModel.Files.CollectionChanged += OnCollectionChanged;
             _fileRenamerModel.StrategyChanged += OnStrategyChanged;
 
-            _move = Move;
+            _move = new CommandViewModel("Move", new RelayCommand(moveCommand));
 
             AllFiles = new ObservableCollection<FileViewModel>();
 
@@ -71,6 +71,16 @@ namespace FileRenamer.ViewModel
             {
                 AllFiles.Add(new FileViewModel(file));
             }
+        }
+
+        private void moveCommand(object param)
+        {
+            var data = param as Tuple<int, int>;
+            if (data != null)
+            {
+                _fileRenamerModel.Move(data.Item1, data.Item2);
+            }
+
         }
 
         #endregion

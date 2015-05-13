@@ -7,6 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
+        <!--<local:CommandReference x:Key="MoveCommand" Command="{Binding Move}" /> -->
         <local:WidthConverter x:Key="WidthConverter" />
         <CollectionViewSource x:Key="Files" Source="{Binding Path=AllFiles}"/>
 
@@ -28,7 +29,7 @@
     <Grid>
         <ListView x:Name="FileNameListView" HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
                   VerticalContentAlignment="Stretch" Grid.Row="0" MinHeight="300" Margin="0,0,0,10" AlternationCount="2" 
-                  AllowDrop="False"
+                  AllowDrop="True"
                   ItemContainerStyle="{StaticResource alternatingStyle}"
                   DataContext="{StaticResource Files}" 
                   ItemsSource="{Binding}" Drop="FileNameListView_Drop" DragEnter="FileNameListView_DragEnter" PreviewMouseMove="FileNameListView_PreviewMouseMove" PreviewMouseLeftButtonDown="FileNameListView_PreviewMouseLeftButtonDown">
