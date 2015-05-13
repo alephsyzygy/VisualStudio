@@ -115,12 +115,11 @@ namespace FileRenamer.ViewModel
             return new List<CommandViewModel>
             {
                 new CommandViewModel(
-                    "Rename Files",
-                    new RelayCommand(param => this.RenameFiles())),
-
-                new CommandViewModel(
                     "Quit",
-                    new RelayCommand(param => this.Quit()))
+                    new RelayCommand(param => this.Quit())),
+                new CommandViewModel(
+                    "Rename Files",
+                    new RelayCommand(param => this.RenameFiles()))
             };
         }
 
