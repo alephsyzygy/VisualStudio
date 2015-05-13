@@ -13,9 +13,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using FileRenamer.ViewModel;
 #if DEBUG
 using System.Diagnostics;
-using FileRenamer.ViewModel;
 #endif
 
 namespace FileRenamer.View
@@ -182,6 +182,24 @@ namespace FileRenamer.View
                 _adorner.OffsetLeft = args.GetPosition(FileNameListView).X;
                 _adorner.OffsetTop = args.GetPosition(FileNameListView).Y - _startPoint.Y;
             }
+
+            // The next part is adapted from http://stackoverflow.com/questions/1316251/wpf-listbox-auto-scroll-while-dragging
+
+            ListBox li = sender as ListBox;
+            ScrollViewer sv = FindVisualChild<ScrollViewer>(this);
+
+            double tolerance = 10;
+            double verticalPos = args.GetPosition(li).Y;
+            double offset = 3;
+
+            if (verticalPos < tolerance) // Top of visible list?
+            {
+                sv.ScrollToVerticalOffset(sv.VerticalOffset - offset); //Scroll up.
+            }
+            else if (verticalPos > li.ActualHeight - tolerance) //Bottom of visible list?
+            {
+                sv.ScrollToVerticalOffset(sv.VerticalOffset + offset); //Scroll down.    
+            }
         }
 
         private static T FindAncestor<T>(DependencyObject current) where T : DependencyObject
@@ -197,9 +215,34 @@ namespace FileRenamer.View
             while (current != null);
             return null;
         }
+
+
+        // This is adapted from http://stackoverflow.com/questions/1316251/wpf-listbox-auto-scroll-while-dragging
+        public static childItem FindVisualChild<childItem>(DependencyObject obj) where childItem : DependencyObject
+        {
+            // Search immediate children first (breadth-first)
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(obj); i++)
+            {
+                DependencyObject child = VisualTreeHelper.GetChild(obj, i);
+
+                if (child != null && child is childItem)
+                    return (childItem)child;
+
+                else
+                {
+                    childItem childOfChild = FindVisualChild<childItem>(child);
+
+                    if (childOfChild != null)
+                        return childOfChild;
+                }
+            }
+
+            return null;
+        }
     }
 
 
+    // DragAdorner is adapted from https://fxmax.wordpress.com/2010/10/05/wpf/
     class DragAdorner : Adorner
     {
         private Rectangle child = null;
