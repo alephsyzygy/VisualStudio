@@ -51,7 +51,15 @@ namespace FileRenamer.Strategies
                     date = FileName.Modified;
                     break;
                 case DateTimeType.PhotoTaken:
-                    goto default;
+                    if (FileName.EXIF == null)
+                    {
+                        date = FileName.Created;
+                    }
+                    else
+                    {
+                        date = FileName.EXIF.DateTaken;
+                    }
+                    break;
                 default:
                     date = DateTime.Now;
                     break;

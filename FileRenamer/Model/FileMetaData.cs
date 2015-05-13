@@ -27,7 +27,7 @@ namespace FileRenamer.Model
                 if (!_mp3tagRead)
                 {
                     _mp3tagRead = true;
-                    _tag = ID3Tag.Read(Name);
+                    _tag = ID3Tag.Read(_file.FullName);
                     if (_tag != null)
                     {
                         _isMP3 = true;
@@ -48,7 +48,7 @@ namespace FileRenamer.Model
                 if (!_exifRead)
                 {
                     _exifRead = true;
-                    _exifData = EXIFData.Read(Name);
+                    _exifData = EXIFData.Read(_file.FullName);
                     return _exifData;
                 }
                 else
