@@ -15,8 +15,48 @@ namespace FileRenamer.Model
         private DateTime _modified;
         private DateTime _created;
         private bool _isMP3;
+        private bool _mp3tagRead;
         private ID3Tag _tag;
+        private bool _exifRead;
         private EXIFData _exifData;
+
+        public ID3Tag ID3Tag
+        {
+            get
+            {
+                if (!_mp3tagRead)
+                {
+                    _mp3tagRead = true;
+                    _tag = ID3Tag.Read(Name);
+                    if (_tag != null)
+                    {
+                        _isMP3 = true;
+                    }
+                    return _tag;
+                }
+                else
+                {
+                    return _tag;
+                }
+            }
+        }
+
+        public EXIFData EXIF
+        {
+            get
+            {
+                if (!_exifRead)
+                {
+                    _exifRead = true;
+                    _exifData = EXIFData.Read(Name);
+                    return _exifData;
+                }
+                else
+                {
+                    return _exifData;
+                }
+            }
+        }
 
         public String Directory
         {
@@ -48,13 +88,9 @@ namespace FileRenamer.Model
             _name = _file.Name;
             _modified = File.GetLastWriteTime(Name);
             _created = File.GetCreationTime(Name);
+            _mp3tagRead = false;
             _isMP3 = false;
-            _tag = ID3Tag.Read(Name);
-            if (_tag != null)
-            {
-                _isMP3 = true;
-            }
-            _exifData = EXIFData.Read(Name);
+            _exifRead = false;
         }
 
     }
