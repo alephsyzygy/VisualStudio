@@ -43,7 +43,7 @@ namespace FileRenamer.Strategies
         /// <param name="FileName">The name of the file</param>
         /// <param name="Position">Position in the sequence (not used in this class)</param>
         /// <returns>The new filename</returns>
-        public string RenameFile(FileMetaData FileName, int Position, NameExtensionHelper Helper)
+        public string RenameFile(IFileMetaData FileName, int Position, NameExtensionHelper Helper)
         {
             string newName;
             Helper.Text = FileName.Name;

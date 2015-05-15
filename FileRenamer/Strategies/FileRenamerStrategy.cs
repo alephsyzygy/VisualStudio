@@ -12,7 +12,7 @@ namespace FileRenamer.Strategies
     /// </summary>
     public interface IFileRenamerStrategy
     {
-        String RenameFile(FileMetaData FileName, int Position, NameExtensionHelper Helper);
+        String RenameFile(IFileMetaData FileName, int Position, NameExtensionHelper Helper);
 
         #region Events
 
@@ -27,7 +27,7 @@ namespace FileRenamer.Strategies
     public class IdentityStrategy : IFileRenamerStrategy
     {
 
-        string IFileRenamerStrategy.RenameFile(FileMetaData FileName, int Position, NameExtensionHelper Helper)
+        string IFileRenamerStrategy.RenameFile(IFileMetaData FileName, int Position, NameExtensionHelper Helper)
         {
             return FileName.Name;
         }

@@ -11,13 +11,13 @@ namespace FileRenamer.Model
 {
     /// <summary>
     /// The main class for renaming files.
-    /// Given a list of FileMetaData's this object can generate a list of RenameCommands
+    /// Given a list of IFileMetaData's this object can generate a list of RenameCommands
     /// </summary>
     class RenamerModel
     {
         #region Fields
 
-        ObservableCollection<FileMetaData> _fileMetaData;
+        ObservableCollection<IFileMetaData> _fileMetaData;
         IFileRenamerStrategy _renameStrategy;
         NameExtensionHelper _helper;
 
@@ -28,10 +28,10 @@ namespace FileRenamer.Model
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="FileNames">The list of FileMetaData's representing the files to be renamed</param>
-        public RenamerModel(List<FileMetaData> FileNames)
+        /// <param name="FileNames">The list of IFileMetaData's representing the files to be renamed</param>
+        public RenamerModel(List<IFileMetaData> FileNames)
         {
-            _fileMetaData = new ObservableCollection<FileMetaData>(FileNames);
+            _fileMetaData = new ObservableCollection<IFileMetaData>(FileNames);
             _renameStrategy = new IdentityStrategy();
             Files = new ObservableCollection<FileModel>();
             foreach (var file in _fileMetaData)

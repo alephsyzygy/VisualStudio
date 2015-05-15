@@ -3,18 +3,27 @@ using System.IO;
 
 namespace FileRenamer.Model
 {
+    public interface IFileMetaData
+    {
+        string Name { get; }
+        string Directory { get; }
+        DateTime Modified { get; }
+        DateTime Created { get; }
+        ID3Tag ID3Tag { get; }
+        EXIFData EXIF { get; }
+        bool IsDuplicate { get; set; } // Note: this can be set by a client
+    }
 
     /// <summary>
     /// Represents a file. Contains name, directory, and any other metadata used when renaming a file.
     /// </summary>
-    public class FileMetaData
+    public class FileMetaData : IFileMetaData
     {
         private String _name;
         private String _directory;
         private FileInfo _file;
         private DateTime _modified;
         private DateTime _created;
-        private bool _isMP3;
         private bool _mp3tagRead;
         private ID3Tag _tag;
         private bool _exifRead;
@@ -32,10 +41,6 @@ namespace FileRenamer.Model
                 {
                     _mp3tagRead = true;
                     _tag = ID3Tag.Read(_file.FullName);
-                    if (_tag != null)
-                    {
-                        _isMP3 = true;
-                    }
                     return _tag;
                 }
                 else
@@ -95,10 +100,10 @@ namespace FileRenamer.Model
         /// <summary>
         /// Is this entry a duplicate?
         /// </summary>
-        public bool IsDuplicate;
+        public bool IsDuplicate { get; set; }
 
         /// <summary>
-        /// Create a FileMetaData Object.  In the future this will automatically load meta data from the given file.
+        /// Create a IFileMetaData Object.  In the future this will automatically load meta data from the given file.
         /// </summary>
         /// <param name="Name">The file name</param>
         public FileMetaData(String Name)
@@ -109,7 +114,6 @@ namespace FileRenamer.Model
             _modified = File.GetLastWriteTime(Name);
             _created = File.GetCreationTime(Name);
             _mp3tagRead = false;
-            _isMP3 = false;
             _exifRead = false;
         }
 

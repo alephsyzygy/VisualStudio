@@ -115,7 +115,7 @@ namespace FileRenamer.Strategies
             return zeros + Number.ToString();
         }
 
-        public string RenameFile(FileMetaData FileName, int Position, NameExtensionHelper Helper)
+        public string RenameFile(IFileMetaData FileName, int Position, NameExtensionHelper Helper)
         {
             Helper.Text = FileName.Name;
             string numberString;

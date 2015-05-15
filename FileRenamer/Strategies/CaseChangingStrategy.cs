@@ -42,11 +42,11 @@ namespace FileRenamer.Strategies
         /// <summary>
         /// Compute the new filename
         /// </summary>
-        /// <param name="FileName">FileMetaData of the original file</param>
+        /// <param name="FileName">IFileMetaData of the original file</param>
         /// <param name="Position">The position in the list of files</param>
         /// <param name="Helper">A helper to determine what part of the filename to modify</param>
         /// <returns></returns>
-        public string RenameFile(FileMetaData FileName, int Position, NameExtensionHelper Helper)
+        public string RenameFile(IFileMetaData FileName, int Position, NameExtensionHelper Helper)
         {
             Helper.Text = FileName.Name;
             switch (_caseType)
@@ -153,6 +153,11 @@ namespace FileRenamer.Strategies
                     {
                         output.Append(Input[i].ToString().ToLower());
                     }
+                }
+                else if (Char.IsDigit(Input, i))
+                {
+                    seenPeriod = false;
+                    output.Append(Input[i]);
                 }
                 else
                 {

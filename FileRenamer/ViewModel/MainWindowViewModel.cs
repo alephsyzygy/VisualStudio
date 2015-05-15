@@ -39,7 +39,7 @@ namespace FileRenamer.ViewModel
                 NameExtensionHelper.CreateNameExtensionHelper(NameExtensionBehaviour.BothNameExtension)
             };
 
-            _renamerModel = new RenamerModel(Files.Select(name => new FileMetaData(name)).ToList());
+            _renamerModel = new RenamerModel(Files.Select(name => (IFileMetaData) new FileMetaData(name)).ToList());
 
             _move = new CommandViewModel("Move", new RelayCommand(param => this.Move(param)));
 

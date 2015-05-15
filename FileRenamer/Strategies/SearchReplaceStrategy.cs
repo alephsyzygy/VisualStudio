@@ -27,7 +27,7 @@ namespace FileRenamer.Strategies
             _caseSensitive = caseSensitive;
         }
 
-        public string RenameFile(FileMetaData FileName, int Position, NameExtensionHelper Helper)
+        public string RenameFile(IFileMetaData FileName, int Position, NameExtensionHelper Helper)
         {
             Helper.Text = FileName.Name;
 
