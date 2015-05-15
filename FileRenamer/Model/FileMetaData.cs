@@ -20,10 +20,14 @@ namespace FileRenamer.Model
         private bool _exifRead;
         private EXIFData _exifData;
 
+        /// <summary>
+        /// The ID3Tag, if this represents an MP3 file
+        /// </summary>
         public ID3Tag ID3Tag
         {
             get
             {
+                // loaded on demand
                 if (!_mp3tagRead)
                 {
                     _mp3tagRead = true;
@@ -41,10 +45,14 @@ namespace FileRenamer.Model
             }
         }
 
+        /// <summary>
+        /// The EXIFData, if this represents an image file
+        /// </summary>
         public EXIFData EXIF
         {
             get
             {
+                // loaded on demand
                 if (!_exifRead)
                 {
                     _exifRead = true;
@@ -58,18 +66,30 @@ namespace FileRenamer.Model
             }
         }
 
+        /// <summary>
+        /// Directory of the file
+        /// </summary>
         public String Directory
         {
             get { return _directory; }
         }
 
+        /// <summary>
+        /// Name of the file
+        /// </summary>
         public String Name
         {
             get { return _name; }
         }
 
+        /// <summary>
+        /// When the file was last modified
+        /// </summary>
         public DateTime Modified { get { return _modified;  } }
 
+        /// <summary>
+        /// When the file was created
+        /// </summary>
         public DateTime Created { get { return _created; } }
 
         /// <summary>

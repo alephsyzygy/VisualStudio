@@ -10,6 +10,9 @@ using System.Windows.Media.Imaging;
 
 namespace FileRenamer.Model
 {
+    /// <summary>
+    /// Object containing EXIFData extracted from a file
+    /// </summary>
     public class EXIFData
     {
         // Ideas adapted from http://www.developerfusion.com/article/84474/reading-writing-and-photo-metadata/
@@ -19,6 +22,11 @@ namespace FileRenamer.Model
         private EXIFData()
         { }
 
+        /// <summary>
+        /// Read a filename for EXIF data.  If no data is found null is returned.
+        /// </summary>
+        /// <param name="Filename">The filename to open</param>
+        /// <returns>An EXIFData object if such data exists</returns>
         public static EXIFData Read(string Filename)
         {
             try

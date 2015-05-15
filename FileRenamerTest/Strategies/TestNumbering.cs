@@ -1,24 +1,30 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using FileRenamer;
+using FileRenamer.Strategies;
 using System.Linq;
 
-namespace FileRenamerTest
+namespace FileRenamerTest.Strategies
 {
     [TestClass]
-    public class UnitTestNumbering
+    public class TestNumbering
     {
+        /// <summary>
+        /// Test the round trip number to alpha to number
+        /// </summary>
         [TestMethod]
-        public void TestAlphaNumbering()
+        public void TestNumberAlphaNumber()
         {
             for (int i = 1; i < 100000; i++)
             {
-                //Assert.AreEqual(StringNumberConversions.StringToNumber(StringNumberConversions.NumberToString(i)), i,i.ToString());
+                Assert.AreEqual(StringNumberConversions.StringToNumber(StringNumberConversions.NumberToString(i)), i,i.ToString());
             }
         }
         
+        /// <summary>
+        /// Test the round trip alpha to number to alpha
+        /// </summary>
         [TestMethod]
-        public void TestAlphaNumbering2()
+        public void TestAlphaNumberAlpha()
         {
             string randomStr;
             // only test upto length 5
@@ -27,10 +33,11 @@ namespace FileRenamerTest
                 for (int i = 0; i < 1000; i++)
                 {
                     randomStr = RandomString(j);
-                    //Assert.AreEqual(StringNumberConversions.NumberToString(StringNumberConversions.StringToNumber(randomStr)), randomStr, randomStr);
+                    Assert.AreEqual(StringNumberConversions.NumberToString(StringNumberConversions.StringToNumber(randomStr)), randomStr, randomStr);
                 }
         }
 
+        // create some random string
         private string RandomString(int Num)
         {
             int x = Num;

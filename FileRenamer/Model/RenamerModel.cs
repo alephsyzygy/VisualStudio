@@ -9,6 +9,10 @@ using FileRenamer.IO;
 
 namespace FileRenamer.Model
 {
+    /// <summary>
+    /// The main class for renaming files.
+    /// Given a list of FileMetaData's this object can generate a list of RenameCommands
+    /// </summary>
     class RenamerModel
     {
         #region Fields
@@ -21,6 +25,10 @@ namespace FileRenamer.Model
 
         #region Constructor
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="FileNames">The list of FileMetaData's representing the files to be renamed</param>
         public RenamerModel(List<FileMetaData> FileNames)
         {
             _fileMetaData = new ObservableCollection<FileMetaData>(FileNames);
@@ -38,8 +46,14 @@ namespace FileRenamer.Model
 
         #region Properties
 
+        /// <summary>
+        /// The FileModel's to be renamed
+        /// </summary>
         public ObservableCollection<FileModel> Files { get; private set; }
         
+        /// <summary>
+        /// The strategy which will be used to find the new filenames
+        /// </summary>
         public IFileRenamerStrategy RenameStrategy
         {
             get { return _renameStrategy; }
@@ -54,6 +68,10 @@ namespace FileRenamer.Model
             }
         }
 
+        /// <summary>
+        /// The NameExtensionHelper which gives which part of the filename to rename: 
+        ///   name, extension, or both.
+        /// </summary>
         public NameExtensionHelper Helper
         {
             get { return _helper; }
@@ -66,6 +84,9 @@ namespace FileRenamer.Model
             }
         }
 
+        /// <summary>
+        /// Will there be any clashes when renaming?
+        /// </summary>
         public bool Clashes { get; private set; }
 
         #endregion
@@ -92,18 +113,27 @@ namespace FileRenamer.Model
 
         #region Events
 
+        /// <summary>
+        /// The event fired when the strategy is changed
+        /// </summary>
         public event EventHandler<EventArgs> StrategyChanged;
+
+        /// <summary>
+        /// The event fired when any filenames have changed
+        /// </summary>
         public event EventHandler<EventArgs> FilesChanged;
 
         #endregion
 
         #region Private Helpers
 
+        // When the strategy is changed this method is called
         void OnStrategyChanged(object sender, EventArgs e)
         {
             UpdateFiles();
         }
 
+        // Update all the files to their new names, then check for clashes
         private void UpdateFiles()
         {
             for (int i = 0; i < Files.Count; i++)
@@ -114,6 +144,7 @@ namespace FileRenamer.Model
             CheckForClashes();
         }
 
+        // Find any clashes amongst the new filenames
         private void CheckForClashes()
         {
             // Distinct() uses a hashtable internally so is O(n)
@@ -125,6 +156,10 @@ namespace FileRenamer.Model
                 var duplicates = Files.GroupBy<FileModel, String>(file => file.NewFileName)
                     .Where(group => group.Count() > 1)
                     .SelectMany(group => group);
+                //var duplicates = from file in Files
+                //                 group file by file.NewFileName into g
+                //                 where g.Count() > 1
+                //                 select  g;
                 //var duplicates = _fileMetaData.Zip(_newFileNames, (a, b) => Tuple.Create(a, b)).GroupBy(x => x.Item2)
                 //        .Where(group => group.Count() > 1)
                 //        .SelectMany(group => group);
@@ -133,6 +168,7 @@ namespace FileRenamer.Model
                     files.Clashes = true;
                 }
             }
+            // Fire the FilesChanged event
             if (FilesChanged != null)
                 FilesChanged(this, EventArgs.Empty);
             
@@ -156,6 +192,7 @@ namespace FileRenamer.Model
 
             List<RenameCommand> commands = new List<RenameCommand>(_fileMetaData.Count);
 
+            // The IOMove object is used to perform IO actions with the filesystem
             var mover = IOMove.Create();
             for (int i=0; i < _fileMetaData.Count; i++)
             {
