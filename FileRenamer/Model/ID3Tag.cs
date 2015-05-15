@@ -108,5 +108,4 @@ namespace FileRenamer.Model
         #endregion
 
     }
-
 }
