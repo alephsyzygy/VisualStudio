@@ -156,10 +156,12 @@ namespace FileRenamer.Model
 
             List<RenameCommand> commands = new List<RenameCommand>(_fileMetaData.Count);
 
-
+            var mover = IOMove.Create();
             for (int i=0; i < _fileMetaData.Count; i++)
             {
-                commands.Add(new RenameCommand(_fileMetaData[i].Directory, _fileMetaData[i].Name, Files[i].NewFileName));
+                var rename = new RenameCommand(mover);
+                rename.Initialize(_fileMetaData[i].Directory, _fileMetaData[i].Name, Files[i].NewFileName);
+                commands.Add(rename);
             }
 
             return commands;

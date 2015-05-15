@@ -44,7 +44,6 @@ namespace FileRenamer.Model
             
             }
 
-            return null;
         }
     }
 }
