@@ -59,6 +59,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Strategies\TestCaseChanging.cs" />
+    <Compile Include="Strategies\TestMP3Strategy.cs" />
     <Compile Include="Strategies\TestNumbering.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

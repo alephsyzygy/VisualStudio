@@ -70,6 +70,7 @@
     <Compile Include="Strategies\DateInserterStrategy.cs" />
     <Compile Include="Strategies\FileRenamerStrategy.cs" />
     <Compile Include="Strategies\InsertTextStrategy.cs" />
+    <Compile Include="Strategies\MP3Strategy.cs" />
     <Compile Include="Strategies\NameExtensionHelper.cs" />
     <Compile Include="Strategies\NumberingStrategy.cs" />
     <Compile Include="Strategies\RemoveCharactersStrategy.cs" />

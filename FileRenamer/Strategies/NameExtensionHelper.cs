@@ -100,6 +100,7 @@ namespace FileRenamer.Strategies
                 {
                     _name = _text;
                     _ExtensionPos = _text.Length;
+                    _Extension = "";
                 }
             }
         }
