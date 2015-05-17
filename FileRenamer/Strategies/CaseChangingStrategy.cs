@@ -5,6 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+// This strategy changes the case of a filename.  We currently have four strategies:
+// lowercase, uppercase, camelcase, and sentencecase.
+// Lowercase and uppercase are standard.  Camelcase capitalises the first letter of
+// every word, and lowercases everything else.  Sentencecase capitalises the first letter 
+// of the first word, otherwise it lowers the case.
+
 namespace FileRenamer.Strategies
 {
     /// <summary>

@@ -14,6 +14,7 @@ namespace FileRenamerTest.Strategies
         private CaseChangingStrategy strategy;
 
         List<string> names = new List<string> { "hello", "HELLO", "HELLOworld" };
+        List<string> extensions = new List<string> { "txt", "tXt", "TXT" };
 
         // Use Moq to create an IFileMetaData object
         private IFileMetaData CreateFileMetaData(string name)
@@ -23,40 +24,94 @@ namespace FileRenamerTest.Strategies
             return mock.Object;
         }
 
-        private void AssertListsEqual(List<string> expected, List<string> result)
+        private void AssertListsEqual(IEnumerable<string> expected, IEnumerable<string> result)
         {
-            if (expected.Count != result.Count)
+            if (expected.Count() != result.Count())
             {
                 Assert.Fail("Error in test, expected and result lists should have the same length");
             }
-            for (var i = 0; i < expected.Count; i++)
+            
+            var query = expected.Zip(result, (a, b) => new { first = a, second = b });
+            int i = 0;
+            foreach (var pair in query)
             {
-                Assert.AreEqual(expected[i], result[i], "Case " + i + " failed");
+                Assert.AreEqual(pair.first, pair.second, "Case " + i + " failed");
+                i++;
             }
+
+            //for (var i = 0; i < expected.Count(); i++)
+            //{
+            //    Assert.AreEqual(expected[i], result[i], "Case " + i + " failed");
+            //}
         }
 
         [TestMethod]
         public void TestLowerCase()
         {
-            List<string> expected = names.Select(n => n.ToLower()).ToList();
+            IEnumerable<string> filenames = from name in names
+                                            from ext in extensions
+                                            select name + '.' + ext;
+            IEnumerable<string> expectedNameOnly = from name in names
+                                                   from ext in extensions
+                                                   select name.ToLower() + '.' + ext;
+            IEnumerable<string> expectedExtOnly  = from name in names
+                                                   from ext in extensions
+                                                   select name + '.' + ext.ToLower();
+            IEnumerable<string> expectedFull     = from name in names
+                                                   from ext in extensions
+                                                   select name.ToLower() + '.' + ext.ToLower();
+            // Test full filename behaviour
             NameExtensionHelper test= NameExtensionHelper.CreateNameExtensionHelper(NameExtensionBehaviour.BothNameExtension);
-
             strategy = new CaseChangingStrategy(CaseTypes.Lowercase);
-            List<string> result = expected.Select(name => strategy.RenameFile(CreateFileMetaData(name), 0, test)).ToList();
+            List<string> result = filenames.Select(name => strategy.RenameFile(CreateFileMetaData(name), 0, test)).ToList();
+            AssertListsEqual(expectedFull, result);
 
-            AssertListsEqual(expected, result);        
+            // Test name part of the filename
+            test = NameExtensionHelper.CreateNameExtensionHelper(NameExtensionBehaviour.NameOnly);
+            strategy = new CaseChangingStrategy(CaseTypes.Lowercase);
+            result = filenames.Select(name => strategy.RenameFile(CreateFileMetaData(name), 0, test)).ToList();
+            AssertListsEqual(expectedNameOnly, result);
+
+            // test extension part of the filename
+            test = NameExtensionHelper.CreateNameExtensionHelper(NameExtensionBehaviour.ExtensionOnly);
+            strategy = new CaseChangingStrategy(CaseTypes.Lowercase);
+            result = filenames.Select(name => strategy.RenameFile(CreateFileMetaData(name), 0, test)).ToList();
+            AssertListsEqual(expectedExtOnly, result);
+
         }
 
         [TestMethod]
         public void TestUpperCase()
         {
-            List<string> expected = names.Select(n => n.ToUpper()).ToList();
+            IEnumerable<string> filenames = from name in names
+                                            from ext in extensions
+                                            select name + '.' + ext;
+            IEnumerable<string> expectedNameOnly = from name in names
+                                                   from ext in extensions
+                                                   select name.ToUpper() + '.' + ext;
+            IEnumerable<string> expectedExtOnly = from name in names
+                                                  from ext in extensions
+                                                  select name + '.' + ext.ToUpper();
+            IEnumerable<string> expectedFull = from name in names
+                                               from ext in extensions
+                                               select name.ToUpper() + '.' + ext.ToUpper();
+            // Test full filename behaviour
             NameExtensionHelper test = NameExtensionHelper.CreateNameExtensionHelper(NameExtensionBehaviour.BothNameExtension);
-
             strategy = new CaseChangingStrategy(CaseTypes.Uppercase);
-            List<string> result = expected.Select(name => strategy.RenameFile(CreateFileMetaData(name), 0, test)).ToList();
+            List<string> result = filenames.Select(name => strategy.RenameFile(CreateFileMetaData(name), 0, test)).ToList();
+            AssertListsEqual(expectedFull, result);
 
-            AssertListsEqual(expected, result);
+            // Test name part of the filename
+            test = NameExtensionHelper.CreateNameExtensionHelper(NameExtensionBehaviour.NameOnly);
+            strategy = new CaseChangingStrategy(CaseTypes.Uppercase);
+            result = filenames.Select(name => strategy.RenameFile(CreateFileMetaData(name), 0, test)).ToList();
+            AssertListsEqual(expectedNameOnly, result);
+
+            // test extension part of the filename
+            test = NameExtensionHelper.CreateNameExtensionHelper(NameExtensionBehaviour.ExtensionOnly);
+            strategy = new CaseChangingStrategy(CaseTypes.Uppercase);
+            result = filenames.Select(name => strategy.RenameFile(CreateFileMetaData(name), 0, test)).ToList();
+            AssertListsEqual(expectedExtOnly, result);
         }
 
         [TestMethod]
