@@ -10,7 +10,7 @@ namespace FizzBuzz
     public class FizzBuzzApplication
     {
         /// <summary>
-        /// The entry point of the program, where the program control starts and ends.
+        /// The start of the program
         /// </summary>
         public static void Main()
         {
@@ -18,10 +18,20 @@ namespace FizzBuzz
             //   if a number is divisible by 3, print "Fizz"
             //   if a number is divisible by 5, print "Buzz"
             var mapping = new List<Tuple<int, string>> {
-				{3, "Fizz"},
-				{5, "Buzz"}
-				//,{7, "Baz"}
+				new Tuple<int,string>(3, "Fizz"),
+				new Tuple<int,string>(5, "Buzz")
+				//, new Tuple<int,string>(7, "Baz")
 			};
+
+            // In C# 6 the following should work, but in VS2013 it does not
+            // This uses the extension method Add<T1,T2> below
+            //var mapping = new List<Tuple<int, string>> {
+            //    {3, "Fizz"},
+            //    {5, "Buzz"}
+            //    //,{7, "Baz"}
+            //};
+
+            
 
             // Construct the enumerator
             var fizzBuzz = new FizzBuzzEnumerator(100, mapping);
@@ -29,6 +39,8 @@ namespace FizzBuzz
             // Print the output to the console
             foreach (string fizzBuzzOutput in fizzBuzz)
                 Console.WriteLine(fizzBuzzOutput);
+
+            Console.Read();
         }
     }
 
@@ -108,11 +120,6 @@ namespace FizzBuzz
                 yield return outputString.ToString();
             }
         }
-
-
-
-
-
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
