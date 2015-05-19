@@ -16,6 +16,15 @@ namespace FileRenamerTest
                 Assert.Fail("Error in test, expected and result lists should have the same length");
             }
 
+            //int i = 0;
+            //IEnumerator<string> expectedElement = expected.GetEnumerator();
+            //IEnumerator<string> resultElement = result.GetEnumerator();
+            //do 
+            //{
+            //    Assert.AreEqual(expectedElement.Current, resultElement.Current, "Case " + i + " failed");
+            //    i++;
+            //} while (expectedElement.MoveNext() && resultElement.MoveNext());
+
             var query = expected.Zip(result, (a, b) => new { first = a, second = b });
             int i = 0;
             foreach (var pair in query)
