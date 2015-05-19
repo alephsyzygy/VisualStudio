@@ -82,12 +82,12 @@ namespace FileRenamer.Model
                         if (theTAGID.Equals("TAG"))
                         {
                             ID3Tag outputTag = new ID3Tag();
-                            outputTag.Title = Encoding.Default.GetString(tag.Title).Trim();
-                            outputTag.Artist = Encoding.Default.GetString(tag.Artist).Trim();
-                            outputTag.Album = Encoding.Default.GetString(tag.Album).Trim();
-                            outputTag.Year = Encoding.Default.GetString(tag.Year).Trim();
-                            outputTag.Comment = Encoding.Default.GetString(tag.Comment).Trim();
-                            outputTag.Genre = Encoding.Default.GetString(tag.Genre).Trim();
+                            outputTag.Title = RemoveNul(Encoding.Default.GetString(tag.Title).Trim());
+                            outputTag.Artist = RemoveNul(Encoding.Default.GetString(tag.Artist).Trim());
+                            outputTag.Album = RemoveNul(Encoding.Default.GetString(tag.Album).Trim());
+                            outputTag.Year = RemoveNul(Encoding.Default.GetString(tag.Year).Trim());
+                            outputTag.Comment = RemoveNul(Encoding.Default.GetString(tag.Comment).Trim());
+                            outputTag.Genre = RemoveNul(Encoding.Default.GetString(tag.Genre).Trim());
                             return outputTag;
                         }
                     }
@@ -106,6 +106,16 @@ namespace FileRenamer.Model
         }
 
         #endregion
+
+        // Cut off a string as soon as a NUL character is found
+        private static string RemoveNul(string input)
+        {
+            if (input.Contains('\0'))
+                return input.Remove(input.IndexOf('\0'));
+            else
+                return input;
+
+        }
 
     }
 }

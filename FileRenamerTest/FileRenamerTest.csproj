@@ -59,6 +59,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Model\TestID3Tag.cs" />
     <Compile Include="Strategies\TestCaseChanging.cs" />
     <Compile Include="Strategies\TestMP3Strategy.cs" />
     <Compile Include="Strategies\TestNameExtensionHelper.cs" />
@@ -92,7 +93,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="IO\" />
-    <Folder Include="Model\" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

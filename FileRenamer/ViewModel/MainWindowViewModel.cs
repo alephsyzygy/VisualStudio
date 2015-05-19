@@ -144,7 +144,8 @@ namespace FileRenamer.ViewModel
                         new NumberingViewModel(),
                         new CaseChangingViewModel(),
                         new DateInserterViewModel(),
-                        new SearchReplaceViewModel()
+                        new SearchReplaceViewModel(),
+                        new MP3ViewModel()
                     };
 
                     //_strategies.CollectionChanged += this.OnWorkspacesChanged;

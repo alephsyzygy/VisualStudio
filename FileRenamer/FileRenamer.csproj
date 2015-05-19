@@ -82,6 +82,7 @@
     <Compile Include="ViewModel\FileViewModel.cs" />
     <Compile Include="ViewModel\InsertTextViewModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
+    <Compile Include="ViewModel\MP3ViewModel.cs" />
     <Compile Include="ViewModel\NumberingViewModel.cs" />
     <Compile Include="ViewModel\RemoveCharactersViewModel.cs" />
     <Compile Include="ViewModel\SearchReplaceViewModel.cs" />
@@ -98,6 +99,9 @@
     </Compile>
     <Compile Include="View\InsertTextView.xaml.cs">
       <DependentUpon>InsertTextView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\MP3View.xaml.cs">
+      <DependentUpon>MP3View.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\NumberingView.xaml.cs">
       <DependentUpon>NumberingView.xaml</DependentUpon>
@@ -145,6 +149,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\InsertTextView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\MP3View.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

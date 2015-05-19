@@ -80,21 +80,12 @@ namespace FileRenamer.ViewModel
 
                 if (propertyName == "Position")
                 {
-                    // The IsCompany property of the Customer class 
-                    // is Boolean, so it has no concept of being in
-                    // an "unselected" state.  The CustomerViewModel
-                    // class handles this mapping and validation.
                     error = this.ValidatePosition();
                 }
                 else
                 {
-                    //error = (_customer as IDataErrorInfo)[propertyName];
                     error = null;
                 }
-
-                // Dirty the commands registered with CommandManager,
-                // such as our Save command, so that they are queried
-                // to see if they can execute now.
                 CommandManager.InvalidateRequerySuggested();
 
                 return error;
