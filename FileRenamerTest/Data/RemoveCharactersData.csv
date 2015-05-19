@@ -1,0 +1,11 @@
+﻿ID,Name,Extension,From,To,FromLeft,ToLeft,Behaviour,Expected
+,Test,txt,0,3,Y,Y,N,t.txt
+,Test,txt,0,0,Y,Y,N,Test.txt
+,Test,txt,0,5,Y,Y,N,.txt
+,Test,txt,0,1,Y,N,N,t.txt
+,Test,txt,1,10,N,Y,N,Tes.txt
+,Test,txt,1,1,N,Y,N,Test.txt
+,Test,txt,1,10,N,N,N,Test.txt
+,Test,txt,2,1,N,N,N,Tet.txt
+,Test,txt,0,100,Y,Y,B,
+,Test,txt,4,5,Y,Y,B,Testtxt

@@ -7,7 +7,7 @@ using FileRenamer.Strategies;
 namespace FileRenamerTest.Strategies
 {
     [TestClass]
-    public class TestTextInsert
+    public class TestRemoveCharacters
     {
         // This holds the testcontext
         public TestContext TestContext { get; set; }
@@ -30,22 +30,22 @@ namespace FileRenamerTest.Strategies
         }
 
         /// <summary>
-        /// Test the numbering strategy by loading a csv file
+        /// Test the remove characters strategy by loading a csv file
         /// </summary>
         [TestMethod]
-        [DeploymentItem("Data\\TextInsertData.csv")]
-        [DataSource("Microsoft.VisualStudio.TestTools.DataSource.CSV", "TextInsertData.csv", "TextInsertData#csv", DataAccessMethod.Sequential)]
-        public void TestNumberingStrategy()
+        [DeploymentItem("Data\\RemoveCharactersData.csv")]
+        [DataSource("Microsoft.VisualStudio.TestTools.DataSource.CSV", "RemoveCharactersData.csv", "RemoveCharactersData#csv", DataAccessMethod.Sequential)]
+        public void TestRemoveCharactersStrategy()
         {
             var row = TestContext.DataRow;
 
             // extract csv data
             string name = row["Name"].ToString();
             string extension = row["Extension"].ToString();
-            int position = Int32.Parse(row["Position"].ToString());
+            int from = Int32.Parse(row["From"].ToString());
+            int to = Int32.Parse(row["To"].ToString());
             bool fromLeft = row["FromLeft"].ToString() == "Y";
-            bool insert = row["Insert"].ToString() == "Y";
-            string text = row["Text"].ToString();
+            bool toLeft = row["ToLeft"].ToString() == "Y";
             string expected = row["Expected"].ToString();
             string behaviour = row["Behaviour"].ToString();
 
@@ -58,12 +58,12 @@ namespace FileRenamerTest.Strategies
                 case "X":
                     helper = NameExtensionHelper.CreateNameExtensionHelper(NameExtensionBehaviour.ExtensionOnly);
                     break;
-                default:
+                default: // Normally use "B" in csv file
                     helper = NameExtensionHelper.CreateNameExtensionHelper(NameExtensionBehaviour.BothNameExtension);
                     break;
             }
 
-            InsertTextStrategy strategy = new InsertTextStrategy(position, text, fromLeft, insert);
+            RemoveCharactersStrategy strategy = new RemoveCharactersStrategy(from, fromLeft, to, toLeft);
             IFileMetaData file = CreateFileMetaData(name + "." + extension);
 
             string result = strategy.RenameFile(file, 0, helper);
@@ -71,5 +71,6 @@ namespace FileRenamerTest.Strategies
             Assert.AreEqual(expected, result);
 
         }
+
     }
 }

@@ -1,0 +1,4 @@
+﻿ID,Name,Extension,HasExt,Behaviour,ExpectedPos
+,Test,txt,Y,N,4
+,Test,,N,N,4
+,Test,,Y,N,4

@@ -1,13 +1,12 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using FileRenamer.Model;
-using Moq;
 using FileRenamer.Strategies;
 
 namespace FileRenamerTest.Strategies
 {
     [TestClass]
-    public class TestTextInsert
+    public class TestNameExtensionHelperClass
     {
         // This holds the testcontext
         public TestContext TestContext { get; set; }
@@ -21,33 +20,24 @@ namespace FileRenamerTest.Strategies
             _testContext = testContext;
         }
 
-        // Use Moq to create an IFileMetaData object
-        private IFileMetaData CreateFileMetaData(string name)
-        {
-            Mock<IFileMetaData> mock = new Mock<IFileMetaData>();
-            mock.SetupGet(m => m.Name).Returns(name);
-            return mock.Object;
-        }
-
         /// <summary>
-        /// Test the numbering strategy by loading a csv file
+        /// Test the remove characters strategy by loading a csv file
         /// </summary>
         [TestMethod]
-        [DeploymentItem("Data\\TextInsertData.csv")]
-        [DataSource("Microsoft.VisualStudio.TestTools.DataSource.CSV", "TextInsertData.csv", "TextInsertData#csv", DataAccessMethod.Sequential)]
-        public void TestNumberingStrategy()
+        [DeploymentItem("Data\\NameExtensionData.csv")]
+        [DataSource("Microsoft.VisualStudio.TestTools.DataSource.CSV", "NameExtensionData.csv", "NameExtensionData#csv", DataAccessMethod.Sequential)]
+        public void TestNameExtensionHelper()
         {
             var row = TestContext.DataRow;
 
             // extract csv data
             string name = row["Name"].ToString();
             string extension = row["Extension"].ToString();
-            int position = Int32.Parse(row["Position"].ToString());
-            bool fromLeft = row["FromLeft"].ToString() == "Y";
-            bool insert = row["Insert"].ToString() == "Y";
-            string text = row["Text"].ToString();
-            string expected = row["Expected"].ToString();
-            string behaviour = row["Behaviour"].ToString();
+            int expectedPos = Int32.Parse(row["ExpectedPos"].ToString());
+            bool hasExt = row["HasExt"].ToString() == "Y";
+                        string behaviour = row["Behaviour"].ToString();
+
+            string filename = hasExt ? name + "." + extension : name;
 
             NameExtensionHelper helper;
             switch (behaviour)
@@ -58,18 +48,15 @@ namespace FileRenamerTest.Strategies
                 case "X":
                     helper = NameExtensionHelper.CreateNameExtensionHelper(NameExtensionBehaviour.ExtensionOnly);
                     break;
-                default:
+                default: // Normally use "B" in csv file
                     helper = NameExtensionHelper.CreateNameExtensionHelper(NameExtensionBehaviour.BothNameExtension);
                     break;
             }
 
-            InsertTextStrategy strategy = new InsertTextStrategy(position, text, fromLeft, insert);
-            IFileMetaData file = CreateFileMetaData(name + "." + extension);
-
-            string result = strategy.RenameFile(file, 0, helper);
-
-            Assert.AreEqual(expected, result);
+            helper.Text = filename;
+            Assert.AreEqual(expectedPos, helper.ExtensionPos);
 
         }
+
     }
 }

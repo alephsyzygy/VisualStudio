@@ -61,8 +61,10 @@
   <ItemGroup>
     <Compile Include="Strategies\TestCaseChanging.cs" />
     <Compile Include="Strategies\TestMP3Strategy.cs" />
+    <Compile Include="Strategies\TestNameExtensionHelper.cs" />
     <Compile Include="Strategies\TestNumbering.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Strategies\TestRemoveCharacters.cs" />
     <Compile Include="Strategies\TestTextInsert.cs" />
     <Compile Include="TestHelper.cs" />
   </ItemGroup>
@@ -74,8 +76,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="Data\NameExtensionData.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Data\NumberingData.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\RemoveCharactersData.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Data\TextInsertData.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
