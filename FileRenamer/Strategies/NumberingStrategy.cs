@@ -64,6 +64,8 @@ namespace FileRenamer.Strategies
             FixStartString();
         }
 
+        // The start string is often a number, however for some alphabetic orderings
+        // it is not a number.  This method will convert the string to the correct number
         private void FixStartString()
         {
             // First try to parse start as an int.
@@ -187,11 +189,12 @@ namespace FileRenamer.Strategies
     public static class StringNumberConversions
     {
         /// <summary>
-        /// Convert a string into the equivalent integer.
+        /// Convert a string into the equivalent integer, where we use spreadsheet column ordering
+        /// E.g. aa comes after z, aaa comes after zz
         /// First converts to lowercase, then removes non-lowercase characters, before converting to a number.
         /// </summary>
-        /// <param name="Input"></param>
-        /// <returns></returns>
+        /// <param name="Input">The string to convert</param>
+        /// <returns>The number corresponding to that string</returns>
         public static int StringToNumber(string Input)
         {
             const int ASCIIvaluefora = 97;

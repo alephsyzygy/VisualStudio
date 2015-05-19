@@ -1,0 +1,13 @@
+﻿ID,Name,Extension,Number,Format,TextFormat,Text,Expected
+0,hello,txt,10,0,0,,hello10.txt
+0,hello,txt,1,0,0,,hello1.txt
+0,hello,txt,1,1,0,,hello01.txt
+0,hello,txt,1,2,0,,hello001.txt
+0,hello,txt,1,3,0,,hello0001.txt
+0,hello,txt,1,4,0,,helloa.txt
+0,hello,txt,26,4,0,,helloz.txt
+0,hello,txt,27,4,0,,helloaa.txt
+0,hello,txt,10,0,0,text,hellotext10.txt
+0,hello,txt,10,0,1,text,10texthello.txt
+0,hello,txt,10,0,2,text,text10.txt
+0,hello,txt,10,0,3,text,10text.txt

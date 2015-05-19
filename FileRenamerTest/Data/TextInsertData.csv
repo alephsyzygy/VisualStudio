@@ -1,0 +1,10 @@
+﻿ID,Name,Extension,Text,Position,FromLeft,Insert,Expected
+0,Test,txt,Text,4,Y,Y,TestText.txt
+0,Test,txt,Text,20,Y,Y,TestText.txt
+0,Test,txt,Text,-50,Y,Y,TextTest.txt
+0,Test,txt,Text,1,N,Y,TesTextt.txt
+0,Test,txt,X,0,Y,N,Xest.txt
+0,Test,txt,Text,3,Y,N,TesText.txt
+0,Test,txt,Text,3,Y,Y,TesTextt.txt
+0,Test,txt,Text,0,N,N,TestText.txt
+0,Test,txt,Text,1,N,N,TesText.txt
