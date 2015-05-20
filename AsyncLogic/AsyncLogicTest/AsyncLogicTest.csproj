@@ -53,6 +53,7 @@
     <Compile Include="FreeVariables.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestExpressionEvaluator.cs" />
+    <Compile Include="TestNumExpression.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AsyncLogic\AsyncLogic.csproj">

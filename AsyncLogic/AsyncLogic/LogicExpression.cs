@@ -11,7 +11,7 @@ namespace AsyncLogic
     /// A LogicExpression is the abstract syntax tree for an expression of type Sigma (the type
     /// of logic values - classically either true or false)
     /// </summary>
-    public abstract class LogicExpression
+    public abstract class LogicExpression : Expression
     {
         /// <summary>
         /// Visit this method
@@ -19,7 +19,8 @@ namespace AsyncLogic
         /// <typeparam name="T">The return type of the visitor</typeparam>
         /// <param name="visitor">The visitor interface</param>
         /// <returns>The result of the visit</returns>
-        public abstract T Visit<T>(ILogicVisitor<T> visitor);
+        //public abstract T Visit<T>(ILogicVisitor<T> visitor);
+        //public abstract T Visit<T>(IExpressionVisitor<T> visitor);
 
         /// <summary>
         /// The disjunction (or) of two LogicExpressions
@@ -54,7 +55,12 @@ namespace AsyncLogic
         /// </summary>
         public string VariableName;
 
-        public override T Visit<T>(ILogicVisitor<T> visitor)
+        //public override T Visit<T>(ILogicVisitor<T> visitor)
+        //{
+        //    return visitor.VisitLogicVariable(this);
+        //}
+
+        public override T Visit<T>(IExpressionVisitor<T> visitor)
         {
             return visitor.VisitLogicVariable(this);
         }
@@ -74,7 +80,12 @@ namespace AsyncLogic
     /// </summary>
     public class LogicTrue : LogicExpression
     {
-        public override T Visit<T>(ILogicVisitor<T> visitor)
+        //public override T Visit<T>(ILogicVisitor<T> visitor)
+        //{
+        //    return visitor.VisitTrue(this);
+        //}
+
+        public override T Visit<T>(IExpressionVisitor<T> visitor)
         {
             return visitor.VisitTrue(this);
         }
@@ -86,7 +97,12 @@ namespace AsyncLogic
     /// </summary>
     public class LogicFalse : LogicExpression
     {
-        public override T Visit<T>(ILogicVisitor<T> visitor)
+        //public override T Visit<T>(ILogicVisitor<T> visitor)
+        //{
+        //    return visitor.VisitFalse(this);
+        //}
+
+        public override T Visit<T>(IExpressionVisitor<T> visitor)
         {
             return visitor.VisitFalse(this);
         }
@@ -123,7 +139,12 @@ namespace AsyncLogic
         public LogicExpression Left;
         public LogicExpression Right;
 
-        public override T Visit<T>(ILogicVisitor<T> visitor)
+        //public override T Visit<T>(ILogicVisitor<T> visitor)
+        //{
+        //    return visitor.VisitAnd(this);
+        //}
+
+        public override T Visit<T>(IExpressionVisitor<T> visitor)
         {
             return visitor.VisitAnd(this);
         }
@@ -148,7 +169,12 @@ namespace AsyncLogic
         public LogicExpression Left;
         public LogicExpression Right;
 
-        public override T Visit<T>(ILogicVisitor<T> visitor)
+        //public override T Visit<T>(ILogicVisitor<T> visitor)
+        //{
+        //    return visitor.VisitOr(this);
+        //}
+
+        public override T Visit<T>(IExpressionVisitor<T> visitor)
         {
             return visitor.VisitOr(this);
         }
@@ -164,4 +190,6 @@ namespace AsyncLogic
             this.Right = RightExpression;
         }
     }
+
+   
 }

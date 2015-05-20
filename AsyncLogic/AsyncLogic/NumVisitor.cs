@@ -14,7 +14,7 @@ namespace AsyncLogic
     {
         T VisitNumVariable(NumVariable variable);
         T VisitNumConstant(NumConstant constant);
-        T VisitNumUnaryOp(NumUnaryOp op);
+        //T VisitNumUnaryOp(NumUnaryOp op);
         T VisitNumBinaryOp(NumBinaryOp op);
         //T VisitNumRelation(NumRelation rel);
     }

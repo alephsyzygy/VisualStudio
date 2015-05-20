@@ -49,9 +49,9 @@ namespace AsyncLogic
             //var task = Expression.Visit(evaluator);
             var task = evaluator.Run(Expression);
 
-            if (await Task<bool>.WhenAny<bool>(task, Delay<bool>(timeout)) == task)
+            if (await Task<Value>.WhenAny<Value>(task, Delay<Value>(timeout)) == task)
             {
-                return task.Result.ToString();
+                return (task.Result as BoolValue).Value.ToString();
             }
             return "Loop";
         }
