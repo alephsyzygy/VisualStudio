@@ -12,7 +12,6 @@ namespace AsyncLogic
     /// </summary>
     public abstract class NumExpression : Expression
     {
-        public abstract T Visit<T>(INumVisitor<T> visitor);
 
         public static LogicExpression operator ==(NumExpression first, NumExpression second)
         {
@@ -55,6 +54,9 @@ namespace AsyncLogic
         }
     }
 
+    /// <summary>
+    /// A variable of type Num
+    /// </summary>
     public class NumVariable : NumExpression
     {
         public string VariableName;
@@ -64,17 +66,15 @@ namespace AsyncLogic
             this.VariableName = VariableName;
         }
 
-        public override T Visit<T>(INumVisitor<T> visitor)
-        {
-            return visitor.VisitNumVariable(this);
-        }
-
         public override T Visit<T>(IExpressionVisitor<T> visitor)
         {
             return visitor.VisitNumVariable(this);
         }
     }
 
+    /// <summary>
+    /// A constant of type Num
+    /// </summary>
     public class NumConstant : NumExpression
     {
         public int Value;
@@ -82,12 +82,6 @@ namespace AsyncLogic
         public NumConstant(int Value)
         {
             this.Value = Value;
-        }
-
-
-        public override T Visit<T>(INumVisitor<T> visitor)
-        {
-            return visitor.VisitNumConstant(this);
         }
 
         public override T Visit<T>(IExpressionVisitor<T> visitor)
@@ -118,12 +112,18 @@ namespace AsyncLogic
     //    }
     //}
 
+    /// <summary>
+    /// Binary operations of Num's
+    /// </summary>
     public enum NumBinOps
     {
         Add,
         Mul
     }
 
+    /// <summary>
+    /// A Num binary operation
+    /// </summary>
     public class NumBinaryOp : NumExpression
     {
         public NumBinOps Operation;
@@ -137,17 +137,15 @@ namespace AsyncLogic
             this.Right = Right;
         }
 
-        public override T Visit<T>(INumVisitor<T> visitor)
-        {
-            return visitor.VisitNumBinaryOp(this);
-        }
-
         public override T Visit<T>(IExpressionVisitor<T> visitor)
         {
             return visitor.VisitNumBinaryOp(this);
         }
     }
 
+    /// <summary>
+    /// Relation types between two Num's
+    /// </summary>
     public enum NumRels
     {
         GT,
@@ -158,28 +156,4 @@ namespace AsyncLogic
         LTE
     }
 
-    public class NumRelation : LogicExpression // Note that this is a logic expression!
-    {
-        public NumRels Relation;
-        public NumExpression Left;
-        public NumExpression Right;
-
-        public NumRelation(NumRels Relation, NumExpression Left, NumExpression Right)
-        {
-            this.Relation = Relation;
-            this.Left = Left;
-            this.Right = Right;
-        }
-
-        //public override T Visit<T>(ILogicVisitor<T> visitor)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        public override T Visit<T>(IExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitNumRel(this);
-        }
-
-    }
 }

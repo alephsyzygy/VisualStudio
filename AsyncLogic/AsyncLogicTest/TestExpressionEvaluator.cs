@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using AsyncLogic;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace AsyncLogicTest
 {
@@ -12,18 +13,20 @@ namespace AsyncLogicTest
         static LogicExpression logicTrue = new LogicTrue();
         static LogicExpression logicFalse = new LogicFalse();
         static LogicExpression x = new LogicVariable("x");
+        const string True = "True";
+        const string Loop = "Loop";
 
         [TestMethod]
         public void TestAnd()
         {
-            LogicExpression test = logicTrue * logicFalse;
+            LogicExpression test = logicTrue & logicFalse;
             Assert.AreEqual("Loop", testAsync(test, timeout).Result);
         }
 
         [TestMethod]
         public void TestOr()
         {
-            LogicExpression test = logicTrue + logicFalse;
+            LogicExpression test = logicTrue | logicFalse;
             Assert.AreEqual("True", testAsync(test, timeout).Result);
         }
 
@@ -58,6 +61,38 @@ namespace AsyncLogicTest
             Assert.AreEqual("True", testAsync(testLTE, timeout).Result);
         }
 
+        [TestMethod]
+        public void TestContext()
+        {
+            Dictionary<string,Value> context = new Dictionary<String,Value> { {"n", new NumValue(2)}};
+            NumExpression n = new NumVariable("n");
+            Expression test = n == new NumConstant(2);
+
+            Assert.AreEqual(True, testAsync(test, 1000, context).Result);
+
+
+        }
+
+        [TestMethod]
+        public void TestExists()
+        {
+            NumExpression n = new NumVariable("n");
+            var two =  new NumConstant(2);
+            var hundred = new NumConstant(100);
+            Expression test = new NumExists("n", n == two);
+            Assert.AreEqual(True, testAsync(test, 1000).Result);
+
+            Expression test2 = new NumExists("n", n == n + n);
+            Assert.AreEqual(True, testAsync(test2, 1000).Result);
+
+
+            Expression test3 = new NumExists("n", n == n + two);
+            Assert.AreEqual(Loop, testAsync(test3, 1000).Result);
+
+            Expression test4 = new NumExists("n", n == hundred);  // should take 1 sec to find
+            Assert.AreEqual(True, testAsync(test4, 2000).Result);
+        }
+
 
 
         /// <summary>
@@ -71,6 +106,20 @@ namespace AsyncLogicTest
         {
 
             ExpressionEvaluator evaluator = new ExpressionEvaluator();
+            //var task = Expression.Visit(evaluator);
+            var task = evaluator.Run(Expression);
+
+            if (await Task<Value>.WhenAny<Value>(task, Delay<Value>(timeout)) == task)
+            {
+                return (task.Result as BoolValue).Value.ToString();
+            }
+            return "Loop";
+        }
+
+        private static async Task<string> testAsync(Expression Expression, int timeout, Dictionary<string,Value> Context)
+        {
+
+            ExpressionEvaluator evaluator = new ExpressionEvaluator(Context);
             //var task = Expression.Visit(evaluator);
             var task = evaluator.Run(Expression);
 

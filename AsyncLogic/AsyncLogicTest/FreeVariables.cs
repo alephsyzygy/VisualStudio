@@ -17,7 +17,7 @@ namespace AsyncLogicTest
         [TestMethod]
         public void TestVariables()
         {
-            LogicExpression test = x * x;
+            LogicExpression test = x & x;
             VariableLister<bool> lister = new VariableLister<bool>();
             test.Visit(lister);
             Assert.AreEqual(1, lister.Variables.Count(), "There should only be one variable");
@@ -29,13 +29,29 @@ namespace AsyncLogicTest
         public void TestNumVariables()
         {
             NumExpression numTest = n;
-            LogicExpression test = new NumRelation(NumRels.EQ, n, m) + y;
+            LogicExpression test = new NumRelation(NumRels.EQ, n, m) | y;
             VariableLister<bool> lister = new VariableLister<bool>();
-            test.Visit((IExpressionVisitor<bool>) lister);
+            test.Visit(lister);
             Assert.AreEqual(3, lister.Variables.Count(), "There should be three variables");
             Assert.IsTrue(lister.Variables.Contains("y"));
             Assert.IsTrue(lister.Variables.Contains("n"));
             Assert.IsTrue(lister.Variables.Contains("m"));
+        }
+
+        [TestMethod]
+        public void TestFreeVariables()
+        {
+            LogicExpression test = new NumExists("n", n == m);
+            FreeVariableLister<bool> lister = new FreeVariableLister<bool>();
+            test.Visit(lister);
+            Assert.AreEqual(1, lister.Variables.Count);
+            Assert.IsTrue(lister.Variables.Contains("m"));
+
+            test = new NumExists("x", n == n);
+            lister = new FreeVariableLister<bool>();
+            test.Visit(lister);
+            Assert.AreEqual(1, lister.Variables.Count);
+            Assert.IsTrue(lister.Variables.Contains("n"));
         }
     }
 }

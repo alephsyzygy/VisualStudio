@@ -6,8 +6,21 @@ using System.Threading.Tasks;
 
 namespace AsyncLogic
 {
-    public interface IExpressionVisitor<T> : ILogicVisitor<T>, INumVisitor<T>
+    /// <summary>
+    /// Visitor interface to visit an Expression
+    /// </summary>
+    /// <typeparam name="T">The return type</typeparam>
+    public interface IExpressionVisitor<T> 
     {
+        T VisitLogicVariable(LogicVariable variable);
+        T VisitTrue(LogicTrue constant);
+        T VisitFalse(LogicFalse constant);
+        T VisitAnd(LogicAnd op);
+        T VisitOr(LogicOr op);
+        T VisitNumVariable(NumVariable variable);
+        T VisitNumConstant(NumConstant constant);
+        T VisitNumBinaryOp(NumBinaryOp op);
         T VisitNumRel(NumRelation relation);
+        T VisitNumExists(NumExists expression);
     }
 }

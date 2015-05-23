@@ -15,6 +15,30 @@ namespace AsyncLogic
     public class ExpressionEvaluator : IExpressionVisitor<Task<Value>>
     {
         /// <summary>
+        /// The context which maps variables to values
+        /// </summary>
+        public Dictionary<string, Value> Context;
+
+        /// <summary>
+        /// How often to spawn new tasks when using exists
+        /// </summary>
+        private int ExistsTimeout = 10;
+
+        /// <summary>
+        /// Construct an ExpressionEvaluator with the given Context
+        /// </summary>
+        /// <param name="Context">A mapping from variables to values</param>
+        public ExpressionEvaluator(Dictionary<string,Value> Context)
+        {
+            this.Context = Context;
+        }
+
+        public ExpressionEvaluator()
+        {
+            this.Context = new Dictionary<string, Value>();
+        }
+
+        /// <summary>
         /// Run this visitor on the given expression
         /// </summary>
         /// <param name="expr">The expression</param>
@@ -25,9 +49,13 @@ namespace AsyncLogic
         }
         public async Task<Value> VisitLogicVariable(LogicVariable variable)
         {
-            await Task.Delay(10);
-            throw new NotImplementedException();  // we shouldn't have any free variables
-            //return null;
+            Value result = Context[variable.VariableName];
+            if (result == null)
+            {
+                await Task.Delay(10);
+                throw new ArgumentException("Variable not found in context");
+            }
+            return result;
         }
 
         public async Task<Value> VisitTrue(LogicTrue constant)
@@ -107,20 +135,19 @@ namespace AsyncLogic
 
         public async Task<Value> VisitNumVariable(NumVariable variable)
         {
-            await Task.Delay(10);
-            throw new NotImplementedException();  // we shouldn't have any free variables
+            Value result = Context[variable.VariableName];
+            if (result == null)
+            {
+                await Task.Delay(10);
+                throw new ArgumentException("Variable not found in context");
+            }
+            return result;
         }
 
         public async Task<Value> VisitNumConstant(NumConstant constant)
         {
             return await Task.Run(() => new NumValue(constant.Value)); // get rid of compiler warning
         }
-
-        //public async Task<Value> VisitNumUnaryOp(NumUnaryOp op)
-        //{
-        //    Value result = await op.Expression.Visit(this);
-        //    throw new NotImplementedException();
-        //}
 
         public async Task<Value> VisitNumBinaryOp(NumBinaryOp op)
         {
@@ -135,6 +162,62 @@ namespace AsyncLogic
                     throw new ArgumentException();
             }
             throw new NotImplementedException();
+        }
+
+
+        public async Task<Value> VisitNumExists(NumExists expression)
+        {
+            // The idea here is to continually spawn off tasks evaluating the expression
+            // in the environment where the variable is bound to first 0, then 1, then 2, ...
+            // When one of these completes we have true.  Otherwise we loop forever.
+
+            // The number we are currently up to
+            int nextNum = 0;
+            bool foundValue = false;
+            List<Task<Value>> runningTasks = new List<Task<Value>>();
+            // The first task is the delay task.  
+
+            while (!foundValue)
+            {
+                
+                // Clone the context
+                Dictionary<string,Value> newContext = (from x in Context
+                                                       select x).ToDictionary(x => x.Key, x => x.Value);
+                newContext[expression.VariableName] = new NumValue(nextNum);
+                // Construct a new evaluator with an updated context
+                ExpressionEvaluator nextEvaluator = new ExpressionEvaluator(newContext);
+
+                // Add the new evaluator to our list of tasks
+                Task<Value> newTask = expression.Expression.Visit(nextEvaluator);
+                runningTasks.Add(newTask);
+
+                // create a new delay task to add to the list
+                Task<Value> delay = Delay<Value>(ExistsTimeout);
+                runningTasks.Add(delay);
+
+                // Run the tasks until one completes
+                Task<Value> resultTask = await Task.WhenAny(runningTasks);
+
+                // If it is not the delay task we have a true result, so return it
+                if (resultTask != delay)
+                {
+                    foundValue = true;
+                    return await resultTask;
+                }
+                else  // delay has fired, so remove it and loop to the next number
+                {
+                    runningTasks.Remove(delay);
+                    nextNum++;
+                }              
+            }
+
+            throw new NotImplementedException("This code should not be reached");
+        }
+
+        public static async Task<T> Delay<T>(int timeout)
+        {
+            await Task.Delay(timeout);
+            return default(T);
         }
     }
 }

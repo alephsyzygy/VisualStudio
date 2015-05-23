@@ -15,7 +15,7 @@ namespace AsyncLogic
 
         static void Main(string[] args)
         {
-            LogicExpression test = x * x;
+            LogicExpression test = x & x;
             VariableLister<bool> lister = new VariableLister<bool>();
             test.Visit(lister);
             foreach (var variable in lister.Variables)
@@ -24,10 +24,10 @@ namespace AsyncLogic
             }
 
             LogicExpression test2;
-            test2 = logicTrue + logicFalse;
+            test2 = logicTrue | logicFalse;
             Console.WriteLine("Result: {0}", testAsync(test2, timeout).Result);
 
-            test2 = logicTrue * logicFalse;
+            test2 = logicTrue & logicFalse;
             Console.WriteLine("Result: {0}", testAsync(test2, timeout).Result);
             
             

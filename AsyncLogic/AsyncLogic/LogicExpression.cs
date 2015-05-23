@@ -14,21 +14,12 @@ namespace AsyncLogic
     public abstract class LogicExpression : Expression
     {
         /// <summary>
-        /// Visit this method
-        /// </summary>
-        /// <typeparam name="T">The return type of the visitor</typeparam>
-        /// <param name="visitor">The visitor interface</param>
-        /// <returns>The result of the visit</returns>
-        //public abstract T Visit<T>(ILogicVisitor<T> visitor);
-        //public abstract T Visit<T>(IExpressionVisitor<T> visitor);
-
-        /// <summary>
         /// The disjunction (or) of two LogicExpressions
         /// </summary>
         /// <param name="first">First expression</param>
         /// <param name="second">Second expression</param>
         /// <returns>Their disjunction</returns>
-        public static LogicExpression operator +(LogicExpression first, LogicExpression second)
+        public static LogicExpression operator |(LogicExpression first, LogicExpression second)
         {
             return new LogicOr(first, second);
         }
@@ -39,7 +30,7 @@ namespace AsyncLogic
         /// <param name="first">First expression</param>
         /// <param name="second">Second expression</param>
         /// <returns>Their conjunction</returns>
-        public static LogicExpression operator *(LogicExpression first, LogicExpression second)
+        public static LogicExpression operator &(LogicExpression first, LogicExpression second)
         {
             return new LogicAnd(first, second);
         }
@@ -54,11 +45,6 @@ namespace AsyncLogic
         /// The name of the variable
         /// </summary>
         public string VariableName;
-
-        //public override T Visit<T>(ILogicVisitor<T> visitor)
-        //{
-        //    return visitor.VisitLogicVariable(this);
-        //}
 
         public override T Visit<T>(IExpressionVisitor<T> visitor)
         {
@@ -80,11 +66,6 @@ namespace AsyncLogic
     /// </summary>
     public class LogicTrue : LogicExpression
     {
-        //public override T Visit<T>(ILogicVisitor<T> visitor)
-        //{
-        //    return visitor.VisitTrue(this);
-        //}
-
         public override T Visit<T>(IExpressionVisitor<T> visitor)
         {
             return visitor.VisitTrue(this);
@@ -97,39 +78,11 @@ namespace AsyncLogic
     /// </summary>
     public class LogicFalse : LogicExpression
     {
-        //public override T Visit<T>(ILogicVisitor<T> visitor)
-        //{
-        //    return visitor.VisitFalse(this);
-        //}
-
         public override T Visit<T>(IExpressionVisitor<T> visitor)
         {
             return visitor.VisitFalse(this);
         }
     }
-
-    //public enum UnaryOps
-    //{
-    //    Not
-    //}
-
-    //public class UnaryOp : LogicExpression
-    //{
-    //    public UnaryOps Operation;
-    //    public LogicExpression Expression;
-
-    //    public override T Visit<T>(ILogicVisitor<T> visitor)
-    //    {
-    //        return visitor.VisitUnaryOp(this);
-    //    }
-
-    //    public UnaryOp(UnaryOps Operation, LogicExpression Expression)
-    //    {
-    //        this.Operation = Operation;
-    //        this.Expression = Expression;
-    //    }
-    //}
-
 
     /// <summary>
     /// The conjunction of two LogicExpressions
@@ -138,11 +91,6 @@ namespace AsyncLogic
     {
         public LogicExpression Left;
         public LogicExpression Right;
-
-        //public override T Visit<T>(ILogicVisitor<T> visitor)
-        //{
-        //    return visitor.VisitAnd(this);
-        //}
 
         public override T Visit<T>(IExpressionVisitor<T> visitor)
         {
@@ -169,11 +117,6 @@ namespace AsyncLogic
         public LogicExpression Left;
         public LogicExpression Right;
 
-        //public override T Visit<T>(ILogicVisitor<T> visitor)
-        //{
-        //    return visitor.VisitOr(this);
-        //}
-
         public override T Visit<T>(IExpressionVisitor<T> visitor)
         {
             return visitor.VisitOr(this);
@@ -188,6 +131,46 @@ namespace AsyncLogic
         {
             this.Left = LeftExpression;
             this.Right = RightExpression;
+        }
+    }
+
+    /// <summary>
+    /// A relation between two Num's
+    /// </summary>
+    public class NumRelation : LogicExpression // Note that this is a logic expression!
+    {
+        public NumRels Relation;
+        public NumExpression Left;
+        public NumExpression Right;
+
+        public NumRelation(NumRels Relation, NumExpression Left, NumExpression Right)
+        {
+            this.Relation = Relation;
+            this.Left = Left;
+            this.Right = Right;
+        }
+
+        public override T Visit<T>(IExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitNumRel(this);
+        }
+
+    }
+
+    public class NumExists : LogicExpression
+    {
+        public string VariableName;
+        public LogicExpression Expression;
+
+        public NumExists(string VariableName, LogicExpression Expression)
+        {
+            this.VariableName = VariableName;
+            this.Expression = Expression;
+        }
+
+        public override T Visit<T>(IExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitNumExists(this);
         }
     }
 

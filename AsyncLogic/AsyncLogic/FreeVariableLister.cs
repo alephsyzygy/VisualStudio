@@ -10,7 +10,7 @@ namespace AsyncLogic
     /// A visitor object to construct the set of all variables
     /// </summary>
     /// <typeparam name="T">Phantom type, not used</typeparam>
-    public class VariableLister<T> : IExpressionVisitor<T>
+    public class FreeVariableLister<T> : IExpressionVisitor<T>
     {
         /// <summary>
         /// The SortedSet of the variables
@@ -20,7 +20,7 @@ namespace AsyncLogic
         /// <summary>
         /// Constructor
         /// </summary>
-        public VariableLister()
+        public FreeVariableLister()
         {
             Variables = new SortedSet<string>();
         }
@@ -86,7 +86,10 @@ namespace AsyncLogic
 
         public T VisitNumExists(NumExists expression)
         {
-            expression.Visit(this);
+            // Since this is a quantifier it binds a variable, which is no longer free. 
+            // Note: find the free variables before removing them!
+            expression.Expression.Visit(this);
+            this.Variables.Remove(expression.VariableName);
             return default(T);
         }
     }
