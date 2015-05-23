@@ -3,6 +3,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using AsyncLogic;
 using System.Linq;
 
+// Hide some of the warnings to do with self comparison
+#pragma warning disable 1718
+
 namespace AsyncLogicTest
 {
     [TestClass]
@@ -13,6 +16,7 @@ namespace AsyncLogicTest
         static LogicExpression z = new LogicVariable("z");
         static NumExpression n = new NumVariable("n");
         static NumExpression m = new NumVariable("m");
+        static NumExpression two = new NumConstant(2);
 
         [TestMethod]
         public void TestVariables()
@@ -36,6 +40,12 @@ namespace AsyncLogicTest
             Assert.IsTrue(lister.Variables.Contains("y"));
             Assert.IsTrue(lister.Variables.Contains("n"));
             Assert.IsTrue(lister.Variables.Contains("m"));
+
+            test = (new NumThe("n", n == two)) == two;
+            lister = new VariableLister<bool>();
+            test.Visit(lister);
+            Assert.AreEqual(1, lister.Variables.Count);
+            Assert.IsTrue(lister.Variables.Contains("n"));
         }
 
         [TestMethod]
@@ -52,6 +62,12 @@ namespace AsyncLogicTest
             test.Visit(lister);
             Assert.AreEqual(1, lister.Variables.Count);
             Assert.IsTrue(lister.Variables.Contains("n"));
+
+            test = (new NumThe("n", n == two)) == two;
+            lister = new FreeVariableLister<bool>();
+            test.Visit(lister);
+            Assert.AreEqual(0, lister.Variables.Count);
+            //Assert.IsTrue(lister.Variables.Contains("n"));
         }
     }
 }

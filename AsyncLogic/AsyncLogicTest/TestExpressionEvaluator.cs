@@ -4,15 +4,21 @@ using AsyncLogic;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
+// Hide some of the warnings to do with self comparison
+#pragma warning disable 1718
+
 namespace AsyncLogicTest
 {
     [TestClass]
     public class TestExpressionEvaluator
     {
-        const int timeout = 500;  // 0.5 seconds
+        const int defaultTimeout = 500;  // 0.5 seconds
         static LogicExpression logicTrue = new LogicTrue();
         static LogicExpression logicFalse = new LogicFalse();
         static LogicExpression x = new LogicVariable("x");
+        static NumExpression zero = new NumConstant(0);
+        static NumExpression two = new NumConstant(0);
+        static NumExpression n = new NumVariable("n");
         const string True = "True";
         const string Loop = "Loop";
 
@@ -20,25 +26,25 @@ namespace AsyncLogicTest
         public void TestAnd()
         {
             LogicExpression test = logicTrue & logicFalse;
-            Assert.AreEqual("Loop", testAsync(test, timeout).Result);
+            Assert.AreEqual("Loop", testAsync(test, defaultTimeout).Result);
         }
 
         [TestMethod]
         public void TestOr()
         {
             LogicExpression test = logicTrue | logicFalse;
-            Assert.AreEqual("True", testAsync(test, timeout).Result);
+            Assert.AreEqual("True", testAsync(test, defaultTimeout).Result);
         }
 
         [TestMethod]
         public void TestNum()
         {
             NumExpression test = new NumConstant(500);
-            Assert.AreEqual(500, testAsyncNum(test, timeout).Result);
+            Assert.AreEqual(500, testAsyncNum(test, defaultTimeout).Result);
             NumExpression test2 = test * test;
-            Assert.AreEqual(500*500, testAsyncNum(test2, timeout).Result);
+            Assert.AreEqual(500 * 500, testAsyncNum(test2, defaultTimeout).Result);
             NumExpression test3 = test + test;
-            Assert.AreEqual(500 + 500, testAsyncNum(test3, timeout).Result);
+            Assert.AreEqual(500 + 500, testAsyncNum(test3, defaultTimeout).Result);
         }
 
         [TestMethod]
@@ -46,19 +52,22 @@ namespace AsyncLogicTest
         {
             NumExpression test500 = new NumConstant(500);
             NumExpression test1000 = new NumConstant(1000);
+            NumExpression zero = new NumConstant(0);
             NumExpression test2 = test500 + test500;
             LogicExpression testEq = test2 == test1000;
-            Assert.AreEqual("True", testAsync(testEq, timeout).Result);
+            Assert.AreEqual("True", testAsync(testEq, defaultTimeout).Result);
             LogicExpression testNeq = test2 != test1000;
-            Assert.AreEqual("Loop", testAsync(testNeq, timeout).Result);
+            Assert.AreEqual("Loop", testAsync(testNeq, defaultTimeout).Result);
             LogicExpression testLT = test500 < test1000;
-            Assert.AreEqual("True", testAsync(testLT, timeout).Result);
+            Assert.AreEqual("True", testAsync(testLT, defaultTimeout).Result);
             LogicExpression testLTE = test500 <= test1000;
-            Assert.AreEqual("True", testAsync(testLTE, timeout).Result);
+            Assert.AreEqual("True", testAsync(testLTE, defaultTimeout).Result);
             LogicExpression testGT = test1000 > test500;
-            Assert.AreEqual("True", testAsync(testLT, timeout).Result);
+            Assert.AreEqual("True", testAsync(testLT, defaultTimeout).Result);
             LogicExpression testGTE = test1000 >= test500;
-            Assert.AreEqual("True", testAsync(testLTE, timeout).Result);
+            Assert.AreEqual("True", testAsync(testLTE, defaultTimeout).Result);
+            LogicExpression testZero = zero > zero;
+            Assert.AreEqual("Loop", testAsync(testZero, defaultTimeout).Result, "TestZero");
         }
 
         [TestMethod]
@@ -79,6 +88,7 @@ namespace AsyncLogicTest
             NumExpression n = new NumVariable("n");
             var two =  new NumConstant(2);
             var hundred = new NumConstant(100);
+
             Expression test = new NumExists("n", n == two);
             Assert.AreEqual(True, testAsync(test, 1000).Result);
 
@@ -89,8 +99,37 @@ namespace AsyncLogicTest
             Expression test3 = new NumExists("n", n == n + two);
             Assert.AreEqual(Loop, testAsync(test3, 1000).Result);
 
-            Expression test4 = new NumExists("n", n == hundred);  // should take 1 sec to find
+            Expression test4 = new NumExists("n", n == hundred);  // should take 1 sec to find (100 * 10ms)
             Assert.AreEqual(True, testAsync(test4, 2000).Result);
+
+            Expression test5 = new NumExists("n", two < n);
+            Assert.AreEqual(True, testAsync(test5, 2000).Result);
+
+            Expression test6 = new NumExists("n", n < n);
+            Assert.AreEqual(Loop, testAsync(test6, 1000).Result, "test6");
+        }
+
+        [TestMethod]
+        public void TestThe()
+        {
+            NumExpression n = new NumVariable("n");
+            var two =  new NumConstant(2);
+            NumExpression test = new NumThe("n", n == two);
+            Assert.AreEqual("2", testAsync(test, 1000).Result);
+
+            test = new NumThe("n", n == two + two);
+            Assert.AreEqual("4", testAsync(test, 1000).Result);
+
+            test = new NumThe("n", n + n == n * n);  // not valid since it has two results, but we ignore this
+            Assert.AreEqual("0", testAsync(test, 1000).Result);
+
+            // Find the positive natural such that 2n=n^2
+            test = new NumThe("n", (n + n == n * n) & (n > zero));  
+            Assert.AreEqual("2", testAsync(test, 1000).Result);
+
+            // Should fail
+            test = new NumThe("n", (n == zero) & (n > zero));
+            Assert.AreEqual(Loop, testAsync(test, 1000).Result);
         }
 
 
@@ -111,7 +150,10 @@ namespace AsyncLogicTest
 
             if (await Task<Value>.WhenAny<Value>(task, Delay<Value>(timeout)) == task)
             {
-                return (task.Result as BoolValue).Value.ToString();
+                if (task.Result is BoolValue)
+                    return (task.Result as BoolValue).Value.ToString();
+                else
+                    return (task.Result as NumValue).Value.ToString();
             }
             return "Loop";
         }

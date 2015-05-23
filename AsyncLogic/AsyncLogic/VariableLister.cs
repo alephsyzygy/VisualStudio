@@ -89,5 +89,12 @@ namespace AsyncLogic
             expression.Visit(this);
             return default(T);
         }
+
+
+        public T VisitNumThe(NumThe expression)
+        {
+            expression.Expression.Visit(this);
+            return default(T);
+        }
     }
 }

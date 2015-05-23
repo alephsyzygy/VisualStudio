@@ -92,5 +92,14 @@ namespace AsyncLogic
             this.Variables.Remove(expression.VariableName);
             return default(T);
         }
+
+
+        public T VisitNumThe(NumThe expression)
+        {
+            // 'the' is a binder, so it binds its variable
+            expression.Expression.Visit(this);
+            this.Variables.Remove(expression.VariableName);
+            return default(T);
+        }
     }
 }

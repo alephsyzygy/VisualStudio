@@ -134,6 +134,20 @@ namespace AsyncLogic
         }
     }
 
+
+    /// <summary>
+    /// Relation types between two Num's
+    /// </summary>
+    public enum NumRels
+    {
+        GT,
+        LT,
+        EQ,
+        NEQ,
+        GTE,
+        LTE
+    }
+
     /// <summary>
     /// A relation between two Num's
     /// </summary>

@@ -144,16 +144,26 @@ namespace AsyncLogic
     }
 
     /// <summary>
-    /// Relation types between two Num's
+    /// The 'the' binder for natural numbers.  the x. phi(x)
+    /// represents the unique natural number x which satifies phi(x)
+    /// If phi does not uniquely determine a number then evaluation is undefined
+    /// but we tend to give first found natural, or loop if there is none.
     /// </summary>
-    public enum NumRels
+    public class NumThe : NumExpression
     {
-        GT,
-        LT,
-        EQ,
-        NEQ,
-        GTE,
-        LTE
+        public string VariableName;
+        public LogicExpression Expression;
+
+        public NumThe(string VariableName, LogicExpression Expression)
+        {
+            this.VariableName = VariableName;
+            this.Expression = Expression;
+        }
+
+        public override T Visit<T>(IExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitNumThe(this);
+        }
     }
 
 }

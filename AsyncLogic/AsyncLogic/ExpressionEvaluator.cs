@@ -219,5 +219,62 @@ namespace AsyncLogic
             await Task.Delay(timeout);
             return default(T);
         }
+
+
+        public async Task<Value> VisitNumThe(NumThe expression)
+        {
+            // The idea here is similar to VisitNumExists, except this time we remember
+            // which number we found.
+
+            // The number we are currently up to
+            int nextNum = 0;
+            bool foundValue = false;
+            List<Task<Value>> runningTasks = new List<Task<Value>>();
+            // The first task is the delay task.  
+
+            while (!foundValue)
+            {
+
+                // Clone the context
+                Dictionary<string, Value> newContext = (from x in Context
+                                                        select x).ToDictionary(x => x.Key, x => x.Value);
+                newContext[expression.VariableName] = new NumValue(nextNum);
+                // Construct a new evaluator with an updated context
+                ExpressionEvaluator nextEvaluator = new ExpressionEvaluator(newContext);
+
+                // Add the new evaluator to our list of tasks
+                Task<Value> newTask = expression.Expression.Visit(nextEvaluator);
+                runningTasks.Add(newTask);
+
+                // create a new delay task to add to the list
+                Task<Value> delay = Delay<Value>(ExistsTimeout);
+                runningTasks.Add(delay);
+
+                // Run the tasks until one completes
+                Task<Value> resultTask = await Task.WhenAny(runningTasks);
+
+                // If it is not the delay task we have a true result, so return it
+                if (resultTask != delay)
+                {
+                    foundValue = true;
+                    Value resultValue = await resultTask;
+                    if (resultValue is BoolValue)
+                        if (((BoolValue)resultValue).Value)
+                            return new NumValue(runningTasks.IndexOf(resultTask));
+                        else
+                            throw new ArgumentException("For 'the' the expression should return true");
+                    else
+                        throw new ArgumentException("For 'the' the predicate should have a logic value");
+                }
+                else  // delay has fired, so remove it and loop to the next number
+                {
+                    runningTasks.Remove(delay);
+                    nextNum++;
+                }
+            }
+
+
+            throw new NotImplementedException("This code should not be reached");
+        }
     }
 }

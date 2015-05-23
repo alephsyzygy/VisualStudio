@@ -22,5 +22,6 @@ namespace AsyncLogic
         T VisitNumBinaryOp(NumBinaryOp op);
         T VisitNumRel(NumRelation relation);
         T VisitNumExists(NumExists expression);
+        T VisitNumThe(NumThe expression);
     }
 }
