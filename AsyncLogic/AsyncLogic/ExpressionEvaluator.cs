@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace AsyncLogic
@@ -14,6 +15,11 @@ namespace AsyncLogic
     /// </summary>
     public class ExpressionEvaluator : IExpressionVisitor<Task<Value>>
     {
+        /// <summary>
+        /// A CancellationToken so that this evaluator can halt evaluation
+        /// </summary>
+        public CancellationToken CancelToken;
+
         /// <summary>
         /// The context which maps variables to values
         /// </summary>
@@ -89,7 +95,7 @@ namespace AsyncLogic
             while (true) 
             {
                 // loop forever
-                await Task.Delay(500);
+                await Task.Delay(500,CancelToken);
             }  
         }
 
@@ -175,7 +181,9 @@ namespace AsyncLogic
             int nextNum = 0;
             bool foundValue = false;
             List<Task<Value>> runningTasks = new List<Task<Value>>();
-            // The first task is the delay task.  
+            // Have a list of cancelTokens so that we can cancel once we have succeeded
+            CancellationTokenSource tokenSource = new CancellationTokenSource();
+              
 
             while (!foundValue)
             {
@@ -186,13 +194,14 @@ namespace AsyncLogic
                 newContext[expression.VariableName] = new NumValue(nextNum);
                 // Construct a new evaluator with an updated context
                 ExpressionEvaluator nextEvaluator = new ExpressionEvaluator(newContext);
+                nextEvaluator.CancelToken = tokenSource.Token;
 
                 // Add the new evaluator to our list of tasks
                 Task<Value> newTask = expression.Expression.Visit(nextEvaluator);
                 runningTasks.Add(newTask);
 
                 // create a new delay task to add to the list
-                Task<Value> delay = Delay<Value>(ExistsTimeout);
+                Task<Value> delay = Delay<Value>(ExistsTimeout,CancelToken);
                 runningTasks.Add(delay);
 
                 // Run the tasks until one completes
@@ -202,7 +211,9 @@ namespace AsyncLogic
                 if (resultTask != delay)
                 {
                     foundValue = true;
-                    return await resultTask;
+                    Value result = await resultTask;
+                    tokenSource.Cancel();  // cancel all tasks which were spawned
+                    return result;
                 }
                 else  // delay has fired, so remove it and loop to the next number
                 {
@@ -220,6 +231,12 @@ namespace AsyncLogic
             return default(T);
         }
 
+        public static async Task<T> Delay<T>(int timeout, CancellationToken token)
+        {
+            await Task.Delay(timeout, token);
+            return default(T);
+        }
+
 
         public async Task<Value> VisitNumThe(NumThe expression)
         {
@@ -230,7 +247,9 @@ namespace AsyncLogic
             int nextNum = 0;
             bool foundValue = false;
             List<Task<Value>> runningTasks = new List<Task<Value>>();
-            // The first task is the delay task.  
+            // Have a list of cancelTokens so that we can cancel once we have succeeded
+            CancellationTokenSource tokenSource = new CancellationTokenSource();
+           
 
             while (!foundValue)
             {
@@ -241,13 +260,14 @@ namespace AsyncLogic
                 newContext[expression.VariableName] = new NumValue(nextNum);
                 // Construct a new evaluator with an updated context
                 ExpressionEvaluator nextEvaluator = new ExpressionEvaluator(newContext);
+                nextEvaluator.CancelToken = tokenSource.Token;
 
                 // Add the new evaluator to our list of tasks
                 Task<Value> newTask = expression.Expression.Visit(nextEvaluator);
                 runningTasks.Add(newTask);
 
                 // create a new delay task to add to the list
-                Task<Value> delay = Delay<Value>(ExistsTimeout);
+                Task<Value> delay = Delay<Value>(ExistsTimeout,CancelToken);
                 runningTasks.Add(delay);
 
                 // Run the tasks until one completes
@@ -260,7 +280,11 @@ namespace AsyncLogic
                     Value resultValue = await resultTask;
                     if (resultValue is BoolValue)
                         if (((BoolValue)resultValue).Value)
+                        {
+                            // cancel all running tasks
+                            tokenSource.Cancel();
                             return new NumValue(runningTasks.IndexOf(resultTask));
+                        }
                         else
                             throw new ArgumentException("For 'the' the expression should return true");
                     else
