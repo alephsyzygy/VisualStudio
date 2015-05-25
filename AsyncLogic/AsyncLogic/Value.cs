@@ -24,9 +24,12 @@ namespace AsyncLogic
         public BoolValue(bool Value)
         {
             this.Value = Value;
-            // The semantics states that we should never see false, so we throw an exception if we do
-            if (!Value)
-                throw new ArgumentException("This really shouldn't be false, you should be looping instead");
+
+            // We are now easier on this requirement in order to increase performance.  If we obtain a false
+            // then we can avoid looping.
+            // OLD: The semantics states that we should never see false, so we throw an exception if we do
+            //if (!Value)
+            //    throw new ArgumentException("This really shouldn't be false, you should be looping instead");
         }
 
         public static bool operator ==(BoolValue first, BoolValue second)

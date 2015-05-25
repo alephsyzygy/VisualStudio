@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using AsyncLogic;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 // Hide some of the warnings to do with self comparison
 #pragma warning disable 1718
@@ -19,21 +20,63 @@ namespace AsyncLogicTest
         static NumExpression zero = new NumConstant(0);
         static NumExpression two = new NumConstant(0);
         static NumExpression n = new NumVariable("n");
+        static LogicExpression logicLoop = new NumExists("n", n < n); // this expression loops forever
         const string True = "True";
-        const string Loop = "Loop";
+        const string Loop = "False";
+        const string False = Loop;
+
+        [TestMethod]
+        public void TestLooping()
+        {
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            Console.WriteLine("Elapsed={0}", sw.Elapsed);
+            LogicExpression test1 = logicLoop | logicLoop;
+            LogicExpression test2 = logicTrue | logicLoop;
+            LogicExpression test3 = logicLoop | logicTrue;
+            LogicExpression test4 = logicTrue | logicTrue;
+            Assert.AreEqual(Loop, testAsync(test1, 200).Result);
+            Assert.AreEqual(True, testAsync(test2, defaultTimeout).Result);
+            Assert.AreEqual(True, testAsync(test3, defaultTimeout).Result);
+            Assert.AreEqual(True, testAsync(test4, defaultTimeout).Result);
+
+            test1 = logicLoop & logicLoop;
+            test2 = logicTrue & logicLoop;
+            test3 = logicLoop & logicTrue;
+            test4 = logicTrue & logicTrue;
+            Assert.AreEqual(Loop, testAsync(test1, 200).Result);
+            Assert.AreEqual(Loop, testAsync(test2, 200).Result);
+            Assert.AreEqual(Loop, testAsync(test3, 200).Result);
+            Assert.AreEqual(True, testAsync(test4, defaultTimeout).Result);
+
+            sw.Stop();
+            Assert.IsTrue(sw.ElapsedMilliseconds > 800, "This test should take at least 800ms");
+        }
 
         [TestMethod]
         public void TestAnd()
         {
-            LogicExpression test = logicTrue & logicFalse;
-            Assert.AreEqual("Loop", testAsync(test, defaultTimeout).Result);
+            LogicExpression test1 = logicFalse & logicFalse;
+            LogicExpression test2 = logicTrue  & logicFalse;
+            LogicExpression test3 = logicFalse & logicTrue;
+            LogicExpression test4 = logicTrue  & logicTrue;
+            Assert.AreEqual(False, testAsync(test1, defaultTimeout).Result);
+            Assert.AreEqual(False, testAsync(test2, defaultTimeout).Result);
+            Assert.AreEqual(False, testAsync(test3, defaultTimeout).Result);
+            Assert.AreEqual(True,  testAsync(test4, defaultTimeout).Result);
         }
 
         [TestMethod]
         public void TestOr()
         {
-            LogicExpression test = logicTrue | logicFalse;
-            Assert.AreEqual("True", testAsync(test, defaultTimeout).Result);
+            LogicExpression test1 = logicFalse | logicFalse;
+            LogicExpression test2 = logicTrue  | logicFalse;
+            LogicExpression test3 = logicFalse | logicTrue;
+            LogicExpression test4 = logicTrue  | logicTrue;
+            Assert.AreEqual(False, testAsync(test1, defaultTimeout).Result);
+            Assert.AreEqual(True,  testAsync(test2, defaultTimeout).Result);
+            Assert.AreEqual(True,  testAsync(test3, defaultTimeout).Result);
+            Assert.AreEqual(True,  testAsync(test4, defaultTimeout).Result);
         }
 
         [TestMethod]
@@ -57,7 +100,7 @@ namespace AsyncLogicTest
             LogicExpression testEq = test2 == test1000;
             Assert.AreEqual("True", testAsync(testEq, defaultTimeout).Result);
             LogicExpression testNeq = test2 != test1000;
-            Assert.AreEqual("Loop", testAsync(testNeq, defaultTimeout).Result);
+            Assert.AreEqual("False", testAsync(testNeq, defaultTimeout).Result);
             LogicExpression testLT = test500 < test1000;
             Assert.AreEqual("True", testAsync(testLT, defaultTimeout).Result);
             LogicExpression testLTE = test500 <= test1000;
@@ -67,7 +110,7 @@ namespace AsyncLogicTest
             LogicExpression testGTE = test1000 >= test500;
             Assert.AreEqual("True", testAsync(testLTE, defaultTimeout).Result);
             LogicExpression testZero = zero > zero;
-            Assert.AreEqual("Loop", testAsync(testZero, defaultTimeout).Result, "TestZero");
+            Assert.AreEqual("False", testAsync(testZero, defaultTimeout).Result, "TestZero");
         }
 
         [TestMethod]
@@ -97,7 +140,7 @@ namespace AsyncLogicTest
 
 
             Expression test3 = new NumExists("n", n == n + two);
-            Assert.AreEqual(Loop, testAsync(test3, 1000).Result);
+            Assert.AreEqual(False, testAsync(test3, 1000).Result);
 
             Expression test4 = new NumExists("n", n == hundred);  // should take 1 sec to find (100 * 10ms)
             Assert.AreEqual(True, testAsync(test4, 2000).Result);
@@ -106,7 +149,7 @@ namespace AsyncLogicTest
             Assert.AreEqual(True, testAsync(test5, 2000).Result);
 
             Expression test6 = new NumExists("n", n < n);
-            Assert.AreEqual(Loop, testAsync(test6, 1000).Result, "test6");
+            Assert.AreEqual(False, testAsync(test6, 1000).Result, "test6");
         }
 
         [TestMethod]
@@ -129,18 +172,18 @@ namespace AsyncLogicTest
 
             // Should fail
             test = new NumThe("n", (n == zero) & (n > zero));
-            Assert.AreEqual(Loop, testAsync(test, 1000).Result);
+            Assert.AreEqual(False, testAsync(test, 1000).Result);
         }
 
 
 
         /// <summary>
         /// Tests a LogicExpression through an ExpressionEvaluator.  Returns "True" if the 
-        /// expression is true.  If it takes longer than timeout to evaluate it returns "Loop"
+        /// expression is true.  If it takes longer than timeout to evaluate it returns "False"
         /// </summary>
         /// <param name="Expression">The expression to evaluate</param>
         /// <param name="timeout">How many milliseconds to run for</param>
-        /// <returns>The strings "True" or "Loop"</returns>
+        /// <returns>The strings "True" or "False"</returns>
         private static async Task<string> testAsync(Expression Expression, int timeout)
         {
 
@@ -155,7 +198,7 @@ namespace AsyncLogicTest
                 else
                     return (task.Result as NumValue).Value.ToString();
             }
-            return "Loop";
+            return Loop;
         }
 
         private static async Task<string> testAsync(Expression Expression, int timeout, Dictionary<string,Value> Context)
@@ -167,9 +210,12 @@ namespace AsyncLogicTest
 
             if (await Task<Value>.WhenAny<Value>(task, Delay<Value>(timeout)) == task)
             {
-                return (task.Result as BoolValue).Value.ToString();
+                if (task.Result is BoolValue)
+                    return (task.Result as BoolValue).Value.ToString();
+                else
+                    return (task.Result as NumValue).Value.ToString();
             }
-            return "Loop";
+            return "False";
         }
 
         private static async Task<int> testAsyncNum(Expression Expression, int timeout)

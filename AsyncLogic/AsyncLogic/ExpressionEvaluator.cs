@@ -71,7 +71,10 @@ namespace AsyncLogic
 
         public async Task<Value> VisitFalse(LogicFalse constant)
         {
-            return await Loop<Value>();
+            //return await Loop<Value>();
+            // Change: we know that this is false, instead of looping just return false
+            //  if we want to loop then the expression exists(n) (n != n) will loop
+            return await Task.Run(() => new BoolValue(false)); // get rid of compiler warning
         }
 
         public async Task<Value> VisitAnd(LogicAnd op)
@@ -82,8 +85,23 @@ namespace AsyncLogic
 
         public async Task<Value> VisitOr(LogicOr op)
         {
-            Task<Value> result = await Task.WhenAny<Value>(op.Left.Visit(this), op.Right.Visit(this));
-            return await result;
+            Task<Value> left = op.Left.Visit(this);
+            Task<Value> right = op.Right.Visit(this);
+            Task<Value> resultTask = await Task.WhenAny<Value>(left,right);
+            BoolValue result = (BoolValue)await resultTask;
+            if (result.Value)
+            {
+                // The value is true, so return it
+                return result;
+            }
+            else
+            {
+                // The value is false, so the return value is given by the other task
+                if (resultTask == left)
+                    return await right;
+                else
+                    return await left;                
+            }
         }
 
         /// <summary>
