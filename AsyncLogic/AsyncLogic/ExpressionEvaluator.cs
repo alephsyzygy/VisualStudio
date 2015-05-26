@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
+#pragma warning disable 1998
+
 namespace AsyncLogic
 {
     /// <summary>
@@ -317,6 +319,42 @@ namespace AsyncLogic
 
 
             throw new NotImplementedException("This code should not be reached");
+        }
+
+
+        public async Task<Value> VisitPair<A, B>(PairExpression<A, B> expression)
+            where A : Expression
+            where B : Expression
+        {
+            // Don't actually do these, let someone else do them
+            var left = expression.Left.Visit(this);
+            var right = expression.Right.Visit(this);
+
+            return new PotentialPairValue<Value,Value>(left, right);
+        }
+
+
+        public async Task<Value> VisitLeft<A, B>(ProjL<A, B> expression)
+            where A : Expression
+            where B : Expression
+        {
+            // idea here is to extract the PairValue then return its left entry.
+            var value = await expression.Expression.Visit(this);
+            if (value is PotentialPairValue<Value, Value>)
+                return await (value as PotentialPairValue<Value, Value>).Left;
+            else
+                throw new ArgumentException("Not a pair value");
+        }
+
+        public async Task<Value> VisitRight<A, B>(ProjR<A, B> expression)
+            where A : Expression
+            where B : Expression
+        {
+            var value = await expression.Expression.Visit(this);
+            if (value is PotentialPairValue<Value, Value>)
+                return await (value as PotentialPairValue<Value, Value>).Right;
+            else
+                throw new ArgumentException("Not a pair value");
         }
     }
 }

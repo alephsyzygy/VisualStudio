@@ -18,12 +18,38 @@ namespace AsyncLogicTest
         static LogicExpression logicFalse = new LogicFalse();
         static LogicExpression x = new LogicVariable("x");
         static NumExpression zero = new NumConstant(0);
-        static NumExpression two = new NumConstant(0);
+        static NumExpression two = new NumConstant(2);
         static NumExpression n = new NumVariable("n");
         static LogicExpression logicLoop = new NumExists("n", n < n); // this expression loops forever
         const string True = "True";
         const string Loop = "False";
         const string False = Loop;
+
+        [TestMethod]
+        public void TestPairs()
+        {
+            NumValue valueTwo = new NumValue(2);
+            Value pair = new PairValue<NumValue, NumValue>(valueTwo, valueTwo);
+            Assert.AreEqual("< 2 , 2 >", pair.ToString());
+
+            Expression test = new PairExpression<NumExpression,NumExpression>(two, two);
+            Assert.AreEqual("< 2 , 2 >", testAsync(test, 500).Result);
+
+            var trueTest = new PairExpression<LogicExpression, LogicExpression>(logicTrue, logicTrue);
+            Assert.AreEqual("< True , True >", testAsync(trueTest, 500).Result);
+
+            var loopTest = new PairExpression<LogicExpression, LogicExpression>(logicLoop, logicTrue);
+            Assert.AreEqual(False, testAsync(loopTest, 500).Result);
+
+            var pairTest = new ProjL<LogicExpression, LogicExpression>(trueTest);
+            Assert.AreEqual(True, testAsync(pairTest, 500).Result);
+
+            var pairLoop = new ProjR<LogicExpression, LogicExpression>(loopTest);
+            Assert.AreEqual(True, testAsync(pairLoop, 500).Result);
+
+            var pairLoop2 = new ProjL<LogicExpression, LogicExpression>(loopTest);
+            Assert.AreEqual(Loop, testAsync(pairLoop2, 500).Result);
+        }
 
         [TestMethod]
         public void TestLooping()
@@ -193,10 +219,13 @@ namespace AsyncLogicTest
 
             if (await Task<Value>.WhenAny<Value>(task, Delay<Value>(timeout)) == task)
             {
-                if (task.Result is BoolValue)
-                    return (task.Result as BoolValue).Value.ToString();
+                //var result = task.Result.ToStringAsync();
+                var result = task.Result.Normalize();
+                if (await Task<Value>.WhenAny<Value>(result, Delay<Value>(timeout)) == result)
+                    return result.Result.ToString();
                 else
-                    return (task.Result as NumValue).Value.ToString();
+                    return Loop;
+
             }
             return Loop;
         }
@@ -210,10 +239,7 @@ namespace AsyncLogicTest
 
             if (await Task<Value>.WhenAny<Value>(task, Delay<Value>(timeout)) == task)
             {
-                if (task.Result is BoolValue)
-                    return (task.Result as BoolValue).Value.ToString();
-                else
-                    return (task.Result as NumValue).Value.ToString();
+                return task.Result.ToString();
             }
             return "False";
         }

@@ -23,5 +23,14 @@ namespace AsyncLogic
         T VisitNumRel(NumRelation relation);
         T VisitNumExists(NumExists expression);
         T VisitNumThe(NumThe expression);
+        T VisitPair<A, B>(PairExpression<A, B> expression) 
+            where A : Expression 
+            where B : Expression;
+        T VisitLeft<A, B>(ProjL<A,B> expression)
+            where A : Expression
+            where B : Expression;
+        T VisitRight<A, B>(ProjR<A, B> expression)
+            where A : Expression
+            where B : Expression;
     }
 }

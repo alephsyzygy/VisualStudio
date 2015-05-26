@@ -48,6 +48,7 @@
     <Compile Include="FreeVariableLister.cs" />
     <Compile Include="LogicExpression.cs" />
     <Compile Include="NumExpression.cs" />
+    <Compile Include="PairExpression.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Value.cs" />

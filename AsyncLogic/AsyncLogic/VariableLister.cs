@@ -96,5 +96,35 @@ namespace AsyncLogic
             expression.Expression.Visit(this);
             return default(T);
         }
+
+
+
+
+
+        public T VisitPair<A, B>(PairExpression<A, B> expression)
+            where A : Expression
+            where B : Expression
+        {
+            expression.Left.Visit(this);
+            expression.Right.Visit(this);
+            return default(T);
+        }
+
+
+        public T VisitLeft<A, B>(ProjL<A, B> expression)
+            where A : Expression
+            where B : Expression
+        {
+            expression.Expression.Visit(this);
+            return default(T);
+        }
+
+        public T VisitRight<A, B>(ProjR<A, B> expression)
+            where A : Expression
+            where B : Expression
+        {
+            expression.Expression.Visit(this);
+            return default(T);
+        }
     }
 }
