@@ -367,14 +367,33 @@ namespace AsyncLogic
         }
 
 
-        public Task<Value> VisitLambda<A>(LambdaExpression<A> lambda) where A : Expression
+        public async Task<Value> VisitLambda<A>(LambdaExpression<A> lambda) where A : Expression
         {
-            throw new NotImplementedException();
+            // can't really do much here
+            // do we normalise it, or just leave it as is?
+            return new LambdaValue(lambda.VariableName, lambda.Expression);
         }
 
 
-        public Task<Value> VisitApply<A>(Apply<A> apply) where A : Expression
+        public async Task<Value> VisitApply<A>(Apply<A> apply) where A : Expression
         {
+            // Find out what the lambda is, then evaluate it with the given expression
+            // Do we do a syntactic substitution?
+
+            // evaluate our lambda until we get an LambdaValue.  Then we substitute and continue.
+            var lambda = await apply.Lambda.Visit(this);
+            if (lambda is LambdaValue)
+            {
+                LambdaValue val = (LambdaValue)lambda;
+                VariableSubstituter subst = new VariableSubstituter(val.VariableName, apply.Expression);
+                var newExpr = subst.Substitute(val.Expression);
+                return await newExpr.Visit(this);
+            }
+            else
+            {
+                throw new ArgumentException("Value cannot be evaluated to a Lambda");
+            }
+            //VariableSubstituter subst = new VariableSubstituter(apply.va)
             throw new NotImplementedException();
         }
     }

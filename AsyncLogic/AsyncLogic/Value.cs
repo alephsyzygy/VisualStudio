@@ -181,4 +181,24 @@ namespace AsyncLogic
             return new PairValue<A, B>(l, r);
         }
     }
+
+    /// <summary>
+    /// A Lambda value.  Not much we can do with it.
+    /// </summary>
+    public class LambdaValue : Value
+    {
+        public string VariableName;
+        public Expression Expression;
+
+        public LambdaValue(string VariableName, Expression Expression)
+        {
+            this.VariableName = VariableName;
+            this.Expression = Expression;
+        }
+
+        public override string ToString()
+        {
+            return "{Lambda " + VariableName + " }";
+        }
+    }
 }

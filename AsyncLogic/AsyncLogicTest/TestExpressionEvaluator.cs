@@ -29,6 +29,46 @@ namespace AsyncLogicTest
         const string False = Loop;
 
         [TestMethod]
+        public void TestSubstitution()
+        {
+
+            var subst = new VariableSubstituter("n", two);
+            var result = n.Visit(subst);
+            Assert.AreEqual("2", testAsync(result, 200).Result);
+
+            result = zero.Visit(subst);
+            Assert.AreEqual("0", testAsync(result, 200).Result);
+
+            var exists = new NumExists("n", n == n);
+            result = exists.Visit(subst);
+            Assert.AreEqual(True, testAsync(result, 200).Result);
+
+            var test = new Apply<NumExpression>(new LambdaExpression<NumExpression>("n", n), two);
+            Assert.AreEqual("2", testAsync(test, 200).Result);
+
+            // test that substitution avoids explosions
+            var test2 = new Apply<LogicExpression>(new LambdaExpression<LogicExpression>("x", logicTrue), logicLoop);
+            Assert.AreEqual(True, testAsync(test2, 200).Result);
+
+            var test3 = new Apply<LogicExpression>(new LambdaExpression<LogicExpression>("x", logicLoop), logicTrue);
+            Assert.AreEqual(Loop, testAsync(test3, 500).Result);
+
+            var test4 = new Apply<LogicExpression>(new LambdaExpression<LogicExpression>("x", x & logicTrue), logicLoop);
+            Assert.AreEqual(Loop, testAsync(test4, 500).Result);
+
+            var test5 = new Apply<LogicExpression>(new LambdaExpression<LogicExpression>("x", x | logicTrue), logicLoop);
+            Assert.AreEqual(True, testAsync(test5, 500).Result);
+
+        }
+
+        [TestMethod]
+        public void TestLambdaEval()
+        {
+            var test1 = new LambdaExpression<LogicExpression>("x", x);
+            Assert.AreEqual("{Lambda x }", testAsync(test1, 200).Result);
+        }
+
+        [TestMethod]
         public void TestLambdas()
         {
             var test = new LambdaExpression<LogicExpression>("x", x);
@@ -99,7 +139,7 @@ namespace AsyncLogicTest
             Assert.AreEqual(True, testAsync(test4, defaultTimeout).Result);
 
             sw.Stop();
-            Assert.IsTrue(sw.ElapsedMilliseconds > 800, "This test should take at least 800ms");
+            Assert.IsTrue(sw.ElapsedMilliseconds > 700, "This test should take at least 800ms");
         }
 
         [TestMethod]
