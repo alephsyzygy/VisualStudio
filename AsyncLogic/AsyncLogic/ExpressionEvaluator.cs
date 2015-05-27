@@ -421,5 +421,31 @@ namespace AsyncLogic
             //VariableSubstituter subst = new VariableSubstituter(apply.va)
             throw new NotImplementedException();
         }
+
+
+        public async Task<Value> VisitPairVariable<A, B>(PairVariable<A, B> variable)
+            where A : Expression
+            where B : Expression
+        {
+            Value result = Context[variable.VariableName];
+            if (result == null)
+            {
+                await Task.Delay(10);
+                throw new ArgumentException("Variable not found in context");
+            }
+            return result;
+        }
+
+
+        public async Task<Value> VisitLambdaVariable<A>(LambdaVariable<A> variable) where A : Expression
+        {
+            Value result = Context[variable.VariableName];
+            if (result == null)
+            {
+                await Task.Delay(10);
+                throw new ArgumentException("Variable not found in context");
+            }
+            return result;
+        }
     }
 }

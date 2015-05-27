@@ -36,5 +36,10 @@ namespace AsyncLogic
             where A : Expression;
         T VisitApply<A>(Apply<A> apply)
             where A : Expression;
+        T VisitPairVariable<A,B>(PairVariable<A,B> variable)
+            where A : Expression
+            where B : Expression;
+        T VisitLambdaVariable<A>(LambdaVariable<A> variable)
+            where A : Expression;
     }
 }

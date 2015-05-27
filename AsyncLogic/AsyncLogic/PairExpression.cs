@@ -6,13 +6,19 @@ using System.Threading.Tasks;
 
 namespace AsyncLogic
 {
+    public abstract class AbstractPairExpression<A,B> : Expression
+        where A : Expression
+        where B : Expression
+    { }
+
     /// <summary>
     /// Represents a pairing expression
     /// </summary>
     /// <typeparam name="A">The left type of a pair</typeparam>
     /// <typeparam name="B">The right type of a pair</typeparam>
-    public class PairExpression<A,B> : Expression where A: Expression 
-                                                  where B: Expression
+    public class PairExpression<A,B> : AbstractPairExpression<A,B> 
+        where A: Expression                                          
+        where B: Expression
     {
         public A Left;
         public B Right;
@@ -26,6 +32,23 @@ namespace AsyncLogic
         public override T Visit<T>(IExpressionVisitor<T> visitor)
         {
             return visitor.VisitPair<A,B>(this);
+        }
+    }
+
+    public class PairVariable<A,B> : AbstractPairExpression<A,B>
+        where A : Expression
+        where B : Expression
+    {
+        public string VariableName;
+
+        public PairVariable(string VariableName)
+        {
+            this.VariableName = VariableName;
+        }
+
+        public override T Visit<T>(IExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitPairVariable(this);
         }
     }
 

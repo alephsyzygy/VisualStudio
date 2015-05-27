@@ -145,5 +145,25 @@ namespace AsyncLogic
             var expr = (A)apply.Expression.Visit(this);
             return new Apply<A>(lambda, expr);
         }
+
+
+        public Expression VisitPairVariable<A, B>(PairVariable<A, B> variable)
+            where A : Expression
+            where B : Expression
+        {
+            if (variable.VariableName == VariableName)
+                return Expression;
+            else
+                return variable;
+        }
+
+
+        public Expression VisitLambdaVariable<A>(LambdaVariable<A> variable) where A : Expression
+        {
+            if (variable.VariableName == VariableName)
+                return Expression;
+            else
+                return variable;
+        }
     }
 }

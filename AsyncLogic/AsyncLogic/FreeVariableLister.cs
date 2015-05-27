@@ -145,5 +145,21 @@ namespace AsyncLogic
             apply.Expression.Visit(this);
             return default(T);
         }
+
+
+        public T VisitPairVariable<A, B>(PairVariable<A, B> variable)
+            where A : Expression
+            where B : Expression
+        {
+            this.Variables.Add(variable.VariableName);
+            return default(T);
+        }
+
+
+        public T VisitLambdaVariable<A>(LambdaVariable<A> variable) where A : Expression
+        {
+            this.Variables.Add(variable.VariableName);
+            return default(T);
+        }
     }
 }
