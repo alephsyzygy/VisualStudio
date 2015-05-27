@@ -256,12 +256,22 @@ namespace AsyncLogicTest
             Assert.AreEqual("0", testAsync(test, 1000).Result);
 
             // Find the positive natural such that 2n=n^2
-            test = new NumThe("n", (n + n == n * n) & (n > zero));  
+            test = new NumThe("n", (logicLoop | (n + n == n * n) & (n > zero)) | logicLoop);  
             Assert.AreEqual("2", testAsync(test, 1000).Result);
 
             // Should fail
             test = new NumThe("n", (n == zero) & (n > zero));
             Assert.AreEqual(False, testAsync(test, 1000).Result);
+
+            test = new NumThe("n", (logicLoop | n == new NumConstant(50) | logicLoop));
+            Assert.AreEqual("50", testAsync(test, 1000).Result);
+
+            // Find the positive natural such that 2n=n^2 this time with logicFalse
+            test = new NumThe("n", ((n + n == n * n) & (n > zero)) | logicFalse);
+            Assert.AreEqual("2", testAsync(test, 1000).Result);
+
+            test = new NumThe("n", (n == new NumConstant(50) | logicFalse));
+            Assert.AreEqual("50", testAsync(test, 1000).Result);
         }
 
 

@@ -203,6 +203,9 @@ namespace AsyncLogic
             List<Task<Value>> runningTasks = new List<Task<Value>>();
             // Have a list of cancelTokens so that we can cancel once we have succeeded
             CancellationTokenSource tokenSource = new CancellationTokenSource();
+
+            // Store a mapping of tasks to their values
+            Dictionary<Task<Value>,int> taskDictionary = new Dictionary<Task<Value>,int>();
               
 
             while (!foundValue)
@@ -224,21 +227,36 @@ namespace AsyncLogic
                 // Add the new evaluator to our list of tasks
                 Task<Value> newTask = expression.Expression.Visit(nextEvaluator);
                 runningTasks.Add(newTask);
+                taskDictionary[newTask] = nextNum;
+
 
                 // create a new delay task to add to the list
                 Task<Value> delay = Delay<Value>(ExistsTimeout,CancelToken);
                 runningTasks.Add(delay);
+                
 
                 // Run the tasks until one completes
                 Task<Value> resultTask = await Task.WhenAny(runningTasks);
 
-                // If it is not the delay task we have a true result, so return it
+                // If it is not the delay task we have a result, so check to see if it is true
                 if (resultTask != delay)
                 {
-                    foundValue = true;
                     Value result = await resultTask;
-                    tokenSource.Cancel();  // cancel all tasks which were spawned
-                    return result;
+                    // Remove the tasks from the running
+                    runningTasks.Remove(resultTask);
+                    if (result is BoolValue)
+                    {
+                        if (((BoolValue)result).Value)
+                        {
+                            // We have a true result.
+                            tokenSource.Cancel();  // cancel all tasks which were spawned
+                            return result;
+                        }
+                    }
+                    else
+                    {
+                        throw new ArgumentException("In exists the predicate should evaluate to a BoolValue");
+                    }
                 }
                 else  // delay has fired, so remove it and loop to the next number
                 {
@@ -274,7 +292,9 @@ namespace AsyncLogic
             List<Task<Value>> runningTasks = new List<Task<Value>>();
             // Have a list of cancelTokens so that we can cancel once we have succeeded
             CancellationTokenSource tokenSource = new CancellationTokenSource();
-           
+
+            // Store a mapping of tasks to their values
+            Dictionary<Task<Value>, int> taskDictionary = new Dictionary<Task<Value>, int>();
 
             while (!foundValue)
             {
@@ -294,6 +314,7 @@ namespace AsyncLogic
                 // Add the new evaluator to our list of tasks
                 Task<Value> newTask = expression.Expression.Visit(nextEvaluator);
                 runningTasks.Add(newTask);
+                taskDictionary[newTask] = nextNum;
 
                 // create a new delay task to add to the list
                 Task<Value> delay = Delay<Value>(ExistsTimeout,CancelToken);
@@ -305,17 +326,21 @@ namespace AsyncLogic
                 // If it is not the delay task we have a true result, so return it
                 if (resultTask != delay)
                 {
-                    foundValue = true;
                     Value resultValue = await resultTask;
+                    runningTasks.Remove(resultTask);
                     if (resultValue is BoolValue)
                         if (((BoolValue)resultValue).Value)
                         {
                             // cancel all running tasks
                             tokenSource.Cancel();
-                            return new NumValue(runningTasks.IndexOf(resultTask));
+                            return new NumValue(taskDictionary[resultTask]);
                         }
                         else
-                            throw new ArgumentException("For 'the' the expression should return true");
+                        {
+                            // expression is false, so remove from dictionary
+                            taskDictionary.Remove(resultTask);
+                        }
+
                     else
                         throw new ArgumentException("For 'the' the predicate should have a logic value");
                 }
