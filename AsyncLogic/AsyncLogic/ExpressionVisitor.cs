@@ -26,11 +26,15 @@ namespace AsyncLogic
         T VisitPair<A, B>(PairExpression<A, B> expression) 
             where A : Expression 
             where B : Expression;
-        T VisitLeft<A, B>(ProjL<A,B> expression)
+        T VisitLeft<A, B>(ProjL<A,B> pair)
             where A : Expression
             where B : Expression;
-        T VisitRight<A, B>(ProjR<A, B> expression)
+        T VisitRight<A, B>(ProjR<A, B> pair)
             where A : Expression
             where B : Expression;
+        T VisitLambda<A>(LambdaExpression<A> lambda)
+            where A : Expression;
+        T VisitApply<A>(Apply<A> apply)
+            where A : Expression;
     }
 }

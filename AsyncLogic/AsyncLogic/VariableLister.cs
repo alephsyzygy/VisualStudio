@@ -126,5 +126,20 @@ namespace AsyncLogic
             expression.Expression.Visit(this);
             return default(T);
         }
+
+
+        public T VisitLambda<A>(LambdaExpression<A> lambda) where A : Expression
+        {
+            lambda.Expression.Visit(this);
+            return default(T);
+        }
+
+
+        public T VisitApply<A>(Apply<A> apply) where A : Expression
+        {
+            apply.Lambda.Visit(this);
+            apply.Expression.Visit(this);
+            return default(T);
+        }
     }
 }

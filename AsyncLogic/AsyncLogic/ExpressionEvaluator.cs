@@ -207,6 +207,11 @@ namespace AsyncLogic
 
             while (!foundValue)
             {
+                // See if we have been canceled.  If so cancel everything
+                if (CancelToken != null && CancelToken.IsCancellationRequested)
+                {
+                    tokenSource.Cancel();
+                }
                 
                 // Clone the context
                 Dictionary<string,Value> newContext = (from x in Context
@@ -273,7 +278,11 @@ namespace AsyncLogic
 
             while (!foundValue)
             {
-
+                // See if we have been canceled.  If so cancel everything
+                if (CancelToken != null && CancelToken.IsCancellationRequested)
+                {
+                    tokenSource.Cancel();
+                }
                 // Clone the context
                 Dictionary<string, Value> newContext = (from x in Context
                                                         select x).ToDictionary(x => x.Key, x => x.Value);
@@ -355,6 +364,18 @@ namespace AsyncLogic
                 return await (value as PotentialPairValue<Value, Value>).Right;
             else
                 throw new ArgumentException("Not a pair value");
+        }
+
+
+        public Task<Value> VisitLambda<A>(LambdaExpression<A> lambda) where A : Expression
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public Task<Value> VisitApply<A>(Apply<A> apply) where A : Expression
+        {
+            throw new NotImplementedException();
         }
     }
 }

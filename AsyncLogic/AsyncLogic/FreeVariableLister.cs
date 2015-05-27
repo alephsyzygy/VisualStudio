@@ -128,5 +128,22 @@ namespace AsyncLogic
             expression.Expression.Visit(this);
             return default(T);
         }
+
+
+        public T VisitLambda<A>(LambdaExpression<A> lambda) where A : Expression
+        {
+            // Lambda is a binder, so remove it from the free variable list
+            lambda.Expression.Visit(this);
+            this.Variables.Remove(lambda.VariableName);
+            return default(T);
+        }
+
+
+        public T VisitApply<A>(Apply<A> apply) where A : Expression
+        {
+            apply.Lambda.Visit(this);
+            apply.Expression.Visit(this);
+            return default(T);
+        }
     }
 }

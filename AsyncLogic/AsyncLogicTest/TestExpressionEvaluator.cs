@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using AsyncLogic;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -14,16 +15,38 @@ namespace AsyncLogicTest
     public class TestExpressionEvaluator
     {
         const int defaultTimeout = 500;  // 0.5 seconds
+        static NumExpression n = new NumVariable("n");
         static LogicExpression logicTrue = new LogicTrue();
         static LogicExpression logicFalse = new LogicFalse();
+        static LogicExpression logicLoop = new NumExists("n", n < n); // this expression loops forever
         static LogicExpression x = new LogicVariable("x");
         static NumExpression zero = new NumConstant(0);
         static NumExpression two = new NumConstant(2);
-        static NumExpression n = new NumVariable("n");
-        static LogicExpression logicLoop = new NumExists("n", n < n); // this expression loops forever
+
+
         const string True = "True";
         const string Loop = "False";
         const string False = Loop;
+
+        [TestMethod]
+        public void TestLambdas()
+        {
+            var test = new LambdaExpression<LogicExpression>("x", x);
+            VariableLister<bool> lister = new VariableLister<bool>();
+            test.Visit(lister);
+            Assert.AreEqual(1, lister.Variables.Count);
+            Assert.IsTrue(lister.Variables.Contains("x"));
+
+            test = new LambdaExpression<LogicExpression>("x", x);
+            FreeVariableLister<bool> freeLister = new FreeVariableLister<bool>();
+            test.Visit(freeLister);
+            Assert.AreEqual(0, freeLister.Variables.Count);
+
+            test = new LambdaExpression<LogicExpression>("x", logicLoop);
+            freeLister = new FreeVariableLister<bool>();
+            test.Visit(freeLister);
+            Assert.AreEqual(0, freeLister.Variables.Count);
+        }
 
         [TestMethod]
         public void TestPairs()
@@ -212,35 +235,48 @@ namespace AsyncLogicTest
         /// <returns>The strings "True" or "False"</returns>
         private static async Task<string> testAsync(Expression Expression, int timeout)
         {
-
+            CancellationTokenSource source = new CancellationTokenSource();
             ExpressionEvaluator evaluator = new ExpressionEvaluator();
-            //var task = Expression.Visit(evaluator);
+            evaluator.CancelToken = source.Token;
+            
             var task = evaluator.Run(Expression);
 
             if (await Task<Value>.WhenAny<Value>(task, Delay<Value>(timeout)) == task)
             {
                 //var result = task.Result.ToStringAsync();
+                
                 var result = task.Result.Normalize();
                 if (await Task<Value>.WhenAny<Value>(result, Delay<Value>(timeout)) == result)
+                {
+                    source.Cancel();
                     return result.Result.ToString();
+                }
                 else
+                {
+                    source.Cancel();
                     return Loop;
+                }
 
             }
+            source.Cancel();
             return Loop;
         }
 
         private static async Task<string> testAsync(Expression Expression, int timeout, Dictionary<string,Value> Context)
         {
-
+            CancellationTokenSource source = new CancellationTokenSource();
             ExpressionEvaluator evaluator = new ExpressionEvaluator(Context);
-            //var task = Expression.Visit(evaluator);
+            evaluator.CancelToken = source.Token;
+
             var task = evaluator.Run(Expression);
 
             if (await Task<Value>.WhenAny<Value>(task, Delay<Value>(timeout)) == task)
             {
+                source.Cancel();
                 return task.Result.ToString();
             }
+
+            source.Cancel();
             return "False";
         }
 

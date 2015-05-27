@@ -188,5 +188,22 @@ namespace AsyncLogic
         }
     }
 
+    public class Apply<A> : LogicExpression
+        where A : Expression
+    {
+        public LambdaExpression<A> Lambda;
+        public A Expression;
+
+        public Apply(LambdaExpression<A> Lambda, A Expression)
+        {
+            this.Lambda = Lambda;
+            this.Expression = Expression;
+        }
+
+        public override T Visit<T>(IExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitApply(this);
+        }
+    }
    
 }

@@ -46,6 +46,7 @@
     <Compile Include="ExpressionEvaluator.cs" />
     <Compile Include="ExpressionVisitor.cs" />
     <Compile Include="FreeVariableLister.cs" />
+    <Compile Include="LambdaExpression.cs" />
     <Compile Include="LogicExpression.cs" />
     <Compile Include="NumExpression.cs" />
     <Compile Include="PairExpression.cs" />
