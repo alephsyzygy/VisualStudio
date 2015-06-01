@@ -54,6 +54,7 @@
     <Compile Include="NumExpression.cs" />
     <Compile Include="PairExpression.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Types.cs" />
     <Compile Include="Value.cs" />
     <Compile Include="VariableLister.cs" />
     <Compile Include="VariableSubstituter.cs" />

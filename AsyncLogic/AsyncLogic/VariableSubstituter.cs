@@ -103,53 +103,45 @@ namespace AsyncLogic
             }
         }
 
-        public Expression VisitPair<A, B>(PairExpression<A, B> expression)
-            where A : Expression
-            where B : Expression
+        public Expression VisitPair(PairExpression expression)
         {
-            var left = (A)expression.Left.Visit(this);
-            var right = (B)expression.Right.Visit(this);
-            return new PairExpression<A,B>(left, right);
+            var left = expression.Left.Visit(this);
+            var right = expression.Right.Visit(this);
+            return new PairExpression(left, right);
         }
 
-        public Expression VisitLeft<A, B>(ProjL<A, B> pair)
-            where A : Expression
-            where B : Expression
+        public Expression VisitLeft(ProjL pair)
         {
-            var expr = (PairExpression<A,B>)pair.Expression.Visit(this);
-            return new ProjL<A,B>(expr);
+            var expr = (PairExpression)pair.Expression.Visit(this);
+            return new ProjL(expr);
         }
 
-        public Expression VisitRight<A, B>(ProjR<A, B> pair)
-            where A : Expression
-            where B : Expression
+        public Expression VisitRight(ProjR pair)
         {
-            var expr = (PairExpression<A, B>)pair.Expression.Visit(this);
-            return new ProjR<A, B>(expr);
+            var expr = (PairExpression)pair.Expression.Visit(this);
+            return new ProjR(expr);
         }
 
-        public Expression VisitLambda<A>(LambdaExpression<A> lambda) where A : Expression
+        public Expression VisitLambda(LambdaExpression lambda) 
         {
             if (lambda.VariableName == VariableName)
                 return lambda; // variable is shadowed
             else
             {
-                var expr = (A)lambda.Expression.Visit(this);
-                return new LambdaExpression<A>(lambda.VariableName, expr);
+                var expr = lambda.Expression.Visit(this);
+                return new LambdaExpression(lambda.VariableName, expr);
             }
         }
 
-        public Expression VisitApply<A>(Apply<A> apply) where A : Expression
+        public Expression VisitApply(Apply apply)
         {
-            var lambda = (LambdaExpression<A>)apply.Lambda.Visit(this);
-            var expr = (A)apply.Expression.Visit(this);
-            return new Apply<A>(lambda, expr);
+            var lambda = (LambdaExpression)apply.Lambda.Visit(this);
+            var expr = apply.Expression.Visit(this);
+            return new Apply(lambda, expr);
         }
 
 
-        public Expression VisitPairVariable<A, B>(PairVariable<A, B> variable)
-            where A : Expression
-            where B : Expression
+        public Expression VisitPairVariable(PairVariable variable)
         {
             if (variable.VariableName == VariableName)
                 return Expression;
@@ -158,7 +150,7 @@ namespace AsyncLogic
         }
 
 
-        public Expression VisitLambdaVariable<A>(LambdaVariable<A> variable) where A : Expression
+        public Expression VisitLambdaVariable(LambdaVariable variable)
         {
             if (variable.VariableName == VariableName)
                 return Expression;

@@ -6,9 +6,7 @@ using System.Threading.Tasks;
 
 namespace AsyncLogic
 {
-    public abstract class AbstractPairExpression<A,B> : Expression
-        where A : Expression
-        where B : Expression
+    public abstract class AbstractPairExpression : Expression
     { }
 
     /// <summary>
@@ -16,14 +14,12 @@ namespace AsyncLogic
     /// </summary>
     /// <typeparam name="A">The left type of a pair</typeparam>
     /// <typeparam name="B">The right type of a pair</typeparam>
-    public class PairExpression<A,B> : AbstractPairExpression<A,B> 
-        where A: Expression                                          
-        where B: Expression
+    public class PairExpression : AbstractPairExpression
     {
-        public A Left;
-        public B Right;
+        public Expression Left;
+        public Expression Right;
 
-        public PairExpression(A Left, B Right)
+        public PairExpression(Expression Left, Expression Right)
         {
             this.Left = Left;
             this.Right = Right;
@@ -31,13 +27,11 @@ namespace AsyncLogic
 
         public override T Visit<T>(IExpressionVisitor<T> visitor)
         {
-            return visitor.VisitPair<A,B>(this);
+            return visitor.VisitPair(this);
         }
     }
 
-    public class PairVariable<A,B> : AbstractPairExpression<A,B>
-        where A : Expression
-        where B : Expression
+    public class PairVariable: AbstractPairExpression
     {
         public string VariableName;
 
@@ -52,13 +46,11 @@ namespace AsyncLogic
         }
     }
 
-    public class ProjL<A,B> : Expression
-        where A : Expression
-        where B : Expression
+    public class ProjL : Expression
     {
-        public PairExpression<A, B> Expression;
+        public PairExpression Expression;
 
-        public ProjL(PairExpression<A,B> Expression)
+        public ProjL(PairExpression Expression)
         {
             this.Expression = Expression;
         }
@@ -69,13 +61,11 @@ namespace AsyncLogic
         }
     }
 
-    public class ProjR<A, B> : Expression
-        where A : Expression
-        where B : Expression
+    public class ProjR : Expression
     {
-        public PairExpression<A, B> Expression;
+        public PairExpression Expression;
 
-        public ProjR(PairExpression<A, B> Expression)
+        public ProjR(PairExpression Expression)
         {
             this.Expression = Expression;
         }

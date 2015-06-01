@@ -10,7 +10,7 @@ namespace AsyncLogic
     /// Visitor interface to visit an Expression
     /// </summary>
     /// <typeparam name="T">The return type</typeparam>
-    public interface IExpressionVisitor<T> 
+    public interface IExpressionVisitor<out T> 
     {
         T VisitLogicVariable(LogicVariable variable);
         T VisitTrue(LogicTrue constant);
@@ -23,23 +23,12 @@ namespace AsyncLogic
         T VisitNumRel(NumRelation relation);
         T VisitNumExists(NumExists expression);
         T VisitNumThe(NumThe expression);
-        T VisitPair<A, B>(PairExpression<A, B> expression) 
-            where A : Expression 
-            where B : Expression;
-        T VisitLeft<A, B>(ProjL<A,B> pair)
-            where A : Expression
-            where B : Expression;
-        T VisitRight<A, B>(ProjR<A, B> pair)
-            where A : Expression
-            where B : Expression;
-        T VisitLambda<A>(LambdaExpression<A> lambda)
-            where A : Expression;
-        T VisitApply<A>(Apply<A> apply)
-            where A : Expression;
-        T VisitPairVariable<A,B>(PairVariable<A,B> variable)
-            where A : Expression
-            where B : Expression;
-        T VisitLambdaVariable<A>(LambdaVariable<A> variable)
-            where A : Expression;
+        T VisitPair(PairExpression expression);
+        T VisitLeft(ProjL pair);
+        T VisitRight(ProjR pair);
+        T VisitLambda(LambdaExpression lambda);
+        T VisitApply(Apply apply);
+        T VisitPairVariable(PairVariable variable);
+        T VisitLambdaVariable(LambdaVariable variable);
     }
 }

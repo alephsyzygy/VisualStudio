@@ -356,9 +356,7 @@ namespace AsyncLogic
         }
 
 
-        public async Task<Value> VisitPair<A, B>(PairExpression<A, B> expression)
-            where A : Expression
-            where B : Expression
+        public async Task<Value> VisitPair(PairExpression expression)
         {
             // Don't actually do these, let someone else do them
             var left = expression.Left.Visit(this);
@@ -368,9 +366,7 @@ namespace AsyncLogic
         }
 
 
-        public async Task<Value> VisitLeft<A, B>(ProjL<A, B> expression)
-            where A : Expression
-            where B : Expression
+        public async Task<Value> VisitLeft(ProjL expression)
         {
             // idea here is to extract the PairValue then return its left entry.
             var value = await expression.Expression.Visit(this);
@@ -380,9 +376,7 @@ namespace AsyncLogic
                 throw new ArgumentException("Not a pair value");
         }
 
-        public async Task<Value> VisitRight<A, B>(ProjR<A, B> expression)
-            where A : Expression
-            where B : Expression
+        public async Task<Value> VisitRight(ProjR expression)
         {
             var value = await expression.Expression.Visit(this);
             if (value is PotentialPairValue<Value, Value>)
@@ -392,7 +386,7 @@ namespace AsyncLogic
         }
 
 
-        public async Task<Value> VisitLambda<A>(LambdaExpression<A> lambda) where A : Expression
+        public async Task<Value> VisitLambda(LambdaExpression lambda) 
         {
             // can't really do much here
             // do we normalise it, or just leave it as is?
@@ -400,7 +394,7 @@ namespace AsyncLogic
         }
 
 
-        public async Task<Value> VisitApply<A>(Apply<A> apply) where A : Expression
+        public async Task<Value> VisitApply(Apply apply)
         {
             // Find out what the lambda is, then evaluate it with the given expression
             // Do we do a syntactic substitution?
@@ -423,9 +417,7 @@ namespace AsyncLogic
         }
 
 
-        public async Task<Value> VisitPairVariable<A, B>(PairVariable<A, B> variable)
-            where A : Expression
-            where B : Expression
+        public async Task<Value> VisitPairVariable(PairVariable variable)
         {
             Value result = Context[variable.VariableName];
             if (result == null)
@@ -437,7 +429,7 @@ namespace AsyncLogic
         }
 
 
-        public async Task<Value> VisitLambdaVariable<A>(LambdaVariable<A> variable) where A : Expression
+        public async Task<Value> VisitLambdaVariable(LambdaVariable variable)
         {
             Value result = Context[variable.VariableName];
             if (result == null)

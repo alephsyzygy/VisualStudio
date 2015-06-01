@@ -58,6 +58,7 @@ namespace AsyncLogic
         public LogicVariable(string name)
         {
             VariableName = name;
+            this.Type = Type.SigmaType;
         }
     }
 
@@ -66,6 +67,11 @@ namespace AsyncLogic
     /// </summary>
     public class LogicTrue : LogicExpression
     {
+        public LogicTrue()
+        {
+            this.Type = Type.SigmaType;
+        }
+        
         public override T Visit<T>(IExpressionVisitor<T> visitor)
         {
             return visitor.VisitTrue(this);
@@ -78,6 +84,11 @@ namespace AsyncLogic
     /// </summary>
     public class LogicFalse : LogicExpression
     {
+        public LogicFalse()
+        {
+            this.Type = Type.SigmaType;
+        }
+
         public override T Visit<T>(IExpressionVisitor<T> visitor)
         {
             return visitor.VisitFalse(this);
@@ -106,6 +117,9 @@ namespace AsyncLogic
         {
             this.Left = LeftExpression;
             this.Right = RightExpression;
+            if (LeftExpression.Type != Type.SigmaType || RightExpression.Type != Type.SigmaType)
+                throw new ArgumentException();
+            this.Type = Type.SigmaType;
         }
     }
 
@@ -131,6 +145,9 @@ namespace AsyncLogic
         {
             this.Left = LeftExpression;
             this.Right = RightExpression;
+            if (LeftExpression.Type != Type.SigmaType || RightExpression.Type != Type.SigmaType)
+                throw new ArgumentException();
+            this.Type = Type.SigmaType;
         }
     }
 
@@ -162,6 +179,9 @@ namespace AsyncLogic
             this.Relation = Relation;
             this.Left = Left;
             this.Right = Right;
+            //if (Left.Type != Type.NumType || Right.Type != Type.NumType)
+            //    throw new ArgumentException();
+            this.Type = Type.SigmaType;
         }
 
         public override T Visit<T>(IExpressionVisitor<T> visitor)
@@ -180,6 +200,9 @@ namespace AsyncLogic
         {
             this.VariableName = VariableName;
             this.Expression = Expression;
+            this.Type = Type.SigmaType;
+            if (Expression.Type != Type.SigmaType)
+                throw new ArgumentException();
         }
 
         public override T Visit<T>(IExpressionVisitor<T> visitor)
@@ -188,16 +211,17 @@ namespace AsyncLogic
         }
     }
 
-    public class Apply<A> : LogicExpression
-        where A : Expression
+    public class Apply : LogicExpression
     {
-        public LambdaExpression<A> Lambda;
-        public A Expression;
+        public LambdaExpression Lambda;
+        public Expression Expression;
 
-        public Apply(LambdaExpression<A> Lambda, A Expression)
+        public Apply(LambdaExpression Lambda, Expression Expression)
         {
             this.Lambda = Lambda;
             this.Expression = Expression;
+            //if (Expression.Type != Lambda.)
+            //    throw new ArgumentException();
         }
 
         public override T Visit<T>(IExpressionVisitor<T> visitor)

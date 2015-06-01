@@ -43,20 +43,20 @@ namespace AsyncLogicTest
             result = exists.Visit(subst);
             Assert.AreEqual(True, testAsync(result, 200).Result);
 
-            var test = new Apply<NumExpression>(new LambdaExpression<NumExpression>("n", n), two);
+            var test = new Apply(new LambdaExpression("n", n), two);
             Assert.AreEqual("2", testAsync(test, 200).Result);
 
             // test that substitution avoids explosions
-            var test2 = new Apply<LogicExpression>(new LambdaExpression<LogicExpression>("x", logicTrue), logicLoop);
+            var test2 = new Apply(new LambdaExpression("x", logicTrue), logicLoop);
             Assert.AreEqual(True, testAsync(test2, 200).Result);
 
-            var test3 = new Apply<LogicExpression>(new LambdaExpression<LogicExpression>("x", logicLoop), logicTrue);
+            var test3 = new Apply(new LambdaExpression("x", logicLoop), logicTrue);
             Assert.AreEqual(Loop, testAsync(test3, 500).Result);
 
-            var test4 = new Apply<LogicExpression>(new LambdaExpression<LogicExpression>("x", x & logicTrue), logicLoop);
+            var test4 = new Apply(new LambdaExpression("x", x & logicTrue), logicLoop);
             Assert.AreEqual(Loop, testAsync(test4, 500).Result);
 
-            var test5 = new Apply<LogicExpression>(new LambdaExpression<LogicExpression>("x", x | logicTrue), logicLoop);
+            var test5 = new Apply(new LambdaExpression("x", x | logicTrue), logicLoop);
             Assert.AreEqual(True, testAsync(test5, 500).Result);
 
         }
@@ -64,25 +64,25 @@ namespace AsyncLogicTest
         [TestMethod]
         public void TestLambdaEval()
         {
-            var test1 = new LambdaExpression<LogicExpression>("x", x);
+            var test1 = new LambdaExpression("x", x);
             Assert.AreEqual("{Lambda x }", testAsync(test1, 200).Result);
         }
 
         [TestMethod]
         public void TestLambdas()
         {
-            var test = new LambdaExpression<LogicExpression>("x", x);
+            var test = new LambdaExpression("x", x);
             VariableLister<bool> lister = new VariableLister<bool>();
             test.Visit(lister);
             Assert.AreEqual(1, lister.Variables.Count);
             Assert.IsTrue(lister.Variables.Contains("x"));
 
-            test = new LambdaExpression<LogicExpression>("x", x);
+            test = new LambdaExpression("x", x);
             FreeVariableLister<bool> freeLister = new FreeVariableLister<bool>();
             test.Visit(freeLister);
             Assert.AreEqual(0, freeLister.Variables.Count);
 
-            test = new LambdaExpression<LogicExpression>("x", logicLoop);
+            test = new LambdaExpression("x", logicLoop);
             freeLister = new FreeVariableLister<bool>();
             test.Visit(freeLister);
             Assert.AreEqual(0, freeLister.Variables.Count);
@@ -95,22 +95,22 @@ namespace AsyncLogicTest
             Value pair = new PairValue<NumValue, NumValue>(valueTwo, valueTwo);
             Assert.AreEqual("< 2 , 2 >", pair.ToString());
 
-            Expression test = new PairExpression<NumExpression,NumExpression>(two, two);
+            Expression test = new PairExpression(two, two);
             Assert.AreEqual("< 2 , 2 >", testAsync(test, 500).Result);
 
-            var trueTest = new PairExpression<LogicExpression, LogicExpression>(logicTrue, logicTrue);
+            var trueTest = new PairExpression(logicTrue, logicTrue);
             Assert.AreEqual("< True , True >", testAsync(trueTest, 500).Result);
 
-            var loopTest = new PairExpression<LogicExpression, LogicExpression>(logicLoop, logicTrue);
+            var loopTest = new PairExpression(logicLoop, logicTrue);
             Assert.AreEqual(False, testAsync(loopTest, 500).Result);
 
-            var pairTest = new ProjL<LogicExpression, LogicExpression>(trueTest);
+            var pairTest = new ProjL(trueTest);
             Assert.AreEqual(True, testAsync(pairTest, 500).Result);
 
-            var pairLoop = new ProjR<LogicExpression, LogicExpression>(loopTest);
+            var pairLoop = new ProjR(loopTest);
             Assert.AreEqual(True, testAsync(pairLoop, 500).Result);
 
-            var pairLoop2 = new ProjL<LogicExpression, LogicExpression>(loopTest);
+            var pairLoop2 = new ProjL(loopTest);
             Assert.AreEqual(Loop, testAsync(pairLoop2, 500).Result);
         }
 

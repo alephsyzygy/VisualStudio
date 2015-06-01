@@ -103,9 +103,7 @@ namespace AsyncLogic
         }
 
 
-        public T VisitPair<A, B>(PairExpression<A, B> expression)
-            where A : Expression
-            where B : Expression
+        public T VisitPair(PairExpression expression)
         {
             expression.Left.Visit(this);
             expression.Right.Visit(this);
@@ -113,24 +111,20 @@ namespace AsyncLogic
         }
 
 
-        public T VisitLeft<A, B>(ProjL<A, B> expression)
-            where A : Expression
-            where B : Expression
+        public T VisitLeft(ProjL expression)
         {
             expression.Expression.Visit(this);
             return default(T);
         }
 
-        public T VisitRight<A, B>(ProjR<A, B> expression)
-            where A : Expression
-            where B : Expression
+        public T VisitRight(ProjR expression)
         {
             expression.Expression.Visit(this);
             return default(T);
         }
 
 
-        public T VisitLambda<A>(LambdaExpression<A> lambda) where A : Expression
+        public T VisitLambda(LambdaExpression lambda)
         {
             // Lambda is a binder, so remove it from the free variable list
             lambda.Expression.Visit(this);
@@ -139,7 +133,7 @@ namespace AsyncLogic
         }
 
 
-        public T VisitApply<A>(Apply<A> apply) where A : Expression
+        public T VisitApply(Apply apply) 
         {
             apply.Lambda.Visit(this);
             apply.Expression.Visit(this);
@@ -147,16 +141,14 @@ namespace AsyncLogic
         }
 
 
-        public T VisitPairVariable<A, B>(PairVariable<A, B> variable)
-            where A : Expression
-            where B : Expression
+        public T VisitPairVariable(PairVariable variable)
         {
             this.Variables.Add(variable.VariableName);
             return default(T);
         }
 
 
-        public T VisitLambdaVariable<A>(LambdaVariable<A> variable) where A : Expression
+        public T VisitLambdaVariable(LambdaVariable variable) 
         {
             this.Variables.Add(variable.VariableName);
             return default(T);

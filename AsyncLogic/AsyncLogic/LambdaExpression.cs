@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace AsyncLogic
 {
-    public abstract class AbstractLambdaExpression<A> : Expression
-        where A : Expression
+    public abstract class AbstractLambdaExpression : Expression
     { }
 
     /// <summary>
@@ -15,13 +14,12 @@ namespace AsyncLogic
     /// Note that the return type of a lambda is restricted to logical values only.
     /// </summary>
     /// <typeparam name="A">The type of the input</typeparam>
-    public class LambdaExpression<A> : AbstractLambdaExpression<A>
-        where A : Expression
+    public class LambdaExpression : AbstractLambdaExpression
     {
         public string VariableName;
-        public A Expression;
+        public Expression Expression;
 
-        public LambdaExpression(string VariableName, A Expression)
+        public LambdaExpression(string VariableName, Expression Expression)
         {
             this.VariableName = VariableName;
             this.Expression = Expression;
@@ -33,8 +31,7 @@ namespace AsyncLogic
         }
     }
 
-    public class LambdaVariable<A> : AbstractLambdaExpression<A>
-        where A : Expression
+    public class LambdaVariable : AbstractLambdaExpression
     {
         public string VariableName;
 
