@@ -68,6 +68,12 @@ namespace AsyncLogicTest
             test.Visit(lister);
             Assert.AreEqual(0, lister.Variables.Count);
             //Assert.IsTrue(lister.Variables.Contains("n"));
+
+            // this test shows that the original method does not work
+            test = n == n & new NumExists("n", n == two);
+            lister = new FreeVariableLister<bool>();
+            test.Visit(lister);
+            Assert.AreEqual(1, lister.Variables.Count);
         }
     }
 }

@@ -150,5 +150,14 @@ namespace AsyncLogic
             return default(T);
         }
 
+
+
+        public T VisitRec(RecExpression rec)
+        {
+            rec.Input.Visit(this);
+            rec.Start.Visit(this);
+            rec.Step.Visit(this);
+            return default(T);
+        }
     }
 }

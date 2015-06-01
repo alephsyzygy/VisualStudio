@@ -30,5 +30,6 @@ namespace AsyncLogic
         T VisitApply(Apply apply);
         T VisitPairVariable(PairVariable variable);
         T VisitLambdaVariable(LambdaVariable variable);
+        T VisitRec(RecExpression rec);
     }
 }

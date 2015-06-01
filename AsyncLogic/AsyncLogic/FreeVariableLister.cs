@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace AsyncLogic
 {
+    // WARNING: this does not work correctly.
     /// <summary>
     /// A visitor object to construct the set of all variables
     /// </summary>
@@ -151,6 +152,18 @@ namespace AsyncLogic
         public T VisitLambdaVariable(LambdaVariable variable) 
         {
             this.Variables.Add(variable.VariableName);
+            return default(T);
+        }
+
+
+        public T VisitRec(RecExpression rec)
+        {
+            rec.Input.Visit(this);
+            rec.Start.Visit(this);
+            rec.Step.Visit(this);
+
+            this.Variables.Remove(rec.NumVariableName);
+            this.Variables.Remove(rec.AccVariableName);
             return default(T);
         }
     }

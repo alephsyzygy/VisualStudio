@@ -439,5 +439,11 @@ namespace AsyncLogic
             }
             return result;
         }
+
+
+        public Task<Value> VisitRec(RecExpression rec)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

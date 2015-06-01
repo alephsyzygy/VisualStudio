@@ -157,5 +157,19 @@ namespace AsyncLogic
             else
                 return variable;
         }
+
+
+        public Expression VisitRec(RecExpression rec)
+        {
+            var input = (NumExpression)rec.Input.Visit(this);
+            var start = (NumExpression)rec.Start.Visit(this);
+            if (rec.NumVariableName != VariableName && rec.AccVariableName != VariableName)
+            {
+                var step = rec.Step.Visit(this);
+                return new RecExpression(input, start, rec.NumVariableName, rec.AccVariableName, step);
+            }
+            else  // our variable is shadowed by one of the two binders in rec
+                return new RecExpression(input, start, rec.NumVariableName, rec.AccVariableName, rec.Step);
+        }
     }
 }
