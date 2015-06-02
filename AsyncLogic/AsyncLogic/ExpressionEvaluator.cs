@@ -441,8 +441,35 @@ namespace AsyncLogic
         }
 
 
-        public Task<Value> VisitRec(RecExpression rec)
+        public async Task<Value> VisitRecNum(RecNumExpression rec)
         {
+            // A rec has an input, a start, and a step, which itself has two free vars
+            // The idea is to find out what value the input is.
+            // if it is zero we return the start
+            // otherwise we evaluate the rec with an input one less, then put this through the step
+
+            Value input = await Run(rec.Input);  // we need this
+            if (input is NumValue)
+            {
+                NumValue num = input as NumValue;
+                if (num.Value == 0)
+                    return await Run(rec.Start);
+                else
+                {
+                    // this looks bad.  Fix it
+                    NumValue newNum = new NumValue(num.Value - 1);
+                    VariableSubstituter substNum = new VariableSubstituter(rec.NumVariableName, new NumConstant(num.Value));
+                    Expression newRec = new RecNumExpression(new NumConstant(num.Value - 1), rec.Start, rec.NumVariableName,
+                        rec.AccVariableName, rec.Step);
+                    VariableSubstituter substAcc = new VariableSubstituter(rec.AccVariableName, newRec);
+                    Expression temp = substNum.Substitute(rec.Step);
+                    Expression temp2 = substAcc.Substitute(temp);
+                    return await Run(temp2);
+                }
+            }
+            else
+                throw new ArgumentException("In rec the input should evaluate to a Num");
+
             throw new NotImplementedException();
         }
     }

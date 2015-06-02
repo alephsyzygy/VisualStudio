@@ -21,12 +21,24 @@ namespace AsyncLogicTest
         static LogicExpression logicLoop = new NumExists("n", n < n); // this expression loops forever
         static LogicExpression x = new LogicVariable("x");
         static NumExpression zero = new NumConstant(0);
+        static NumExpression one = new NumConstant(1);
         static NumExpression two = new NumConstant(2);
 
 
         const string True = "True";
         const string Loop = "False";
         const string False = Loop;
+
+        [TestMethod]
+        public void TestRec()
+        {
+            var step = n + one;
+            var rec = new RecNumExpression(two, zero, "x", "n", step);
+            Assert.AreEqual("2", testAsync(rec, 200).Result);
+
+            rec = new RecNumExpression(two, two, "x", "n", step);
+            Assert.AreEqual("4", testAsync(rec, 200).Result);
+        }
 
         [TestMethod]
         public void TestSubstitution()

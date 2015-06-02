@@ -151,7 +151,7 @@ namespace AsyncLogic
         }
 
 
-        public SortedSet<string> VisitRec(RecExpression rec)
+        public SortedSet<string> VisitRecNum(RecNumExpression rec)
         {
             // First find free variables in the step
             var vars = Run(rec.Step);

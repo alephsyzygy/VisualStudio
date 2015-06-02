@@ -152,7 +152,7 @@ namespace AsyncLogic
 
 
 
-        public T VisitRec(RecExpression rec)
+        public T VisitRecNum(RecNumExpression rec)
         {
             rec.Input.Visit(this);
             rec.Start.Visit(this);
