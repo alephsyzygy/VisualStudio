@@ -10,161 +10,160 @@ namespace AsyncLogic
     /// <summary>
     /// A visitor object to construct the set of all variables
     /// </summary>
-    /// <typeparam name="T">Phantom type, not used</typeparam>
-    public class FreeVariableLister<T> : IExpressionVisitor<T>
+    public class FreeVariableLister : IExpressionVisitor<SortedSet<string>>
     {
-        /// <summary>
-        /// The SortedSet of the variables
-        /// </summary>
-        public SortedSet<string> Variables;
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        public FreeVariableLister()
+        public SortedSet<string> Run (Expression Expr)
         {
-            Variables = new SortedSet<string>();
+            return Expr.Visit(this);
         }
 
-        public T VisitLogicVariable(LogicVariable variable)
+        private SortedSet<T> JoinSets<T>(SortedSet<T> FirstSet, SortedSet<T> SecondSet)
         {
-            // when we visit a variable we add it to the set
-            this.Variables.Add(variable.VariableName);
-            return default(T);
+            SortedSet<T> output = new SortedSet<T>();
+            foreach (var elem in FirstSet)
+                output.Add(elem);
+            foreach (var elem in SecondSet)
+                output.Add(elem);
+            return output;
         }
 
-        public T VisitTrue(LogicTrue constant)
+        public SortedSet<string> VisitLogicVariable(LogicVariable variable)
         {
-            return default(T);
+            return new SortedSet<string> { variable.VariableName };
         }
 
-        public T VisitFalse(LogicFalse constant)
+        public SortedSet<string> VisitTrue(LogicTrue constant)
         {
-            return default(T);
+            return new SortedSet<string> { };
         }
 
-        public T VisitAnd(LogicAnd op)
+        public SortedSet<string> VisitFalse(LogicFalse constant)
         {
-            op.Left.Visit(this);
-            op.Right.Visit(this);
-            return default(T);
+            return new SortedSet<string> { };
         }
 
-        public T VisitOr(LogicOr op)
+        public SortedSet<string> VisitAnd(LogicAnd op)
         {
-            op.Left.Visit(this);
-            op.Right.Visit(this);
-            return default(T);
+            var vars = Run(op.Left);
+            vars.UnionWith(Run(op.Right));
+            return vars;
         }
 
-
-        public T VisitNumRel(NumRelation relation)
+        public SortedSet<string> VisitOr(LogicOr op)
         {
-            relation.Left.Visit(this);
-            relation.Right.Visit(this);
-            return default(T);
-        }
-
-        public T VisitNumVariable(NumVariable variable)
-        {
-            // when we visit a variable we add it to the set
-            this.Variables.Add(variable.VariableName);
-            return default(T);
-        }
-
-        public T VisitNumConstant(NumConstant constant)
-        {
-            return default(T);
-        }
-
-        public T VisitNumBinaryOp(NumBinaryOp op)
-        {
-            op.Left.Visit(this);
-            op.Right.Visit(this);
-            return default(T);
+            var vars = Run(op.Left);
+            vars.UnionWith(Run(op.Right));
+            return vars;
         }
 
 
-        public T VisitNumExists(NumExists expression)
+        public SortedSet<string> VisitNumRel(NumRelation relation)
+        {
+            var vars = Run(relation.Left);
+            vars.UnionWith(Run(relation.Right));
+            return vars;
+        }
+
+        public SortedSet<string> VisitNumVariable(NumVariable variable)
+        {
+            return new SortedSet<string> { variable.VariableName };
+        }
+
+        public SortedSet<string> VisitNumConstant(NumConstant constant)
+        {
+            return new SortedSet<string> { };
+        }
+
+        public SortedSet<string> VisitNumBinaryOp(NumBinaryOp op)
+        {
+            var vars = Run(op.Left);
+            vars.UnionWith(Run(op.Right));
+            return vars;
+        }
+
+
+        public SortedSet<string> VisitNumExists(NumExists expression)
         {
             // Since this is a quantifier it binds a variable, which is no longer free. 
             // Note: find the free variables before removing them!
-            expression.Expression.Visit(this);
-            this.Variables.Remove(expression.VariableName);
-            return default(T);
+            var vars = Run(expression.Expression);
+            vars.Remove(expression.VariableName);
+            return vars;
+
         }
 
 
-        public T VisitNumThe(NumThe expression)
+        public SortedSet<string> VisitNumThe(NumThe expression)
         {
             // 'the' is a binder, so it binds its variable
-            expression.Expression.Visit(this);
-            this.Variables.Remove(expression.VariableName);
-            return default(T);
+            var vars = Run(expression.Expression);
+            vars.Remove(expression.VariableName);
+            return vars;
         }
 
 
-        public T VisitPair(PairExpression expression)
+        public SortedSet<string> VisitPair(PairExpression expression)
         {
-            expression.Left.Visit(this);
-            expression.Right.Visit(this);
-            return default(T);
+            var vars = Run(expression.Left);
+            vars.UnionWith(Run(expression.Right));
+            return vars;
         }
 
 
-        public T VisitLeft(ProjL expression)
+        public SortedSet<string> VisitLeft(ProjL expression)
         {
-            expression.Expression.Visit(this);
-            return default(T);
+            return Run(expression.Expression);
         }
 
-        public T VisitRight(ProjR expression)
+        public SortedSet<string> VisitRight(ProjR expression)
         {
-            expression.Expression.Visit(this);
-            return default(T);
+            return Run(expression.Expression);
         }
 
 
-        public T VisitLambda(LambdaExpression lambda)
+        public SortedSet<string> VisitLambda(LambdaExpression lambda)
         {
             // Lambda is a binder, so remove it from the free variable list
-            lambda.Expression.Visit(this);
-            this.Variables.Remove(lambda.VariableName);
-            return default(T);
+            var vars = Run(lambda.Expression);
+            vars.Remove(lambda.VariableName);
+            return vars;
         }
 
 
-        public T VisitApply(Apply apply) 
+        public SortedSet<string> VisitApply(Apply apply) 
         {
-            apply.Lambda.Visit(this);
-            apply.Expression.Visit(this);
-            return default(T);
+            var vars = Run(apply.Lambda);
+            vars.UnionWith(Run(apply.Expression));
+            return vars;
         }
 
 
-        public T VisitPairVariable(PairVariable variable)
+        public SortedSet<string> VisitPairVariable(PairVariable variable)
         {
-            this.Variables.Add(variable.VariableName);
-            return default(T);
+            return new SortedSet<string> { variable.VariableName };
         }
 
 
-        public T VisitLambdaVariable(LambdaVariable variable) 
+        public SortedSet<string> VisitLambdaVariable(LambdaVariable variable) 
         {
-            this.Variables.Add(variable.VariableName);
-            return default(T);
+            return new SortedSet<string> { variable.VariableName };
         }
 
 
-        public T VisitRec(RecExpression rec)
+        public SortedSet<string> VisitRec(RecExpression rec)
         {
-            rec.Input.Visit(this);
-            rec.Start.Visit(this);
-            rec.Step.Visit(this);
+            // First find free variables in the step
+            var vars = Run(rec.Step);
+            // Then remove binders
+            vars.Remove(rec.NumVariableName);
+            vars.Remove(rec.AccVariableName);
 
-            this.Variables.Remove(rec.NumVariableName);
-            this.Variables.Remove(rec.AccVariableName);
-            return default(T);
+            // Now add free variables from input and step
+            vars.UnionWith(Run(rec.Input));
+            vars.UnionWith(Run(rec.Start));
+
+            return vars;
         }
     }
 }

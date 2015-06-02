@@ -71,6 +71,7 @@ namespace AsyncLogicTest
         [TestMethod]
         public void TestLambdas()
         {
+            SortedSet<string> variables;
             var test = new LambdaExpression("x", x);
             VariableLister<bool> lister = new VariableLister<bool>();
             test.Visit(lister);
@@ -78,14 +79,14 @@ namespace AsyncLogicTest
             Assert.IsTrue(lister.Variables.Contains("x"));
 
             test = new LambdaExpression("x", x);
-            FreeVariableLister<bool> freeLister = new FreeVariableLister<bool>();
-            test.Visit(freeLister);
-            Assert.AreEqual(0, freeLister.Variables.Count);
+            FreeVariableLister freeLister = new FreeVariableLister();
+            variables = test.Visit(freeLister);
+            Assert.AreEqual(0, variables.Count);
 
             test = new LambdaExpression("x", logicLoop);
-            freeLister = new FreeVariableLister<bool>();
-            test.Visit(freeLister);
-            Assert.AreEqual(0, freeLister.Variables.Count);
+            freeLister = new FreeVariableLister();
+            variables = test.Visit(freeLister);
+            Assert.AreEqual(0, variables.Count);
         }
 
         [TestMethod]

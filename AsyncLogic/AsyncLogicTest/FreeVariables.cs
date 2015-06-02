@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using AsyncLogic;
 using System.Linq;
+using System.Collections.Generic;
 
 // Hide some of the warnings to do with self comparison
 #pragma warning disable 1718
@@ -51,29 +52,30 @@ namespace AsyncLogicTest
         [TestMethod]
         public void TestFreeVariables()
         {
+            SortedSet<string> variables;
             LogicExpression test = new NumExists("n", n == m);
-            FreeVariableLister<bool> lister = new FreeVariableLister<bool>();
-            test.Visit(lister);
-            Assert.AreEqual(1, lister.Variables.Count);
-            Assert.IsTrue(lister.Variables.Contains("m"));
+            FreeVariableLister lister = new FreeVariableLister();
+            variables = test.Visit(lister);
+            Assert.AreEqual(1, variables.Count);
+            Assert.IsTrue(variables.Contains("m"));
 
             test = new NumExists("x", n == n);
-            lister = new FreeVariableLister<bool>();
-            test.Visit(lister);
-            Assert.AreEqual(1, lister.Variables.Count);
-            Assert.IsTrue(lister.Variables.Contains("n"));
+            lister = new FreeVariableLister();
+            variables = test.Visit(lister);
+            Assert.AreEqual(1, variables.Count);
+            Assert.IsTrue(variables.Contains("n"));
 
             test = (new NumThe("n", n == two)) == two;
-            lister = new FreeVariableLister<bool>();
-            test.Visit(lister);
-            Assert.AreEqual(0, lister.Variables.Count);
+            lister = new FreeVariableLister();
+            variables = test.Visit(lister);
+            Assert.AreEqual(0, variables.Count);
             //Assert.IsTrue(lister.Variables.Contains("n"));
 
             // this test shows that the original method does not work
             test = n == n & new NumExists("n", n == two);
-            lister = new FreeVariableLister<bool>();
-            test.Visit(lister);
-            Assert.AreEqual(1, lister.Variables.Count);
+            lister = new FreeVariableLister();
+            variables = test.Visit(lister);
+            Assert.AreEqual(1, variables.Count);
         }
     }
 }
