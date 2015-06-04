@@ -54,23 +54,7 @@ namespace AsyncLogic
         }
     }
 
-    /// <summary>
-    /// A variable of type Num
-    /// </summary>
-    public class NumVariable : NumExpression
-    {
-        public string VariableName;
 
-        public NumVariable(string VariableName)
-        {
-            this.VariableName = VariableName;
-        }
-
-        public override T Visit<T>(IExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitNumVariable(this);
-        }
-    }
 
     /// <summary>
     /// A constant of type Num

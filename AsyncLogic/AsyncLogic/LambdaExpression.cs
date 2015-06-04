@@ -31,18 +31,5 @@ namespace AsyncLogic
         }
     }
 
-    public class LambdaVariable : AbstractLambdaExpression
-    {
-        public string VariableName;
 
-        public LambdaVariable(string VariableName)
-        {
-            this.VariableName = VariableName;
-        }
-
-        public override T Visit<T>(IExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitLambdaVariable(this);
-        }
-    }
 }

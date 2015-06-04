@@ -28,11 +28,6 @@ namespace AsyncLogic
             return output;
         }
 
-        public SortedSet<string> VisitLogicVariable(LogicVariable variable)
-        {
-            return new SortedSet<string> { variable.VariableName };
-        }
-
         public SortedSet<string> VisitTrue(LogicTrue constant)
         {
             return new SortedSet<string> { };
@@ -63,11 +58,6 @@ namespace AsyncLogic
             var vars = Run(relation.Left);
             vars.UnionWith(Run(relation.Right));
             return vars;
-        }
-
-        public SortedSet<string> VisitNumVariable(NumVariable variable)
-        {
-            return new SortedSet<string> { variable.VariableName };
         }
 
         public SortedSet<string> VisitNumConstant(NumConstant constant)
@@ -138,19 +128,6 @@ namespace AsyncLogic
             return vars;
         }
 
-
-        public SortedSet<string> VisitPairVariable(PairVariable variable)
-        {
-            return new SortedSet<string> { variable.VariableName };
-        }
-
-
-        public SortedSet<string> VisitLambdaVariable(LambdaVariable variable) 
-        {
-            return new SortedSet<string> { variable.VariableName };
-        }
-
-
         public SortedSet<string> VisitRecNum(RecNumExpression rec)
         {
             // First find free variables in the step
@@ -180,6 +157,12 @@ namespace AsyncLogic
             vars.UnionWith(Run(rec.Start));
 
             return vars;
+        }
+
+
+        public SortedSet<string> VisitVariable<A>(IVariableExpression<A> variable) where A : Expression
+        {
+            return new SortedSet<string> { variable.VariableName };
         }
     }
 }

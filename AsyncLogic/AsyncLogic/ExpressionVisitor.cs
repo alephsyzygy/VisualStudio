@@ -12,12 +12,10 @@ namespace AsyncLogic
     /// <typeparam name="T">The return type</typeparam>
     public interface IExpressionVisitor<out T> 
     {
-        T VisitLogicVariable(LogicVariable variable);
         T VisitTrue(LogicTrue constant);
         T VisitFalse(LogicFalse constant);
         T VisitAnd(LogicAnd op);
         T VisitOr(LogicOr op);
-        T VisitNumVariable(NumVariable variable);
         T VisitNumConstant(NumConstant constant);
         T VisitNumBinaryOp(NumBinaryOp op);
         T VisitNumRel(NumRelation relation);
@@ -28,8 +26,7 @@ namespace AsyncLogic
         T VisitRight(ProjR pair);
         T VisitLambda(LambdaExpression lambda);
         T VisitApply(Apply apply);
-        T VisitPairVariable(PairVariable variable);
-        T VisitLambdaVariable(LambdaVariable variable);
         T VisitRec<A>(IRecExpression<A> rec) where A : Expression;
+        T VisitVariable<A>(IVariableExpression<A> variable) where A : Expression;
     }
 }

@@ -31,20 +31,6 @@ namespace AsyncLogic
         }
     }
 
-    public class PairVariable: AbstractPairExpression
-    {
-        public string VariableName;
-
-        public PairVariable(string VariableName)
-        {
-            this.VariableName = VariableName;
-        }
-
-        public override T Visit<T>(IExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitPairVariable(this);
-        }
-    }
 
     public class ProjL : Expression
     {

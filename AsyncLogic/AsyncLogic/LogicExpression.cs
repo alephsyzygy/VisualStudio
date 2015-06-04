@@ -36,31 +36,31 @@ namespace AsyncLogic
         }
     }
 
-    /// <summary>
-    /// A logic variable
-    /// </summary>
-    public class LogicVariable : LogicExpression
-    {
-        /// <summary>
-        /// The name of the variable
-        /// </summary>
-        public string VariableName;
+    ///// <summary>
+    ///// A logic variable
+    ///// </summary>
+    //public class LogicVariable : LogicExpression
+    //{
+    //    /// <summary>
+    //    /// The name of the variable
+    //    /// </summary>
+    //    public string VariableName;
 
-        public override T Visit<T>(IExpressionVisitor<T> visitor)
-        {
-            return visitor.VisitLogicVariable(this);
-        }
+    //    public override T Visit<T>(IExpressionVisitor<T> visitor)
+    //    {
+    //        return visitor.VisitLogicVariable(this);
+    //    }
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="name">The variable name</param>
-        public LogicVariable(string name)
-        {
-            VariableName = name;
-            this.Type = Type.SigmaType;
-        }
-    }
+    //    /// <summary>
+    //    /// Constructor
+    //    /// </summary>
+    //    /// <param name="name">The variable name</param>
+    //    public LogicVariable(string name)
+    //    {
+    //        VariableName = name;
+    //        this.Type = Type.SigmaType;
+    //    }
+    //}
 
     /// <summary>
     /// The constant true

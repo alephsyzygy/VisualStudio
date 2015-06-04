@@ -22,14 +22,6 @@ namespace AsyncLogic
             return Expression.Visit(this);
         }
 
-        public Expression VisitLogicVariable(LogicVariable variable)
-        {
-            if (variable.VariableName == VariableName)
-                return Expression;
-            else
-                return variable;
-        }
-
         public Expression VisitTrue(LogicTrue constant)
         {
             return constant;
@@ -52,14 +44,6 @@ namespace AsyncLogic
             var left = (LogicExpression)op.Left.Visit(this);
             var right = (LogicExpression)op.Right.Visit(this);
             return new LogicOr(left, right);
-        }
-
-        public Expression VisitNumVariable(NumVariable variable)
-        {
-            if (variable.VariableName == VariableName)
-                return Expression;
-            else
-                return variable;
         }
 
         public Expression VisitNumConstant(NumConstant constant)
@@ -140,25 +124,6 @@ namespace AsyncLogic
             return new Apply(lambda, expr);
         }
 
-
-        public Expression VisitPairVariable(PairVariable variable)
-        {
-            if (variable.VariableName == VariableName)
-                return Expression;
-            else
-                return variable;
-        }
-
-
-        public Expression VisitLambdaVariable(LambdaVariable variable)
-        {
-            if (variable.VariableName == VariableName)
-                return Expression;
-            else
-                return variable;
-        }
-
-
         public Expression VisitRecNum(RecNumExpression rec)
         {
             var input = (NumExpression)rec.Input.Visit(this);
@@ -184,6 +149,15 @@ namespace AsyncLogic
             }
             else  // our variable is shadowed by one of the two binders in rec
                 return rec.Construct(input, start, rec.NumVariableName, rec.AccVariableName, rec.Step);
+        }
+
+
+        public Expression VisitVariable<A>(IVariableExpression<A> variable) where A : Expression
+        {
+            if (variable.VariableName == VariableName)
+                return Expression;
+            else
+                return variable.Self();
         }
     }
 }

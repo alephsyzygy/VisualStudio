@@ -25,13 +25,6 @@ namespace AsyncLogic
             Variables = new SortedSet<string>();
         }
 
-        public T VisitLogicVariable(LogicVariable variable)
-        {
-            // when we visit a variable we add it to the set
-            this.Variables.Add(variable.VariableName);
-            return default(T);
-        }
-
         public T VisitTrue(LogicTrue constant)
         {
             return default(T);
@@ -61,13 +54,6 @@ namespace AsyncLogic
         {
             relation.Left.Visit(this);
             relation.Right.Visit(this);
-            return default(T);
-        }
-
-        public T VisitNumVariable(NumVariable variable)
-        {
-            // when we visit a variable we add it to the set
-            this.Variables.Add(variable.VariableName);
             return default(T);
         }
 
@@ -136,22 +122,6 @@ namespace AsyncLogic
             return default(T);
         }
 
-
-        public T VisitPairVariable(PairVariable variable)
-        {
-            this.Variables.Add(variable.VariableName);
-            return default(T);
-        }
-
-
-        public T VisitLambdaVariable(LambdaVariable variable) 
-        {
-            this.Variables.Add(variable.VariableName);
-            return default(T);
-        }
-
-
-
         public T VisitRecNum(RecNumExpression rec)
         {
             rec.Input.Visit(this);
@@ -166,6 +136,14 @@ namespace AsyncLogic
             rec.Input.Visit(this);
             rec.Start.Visit(this);
             rec.Step.Visit(this);
+            return default(T);
+        }
+
+
+        public T VisitVariable<A>(IVariableExpression<A> variable) where A : Expression
+        {
+            // when we visit a variable we add it to the set
+            this.Variables.Add(variable.VariableName);
             return default(T);
         }
     }
