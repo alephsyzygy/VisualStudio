@@ -165,5 +165,21 @@ namespace AsyncLogic
 
             return vars;
         }
+
+
+        public SortedSet<string> VisitRec<A>(IRecExpression<A> rec) where A : Expression
+        {
+            // First find free variables in the step
+            var vars = Run(rec.Step);
+            // Then remove binders
+            vars.Remove(rec.NumVariableName);
+            vars.Remove(rec.AccVariableName);
+
+            // Now add free variables from input and step
+            vars.UnionWith(Run(rec.Input));
+            vars.UnionWith(Run(rec.Start));
+
+            return vars;
+        }
     }
 }

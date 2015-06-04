@@ -159,5 +159,14 @@ namespace AsyncLogic
             rec.Step.Visit(this);
             return default(T);
         }
+
+
+        public T VisitRec<A>(IRecExpression<A> rec) where A : Expression
+        {
+            rec.Input.Visit(this);
+            rec.Start.Visit(this);
+            rec.Step.Visit(this);
+            return default(T);
+        }
     }
 }

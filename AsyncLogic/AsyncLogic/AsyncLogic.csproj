@@ -57,6 +57,7 @@
     <Compile Include="RecExpression.cs" />
     <Compile Include="Types.cs" />
     <Compile Include="Value.cs" />
+    <Compile Include="VariableExpression.cs" />
     <Compile Include="VariableLister.cs" />
     <Compile Include="VariableSubstituter.cs" />
   </ItemGroup>
