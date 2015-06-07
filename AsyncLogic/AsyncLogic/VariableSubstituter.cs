@@ -141,7 +141,7 @@ namespace AsyncLogic
         public Expression VisitRec<A>(IRecExpression<A> rec) where A : Expression
         {
             var input = (NumExpression)rec.Input.Visit(this);
-            var start = (NumExpression)rec.Start.Visit(this);
+            var start = (A)rec.Start.Visit(this);
             if (rec.NumVariableName != VariableName && rec.AccVariableName != VariableName)
             {
                 var step = (A)rec.Step.Visit(this);

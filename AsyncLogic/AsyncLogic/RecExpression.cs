@@ -9,12 +9,12 @@ namespace AsyncLogic
     public interface IRecExpression<T> where T : Expression
     {
         NumExpression Input {get; }
-        NumExpression Start { get; }
+        T Start { get; }
         T Step { get; }
         string NumVariableName { get;  }
         string AccVariableName { get; }
 
-        T Construct(NumExpression Input, NumExpression Start, string NumVariableName,
+        T Construct(NumExpression Input, T Start, string NumVariableName,
              string AccVariableName, T Step);
     }
     /// <summary>
@@ -55,12 +55,12 @@ namespace AsyncLogic
     public class RecLogicExpression : LogicExpression, IRecExpression<LogicExpression>
     {
         public NumExpression Input { get; private set; }
-        public NumExpression Start { get; private set; }
+        public LogicExpression Start { get; private set; }
         public LogicExpression Step { get; private set; }
         public string NumVariableName { get; private set; }
         public string AccVariableName { get; private set; }
 
-        public RecLogicExpression(NumExpression Input, NumExpression Start, string NumVariableName,
+        public RecLogicExpression(NumExpression Input, LogicExpression Start, string NumVariableName,
              string AccVariableName, LogicExpression Step)
         {
             this.Input = Input;
@@ -76,7 +76,7 @@ namespace AsyncLogic
         }
 
 
-        public LogicExpression Construct(NumExpression Input, NumExpression Start, string NumVariableName, string AccVariableName, LogicExpression Step)
+        public LogicExpression Construct(NumExpression Input, LogicExpression Start, string NumVariableName, string AccVariableName, LogicExpression Step)
         {
             return new RecLogicExpression(Input, Start, NumVariableName, AccVariableName, Step);
         }
@@ -85,12 +85,12 @@ namespace AsyncLogic
         public class RecPairExpression : AbstractPairExpression, IRecExpression<AbstractPairExpression>
     {
         public NumExpression Input {get; private set;}
-        public NumExpression Start { get; private set; }
+        public AbstractPairExpression Start { get; private set; }
         public AbstractPairExpression Step { get; private set; }
         public string NumVariableName { get; private set; }
         public string AccVariableName { get; private set; }
 
-        public RecPairExpression(NumExpression Input, NumExpression Start, string NumVariableName, 
+        public RecPairExpression(NumExpression Input, AbstractPairExpression Start, string NumVariableName, 
              string AccVariableName, AbstractPairExpression Step)
         {
             this.Input = Input;
@@ -106,7 +106,7 @@ namespace AsyncLogic
         }
 
 
-        public AbstractPairExpression Construct(NumExpression Input, NumExpression Start, string NumVariableName, string AccVariableName, AbstractPairExpression Step)
+        public AbstractPairExpression Construct(NumExpression Input, AbstractPairExpression Start, string NumVariableName, string AccVariableName, AbstractPairExpression Step)
         {
             return new RecPairExpression(Input, Start, NumVariableName, AccVariableName, Step);
         }
@@ -115,12 +115,12 @@ namespace AsyncLogic
         public class RecLambdaExpression : AbstractLambdaExpression, IRecExpression<AbstractLambdaExpression>
     {
         public NumExpression Input {get; private set;}
-        public NumExpression Start { get; private set; }
+        public AbstractLambdaExpression Start { get; private set; }
         public AbstractLambdaExpression Step { get; private set; }
         public string NumVariableName { get; private set; }
         public string AccVariableName { get; private set; }
 
-        public RecLambdaExpression(NumExpression Input, NumExpression Start, string NumVariableName, 
+        public RecLambdaExpression(NumExpression Input, AbstractLambdaExpression Start, string NumVariableName, 
              string AccVariableName, AbstractLambdaExpression Step)
         {
             this.Input = Input;
@@ -136,7 +136,7 @@ namespace AsyncLogic
         }
 
 
-        public AbstractLambdaExpression Construct(NumExpression Input, NumExpression Start, string NumVariableName, string AccVariableName, AbstractLambdaExpression Step)
+        public AbstractLambdaExpression Construct(NumExpression Input, AbstractLambdaExpression Start, string NumVariableName, string AccVariableName, AbstractLambdaExpression Step)
         {
             return new RecLambdaExpression(Input, Start, NumVariableName, AccVariableName, Step);
         }

@@ -117,8 +117,8 @@ namespace AsyncLogic
         {
             this.Left = LeftExpression;
             this.Right = RightExpression;
-            if (LeftExpression.Type != Type.SigmaType || RightExpression.Type != Type.SigmaType)
-                throw new ArgumentException();
+            //if (LeftExpression.Type != Type.SigmaType || RightExpression.Type != Type.SigmaType)
+            //    throw new ArgumentException();
             this.Type = Type.SigmaType;
         }
     }
@@ -145,8 +145,8 @@ namespace AsyncLogic
         {
             this.Left = LeftExpression;
             this.Right = RightExpression;
-            if (LeftExpression.Type != Type.SigmaType || RightExpression.Type != Type.SigmaType)
-                throw new ArgumentException();
+            //if (LeftExpression.Type != Type.SigmaType || RightExpression.Type != Type.SigmaType)
+            //    throw new ArgumentException();
             this.Type = Type.SigmaType;
         }
     }
@@ -201,8 +201,8 @@ namespace AsyncLogic
             this.VariableName = VariableName;
             this.Expression = Expression;
             this.Type = Type.SigmaType;
-            if (Expression.Type != Type.SigmaType)
-                throw new ArgumentException();
+            //if (Expression.Type != Type.SigmaType)
+            //    throw new ArgumentException();
         }
 
         public override T Visit<T>(IExpressionVisitor<T> visitor)

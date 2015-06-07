@@ -38,6 +38,18 @@ namespace AsyncLogicTest
 
             rec = new RecNumExpression(two, two, "x", "n", step);
             Assert.AreEqual("4", testAsync(rec, 200).Result);
+
+            var logStep = x & logicTrue;
+            var logRec = new RecLogicExpression(two, logicTrue, "n", "x", logStep);
+            Assert.AreEqual(True, testAsync(logRec, 200).Result);
+
+            logStep = x | logicTrue;
+            logRec = new RecLogicExpression(two, logicFalse, "n", "x", logStep);
+            Assert.AreEqual(True, testAsync(logRec, 200).Result);
+
+            logStep = x | logicTrue;
+            logRec = new RecLogicExpression(zero, logicFalse, "n", "x", logStep);
+            Assert.AreEqual(False, testAsync(logRec, 200).Result);
         }
 
         [TestMethod]
