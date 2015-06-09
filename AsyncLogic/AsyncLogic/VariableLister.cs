@@ -25,44 +25,44 @@ namespace AsyncLogic
             Variables = new SortedSet<string>();
         }
 
-        public T VisitTrue(LogicTrue constant)
+        public T Visit(LogicTrue constant)
         {
             return default(T);
         }
 
-        public T VisitFalse(LogicFalse constant)
+        public T Visit(LogicFalse constant)
         {
             return default(T);
         }
 
-        public T VisitAnd(LogicAnd op)
-        {
-            op.Left.Visit(this);
-            op.Right.Visit(this);
-            return default(T);
-        }
-
-        public T VisitOr(LogicOr op)
+        public T Visit(LogicAnd op)
         {
             op.Left.Visit(this);
             op.Right.Visit(this);
             return default(T);
         }
 
+        public T Visit(LogicOr op)
+        {
+            op.Left.Visit(this);
+            op.Right.Visit(this);
+            return default(T);
+        }
 
-        public T VisitNumRel(NumRelation relation)
+
+        public T Visit(NumRelation relation)
         {
             relation.Left.Visit(this);
             relation.Right.Visit(this);
             return default(T);
         }
 
-        public T VisitNumConstant(NumConstant constant)
+        public T Visit(NumConstant constant)
         {
             return default(T);
         }
 
-        public T VisitNumBinaryOp(NumBinaryOp op)
+        public T Visit(NumBinaryOp op)
         {
             op.Left.Visit(this);
             op.Right.Visit(this);
@@ -70,14 +70,14 @@ namespace AsyncLogic
         }
 
 
-        public T VisitNumExists(NumExists expression)
+        public T Visit(NumExists expression)
         {
             expression.Visit(this);
             return default(T);
         }
 
 
-        public T VisitNumThe(NumThe expression)
+        public T Visit(NumThe expression)
         {
             expression.Expression.Visit(this);
             return default(T);
@@ -87,7 +87,7 @@ namespace AsyncLogic
 
 
 
-        public T VisitPair(PairExpression expression)
+        public T Visit(PairExpression expression)
         {
             expression.Left.Visit(this);
             expression.Right.Visit(this);
@@ -95,38 +95,30 @@ namespace AsyncLogic
         }
 
 
-        public T VisitLeft(ProjL expression)
+        public T Visit(ProjL expression)
         {
             expression.Expression.Visit(this);
             return default(T);
         }
 
-        public T VisitRight(ProjR expression)
+        public T Visit(ProjR expression)
         {
             expression.Expression.Visit(this);
             return default(T);
         }
 
 
-        public T VisitLambda(LambdaExpression lambda) 
+        public T Visit(LambdaExpression lambda) 
         {
             lambda.Expression.Visit(this);
             return default(T);
         }
 
 
-        public T VisitApply(Apply apply) 
+        public T Visit(Apply apply) 
         {
             apply.Lambda.Visit(this);
             apply.Expression.Visit(this);
-            return default(T);
-        }
-
-        public T VisitRecNum(RecNumExpression rec)
-        {
-            rec.Input.Visit(this);
-            rec.Start.Visit(this);
-            rec.Step.Visit(this);
             return default(T);
         }
 

@@ -74,7 +74,7 @@ namespace AsyncLogic
         
         public override T Visit<T>(IExpressionVisitor<T> visitor)
         {
-            return visitor.VisitTrue(this);
+            return visitor.Visit(this);
         }
 
     }
@@ -91,7 +91,7 @@ namespace AsyncLogic
 
         public override T Visit<T>(IExpressionVisitor<T> visitor)
         {
-            return visitor.VisitFalse(this);
+            return visitor.Visit(this);
         }
     }
 
@@ -105,7 +105,7 @@ namespace AsyncLogic
 
         public override T Visit<T>(IExpressionVisitor<T> visitor)
         {
-            return visitor.VisitAnd(this);
+            return visitor.Visit(this);
         }
 
         /// <summary>
@@ -133,7 +133,7 @@ namespace AsyncLogic
 
         public override T Visit<T>(IExpressionVisitor<T> visitor)
         {
-            return visitor.VisitOr(this);
+            return visitor.Visit(this);
         }
 
         /// <summary>
@@ -186,7 +186,7 @@ namespace AsyncLogic
 
         public override T Visit<T>(IExpressionVisitor<T> visitor)
         {
-            return visitor.VisitNumRel(this);
+            return visitor.Visit(this);
         }
 
     }
@@ -207,7 +207,7 @@ namespace AsyncLogic
 
         public override T Visit<T>(IExpressionVisitor<T> visitor)
         {
-            return visitor.VisitNumExists(this);
+            return visitor.Visit(this);
         }
     }
 
@@ -226,7 +226,7 @@ namespace AsyncLogic
 
         public override T Visit<T>(IExpressionVisitor<T> visitor)
         {
-            return visitor.VisitApply(this);
+            return visitor.Visit(this);
         }
     }
    

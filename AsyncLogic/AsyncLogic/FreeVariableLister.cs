@@ -28,24 +28,24 @@ namespace AsyncLogic
             return output;
         }
 
-        public SortedSet<string> VisitTrue(LogicTrue constant)
+        public SortedSet<string> Visit(LogicTrue constant)
         {
             return new SortedSet<string> { };
         }
 
-        public SortedSet<string> VisitFalse(LogicFalse constant)
+        public SortedSet<string> Visit(LogicFalse constant)
         {
             return new SortedSet<string> { };
         }
 
-        public SortedSet<string> VisitAnd(LogicAnd op)
+        public SortedSet<string> Visit(LogicAnd op)
         {
             var vars = Run(op.Left);
             vars.UnionWith(Run(op.Right));
             return vars;
         }
 
-        public SortedSet<string> VisitOr(LogicOr op)
+        public SortedSet<string> Visit(LogicOr op)
         {
             var vars = Run(op.Left);
             vars.UnionWith(Run(op.Right));
@@ -53,19 +53,19 @@ namespace AsyncLogic
         }
 
 
-        public SortedSet<string> VisitNumRel(NumRelation relation)
+        public SortedSet<string> Visit(NumRelation relation)
         {
             var vars = Run(relation.Left);
             vars.UnionWith(Run(relation.Right));
             return vars;
         }
 
-        public SortedSet<string> VisitNumConstant(NumConstant constant)
+        public SortedSet<string> Visit(NumConstant constant)
         {
             return new SortedSet<string> { };
         }
 
-        public SortedSet<string> VisitNumBinaryOp(NumBinaryOp op)
+        public SortedSet<string> Visit(NumBinaryOp op)
         {
             var vars = Run(op.Left);
             vars.UnionWith(Run(op.Right));
@@ -73,7 +73,7 @@ namespace AsyncLogic
         }
 
 
-        public SortedSet<string> VisitNumExists(NumExists expression)
+        public SortedSet<string> Visit(NumExists expression)
         {
             // Since this is a quantifier it binds a variable, which is no longer free. 
             // Note: find the free variables before removing them!
@@ -84,7 +84,7 @@ namespace AsyncLogic
         }
 
 
-        public SortedSet<string> VisitNumThe(NumThe expression)
+        public SortedSet<string> Visit(NumThe expression)
         {
             // 'the' is a binder, so it binds its variable
             var vars = Run(expression.Expression);
@@ -93,7 +93,7 @@ namespace AsyncLogic
         }
 
 
-        public SortedSet<string> VisitPair(PairExpression expression)
+        public SortedSet<string> Visit(PairExpression expression)
         {
             var vars = Run(expression.Left);
             vars.UnionWith(Run(expression.Right));
@@ -101,18 +101,18 @@ namespace AsyncLogic
         }
 
 
-        public SortedSet<string> VisitLeft(ProjL expression)
+        public SortedSet<string> Visit(ProjL expression)
         {
             return Run(expression.Expression);
         }
 
-        public SortedSet<string> VisitRight(ProjR expression)
+        public SortedSet<string> Visit(ProjR expression)
         {
             return Run(expression.Expression);
         }
 
 
-        public SortedSet<string> VisitLambda(LambdaExpression lambda)
+        public SortedSet<string> Visit(LambdaExpression lambda)
         {
             // Lambda is a binder, so remove it from the free variable list
             var vars = Run(lambda.Expression);
@@ -121,25 +121,10 @@ namespace AsyncLogic
         }
 
 
-        public SortedSet<string> VisitApply(Apply apply) 
+        public SortedSet<string> Visit(Apply apply) 
         {
             var vars = Run(apply.Lambda);
             vars.UnionWith(Run(apply.Expression));
-            return vars;
-        }
-
-        public SortedSet<string> VisitRecNum(RecNumExpression rec)
-        {
-            // First find free variables in the step
-            var vars = Run(rec.Step);
-            // Then remove binders
-            vars.Remove(rec.NumVariableName);
-            vars.Remove(rec.AccVariableName);
-
-            // Now add free variables from input and step
-            vars.UnionWith(Run(rec.Input));
-            vars.UnionWith(Run(rec.Start));
-
             return vars;
         }
 

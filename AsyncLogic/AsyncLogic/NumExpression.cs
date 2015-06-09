@@ -70,7 +70,7 @@ namespace AsyncLogic
 
         public override T Visit<T>(IExpressionVisitor<T> visitor)
         {
-            return visitor.VisitNumConstant(this);
+            return visitor.Visit(this);
         }
     }
 
@@ -123,7 +123,7 @@ namespace AsyncLogic
 
         public override T Visit<T>(IExpressionVisitor<T> visitor)
         {
-            return visitor.VisitNumBinaryOp(this);
+            return visitor.Visit(this);
         }
     }
 
@@ -146,7 +146,7 @@ namespace AsyncLogic
 
         public override T Visit<T>(IExpressionVisitor<T> visitor)
         {
-            return visitor.VisitNumThe(this);
+            return visitor.Visit(this);
         }
     }
 

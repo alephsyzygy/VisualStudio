@@ -27,7 +27,7 @@ namespace AsyncLogic
 
         public override T Visit<T>(IExpressionVisitor<T> visitor)
         {
-            return visitor.VisitLambda(this);
+            return visitor.Visit(this);
         }
     }
 

@@ -56,12 +56,12 @@ namespace AsyncLogic
             return await expr.Visit(this);
         }
 
-        public async Task<Value> VisitTrue(LogicTrue constant)
+        public async Task<Value> Visit(LogicTrue constant)
         {
             return await Task.Run(() => new BoolValue(true)); // get rid of compiler warning
         }
 
-        public async Task<Value> VisitFalse(LogicFalse constant)
+        public async Task<Value> Visit(LogicFalse constant)
         {
             //return await Loop<Value>();
             // Change: we know that this is false, instead of looping just return false
@@ -69,13 +69,13 @@ namespace AsyncLogic
             return await Task.Run(() => new BoolValue(false)); // get rid of compiler warning
         }
 
-        public async Task<Value> VisitAnd(LogicAnd op)
+        public async Task<Value> Visit(LogicAnd op)
         {
             Value[] results = await Task.WhenAll<Value>(op.Left.Visit(this), op.Right.Visit(this));
             return new BoolValue(results.All(b => ((BoolValue)b).Value));
         }
 
-        public async Task<Value> VisitOr(LogicOr op)
+        public async Task<Value> Visit(LogicOr op)
         {
             Task<Value> left = op.Left.Visit(this);
             Task<Value> right = op.Right.Visit(this);
@@ -112,7 +112,7 @@ namespace AsyncLogic
 
 
 
-        public async Task<Value> VisitNumRel(NumRelation relation)
+        public async Task<Value> Visit(NumRelation relation)
         {
             Value[] results = await Task.WhenAll<Value>(relation.Left.Visit(this), relation.Right.Visit(this));
             switch (relation.Relation)
@@ -149,12 +149,12 @@ namespace AsyncLogic
                 return await Loop<Value>();
         }
 
-        public async Task<Value> VisitNumConstant(NumConstant constant)
+        public async Task<Value> Visit(NumConstant constant)
         {
             return await Task.Run(() => new NumValue(constant.Value)); // get rid of compiler warning
         }
 
-        public async Task<Value> VisitNumBinaryOp(NumBinaryOp op)
+        public async Task<Value> Visit(NumBinaryOp op)
         {
             Value[] results = await Task.WhenAll<Value>(op.Left.Visit(this), op.Right.Visit(this));
             switch (op.Operation)
@@ -170,7 +170,7 @@ namespace AsyncLogic
         }
 
 
-        public async Task<Value> VisitNumExists(NumExists expression)
+        public async Task<Value> Visit(NumExists expression)
         {
             // The idea here is to continually spawn off tasks evaluating the expression
             // in the environment where the variable is bound to first 0, then 1, then 2, ...
@@ -260,7 +260,7 @@ namespace AsyncLogic
         }
 
 
-        public async Task<Value> VisitNumThe(NumThe expression)
+        public async Task<Value> Visit(NumThe expression)
         {
             // The idea here is similar to VisitNumExists, except this time we remember
             // which number we found.
@@ -335,7 +335,7 @@ namespace AsyncLogic
         }
 
 
-        public async Task<Value> VisitPair(PairExpression expression)
+        public async Task<Value> Visit(PairExpression expression)
         {
             // Don't actually do these, let someone else do them
             var left = expression.Left.Visit(this);
@@ -345,7 +345,7 @@ namespace AsyncLogic
         }
 
 
-        public async Task<Value> VisitLeft(ProjL expression)
+        public async Task<Value> Visit(ProjL expression)
         {
             // idea here is to extract the PairValue then return its left entry.
             var value = await expression.Expression.Visit(this);
@@ -355,7 +355,7 @@ namespace AsyncLogic
                 throw new ArgumentException("Not a pair value");
         }
 
-        public async Task<Value> VisitRight(ProjR expression)
+        public async Task<Value> Visit(ProjR expression)
         {
             var value = await expression.Expression.Visit(this);
             if (value is PotentialPairValue<Value, Value>)
@@ -365,7 +365,7 @@ namespace AsyncLogic
         }
 
 
-        public async Task<Value> VisitLambda(LambdaExpression lambda) 
+        public async Task<Value> Visit(LambdaExpression lambda) 
         {
             // can't really do much here
             // do we normalise it, or just leave it as is?
@@ -373,7 +373,7 @@ namespace AsyncLogic
         }
 
 
-        public async Task<Value> VisitApply(Apply apply)
+        public async Task<Value> Visit(Apply apply)
         {
             // Find out what the lambda is, then evaluate it with the given expression
             // Do we do a syntactic substitution?

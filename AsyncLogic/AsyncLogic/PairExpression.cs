@@ -27,7 +27,7 @@ namespace AsyncLogic
 
         public override T Visit<T>(IExpressionVisitor<T> visitor)
         {
-            return visitor.VisitPair(this);
+            return visitor.Visit(this);
         }
     }
 
@@ -43,7 +43,7 @@ namespace AsyncLogic
 
         public override T Visit<T>(IExpressionVisitor<T> visitor)
         {
-            return visitor.VisitLeft(this);
+            return visitor.Visit(this);
         }
     }
 
@@ -58,7 +58,7 @@ namespace AsyncLogic
 
         public override T Visit<T>(IExpressionVisitor<T> visitor)
         {
-            return visitor.VisitRight(this);
+            return visitor.Visit(this);
         }
     }
 

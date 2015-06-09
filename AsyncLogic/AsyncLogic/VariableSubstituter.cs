@@ -22,50 +22,50 @@ namespace AsyncLogic
             return Expression.Visit(this);
         }
 
-        public Expression VisitTrue(LogicTrue constant)
+        public Expression Visit(LogicTrue constant)
         {
             return constant;
         }
 
-        public Expression VisitFalse(LogicFalse constant)
+        public Expression Visit(LogicFalse constant)
         {
             return constant;
         }
 
-        public Expression VisitAnd(LogicAnd op)
+        public Expression Visit(LogicAnd op)
         {
             var left = (LogicExpression)op.Left.Visit(this);
             var right = (LogicExpression)op.Right.Visit(this);
             return new LogicAnd(left, right);
         }
 
-        public Expression VisitOr(LogicOr op)
+        public Expression Visit(LogicOr op)
         {
             var left = (LogicExpression)op.Left.Visit(this);
             var right = (LogicExpression)op.Right.Visit(this);
             return new LogicOr(left, right);
         }
 
-        public Expression VisitNumConstant(NumConstant constant)
+        public Expression Visit(NumConstant constant)
         {
             return constant;
         }
 
-        public Expression VisitNumBinaryOp(NumBinaryOp op)
+        public Expression Visit(NumBinaryOp op)
         {
             var left = (NumExpression)op.Left.Visit(this);
             var right = (NumExpression)op.Right.Visit(this);
             return new NumBinaryOp(op.Operation,left, right);
         }
 
-        public Expression VisitNumRel(NumRelation relation)
+        public Expression Visit(NumRelation relation)
         {
             var left = (NumExpression)relation.Left.Visit(this);
             var right = (NumExpression)relation.Right.Visit(this);
             return new NumRelation(relation.Relation, left, right);
         }
 
-        public Expression VisitNumExists(NumExists expression)
+        public Expression Visit(NumExists expression)
         {
             if (expression.VariableName == VariableName)
                 return expression; // variable is shadowed
@@ -76,7 +76,7 @@ namespace AsyncLogic
             }
         }
 
-        public Expression VisitNumThe(NumThe expression)
+        public Expression Visit(NumThe expression)
         {
             if (expression.VariableName == VariableName)
                 return expression; // variable is shadowed
@@ -87,26 +87,26 @@ namespace AsyncLogic
             }
         }
 
-        public Expression VisitPair(PairExpression expression)
+        public Expression Visit(PairExpression expression)
         {
             var left = expression.Left.Visit(this);
             var right = expression.Right.Visit(this);
             return new PairExpression(left, right);
         }
 
-        public Expression VisitLeft(ProjL pair)
+        public Expression Visit(ProjL pair)
         {
             var expr = (PairExpression)pair.Expression.Visit(this);
             return new ProjL(expr);
         }
 
-        public Expression VisitRight(ProjR pair)
+        public Expression Visit(ProjR pair)
         {
             var expr = (PairExpression)pair.Expression.Visit(this);
             return new ProjR(expr);
         }
 
-        public Expression VisitLambda(LambdaExpression lambda) 
+        public Expression Visit(LambdaExpression lambda) 
         {
             if (lambda.VariableName == VariableName)
                 return lambda; // variable is shadowed
@@ -117,24 +117,11 @@ namespace AsyncLogic
             }
         }
 
-        public Expression VisitApply(Apply apply)
+        public Expression Visit(Apply apply)
         {
             var lambda = (LambdaExpression)apply.Lambda.Visit(this);
             var expr = apply.Expression.Visit(this);
             return new Apply(lambda, expr);
-        }
-
-        public Expression VisitRecNum(RecNumExpression rec)
-        {
-            var input = (NumExpression)rec.Input.Visit(this);
-            var start = (NumExpression)rec.Start.Visit(this);
-            if (rec.NumVariableName != VariableName && rec.AccVariableName != VariableName)
-            {
-                var step = (NumExpression)rec.Step.Visit(this);
-                return new RecNumExpression(input, start, rec.NumVariableName, rec.AccVariableName, step);
-            }
-            else  // our variable is shadowed by one of the two binders in rec
-                return new RecNumExpression(input, start, rec.NumVariableName, rec.AccVariableName, rec.Step);
         }
 
 
