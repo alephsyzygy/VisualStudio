@@ -24,7 +24,7 @@ namespace AsyncLogicTest
         {
             LogicExpression test = x & x;
             VariableLister<bool> lister = new VariableLister<bool>();
-            test.Visit(lister);
+            test.Accept(lister);
             Assert.AreEqual(1, lister.Variables.Count(), "There should only be one variable");
             Assert.AreEqual("x", lister.Variables.First());
 
@@ -36,7 +36,7 @@ namespace AsyncLogicTest
             NumExpression numTest = n;
             LogicExpression test = new NumRelation(NumRels.EQ, n, m) | y;
             VariableLister<bool> lister = new VariableLister<bool>();
-            test.Visit(lister);
+            test.Accept(lister);
             Assert.AreEqual(3, lister.Variables.Count(), "There should be three variables");
             Assert.IsTrue(lister.Variables.Contains("y"));
             Assert.IsTrue(lister.Variables.Contains("n"));
@@ -44,7 +44,7 @@ namespace AsyncLogicTest
 
             test = (new NumThe("n", n == two)) == two;
             lister = new VariableLister<bool>();
-            test.Visit(lister);
+            test.Accept(lister);
             Assert.AreEqual(1, lister.Variables.Count);
             Assert.IsTrue(lister.Variables.Contains("n"));
         }
@@ -55,26 +55,26 @@ namespace AsyncLogicTest
             SortedSet<string> variables;
             LogicExpression test = new NumExists("n", n == m);
             FreeVariableLister lister = new FreeVariableLister();
-            variables = test.Visit(lister);
+            variables = test.Accept(lister);
             Assert.AreEqual(1, variables.Count);
             Assert.IsTrue(variables.Contains("m"));
 
             test = new NumExists("x", n == n);
             lister = new FreeVariableLister();
-            variables = test.Visit(lister);
+            variables = test.Accept(lister);
             Assert.AreEqual(1, variables.Count);
             Assert.IsTrue(variables.Contains("n"));
 
             test = (new NumThe("n", n == two)) == two;
             lister = new FreeVariableLister();
-            variables = test.Visit(lister);
+            variables = test.Accept(lister);
             Assert.AreEqual(0, variables.Count);
             //Assert.IsTrue(lister.Variables.Contains("n"));
 
             // this test shows that the original method does not work
             test = n == n & new NumExists("n", n == two);
             lister = new FreeVariableLister();
-            variables = test.Visit(lister);
+            variables = test.Accept(lister);
             Assert.AreEqual(1, variables.Count);
         }
     }

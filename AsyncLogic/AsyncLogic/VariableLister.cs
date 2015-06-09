@@ -37,23 +37,23 @@ namespace AsyncLogic
 
         public T Visit(LogicAnd op)
         {
-            op.Left.Visit(this);
-            op.Right.Visit(this);
+            op.Left.Accept(this);
+            op.Right.Accept(this);
             return default(T);
         }
 
         public T Visit(LogicOr op)
         {
-            op.Left.Visit(this);
-            op.Right.Visit(this);
+            op.Left.Accept(this);
+            op.Right.Accept(this);
             return default(T);
         }
 
 
         public T Visit(NumRelation relation)
         {
-            relation.Left.Visit(this);
-            relation.Right.Visit(this);
+            relation.Left.Accept(this);
+            relation.Right.Accept(this);
             return default(T);
         }
 
@@ -64,22 +64,22 @@ namespace AsyncLogic
 
         public T Visit(NumBinaryOp op)
         {
-            op.Left.Visit(this);
-            op.Right.Visit(this);
+            op.Left.Accept(this);
+            op.Right.Accept(this);
             return default(T);
         }
 
 
         public T Visit(NumExists expression)
         {
-            expression.Visit(this);
+            expression.Accept(this);
             return default(T);
         }
 
 
         public T Visit(NumThe expression)
         {
-            expression.Expression.Visit(this);
+            expression.Expression.Accept(this);
             return default(T);
         }
 
@@ -89,50 +89,50 @@ namespace AsyncLogic
 
         public T Visit(PairExpression expression)
         {
-            expression.Left.Visit(this);
-            expression.Right.Visit(this);
+            expression.Left.Accept(this);
+            expression.Right.Accept(this);
             return default(T);
         }
 
 
         public T Visit(ProjL expression)
         {
-            expression.Expression.Visit(this);
+            expression.Expression.Accept(this);
             return default(T);
         }
 
         public T Visit(ProjR expression)
         {
-            expression.Expression.Visit(this);
+            expression.Expression.Accept(this);
             return default(T);
         }
 
 
         public T Visit(LambdaExpression lambda) 
         {
-            lambda.Expression.Visit(this);
+            lambda.Expression.Accept(this);
             return default(T);
         }
 
 
         public T Visit(Apply apply) 
         {
-            apply.Lambda.Visit(this);
-            apply.Expression.Visit(this);
+            apply.Lambda.Accept(this);
+            apply.Expression.Accept(this);
             return default(T);
         }
 
 
-        public T VisitRec<A>(IRecExpression<A> rec) where A : Expression
+        public T Visit<A>(IRecExpression<A> rec) where A : Expression
         {
-            rec.Input.Visit(this);
-            rec.Start.Visit(this);
-            rec.Step.Visit(this);
+            rec.Input.Accept(this);
+            rec.Start.Accept(this);
+            rec.Step.Accept(this);
             return default(T);
         }
 
 
-        public T VisitVariable<A>(IVariableExpression<A> variable) where A : Expression
+        public T Visit<A>(IVariableExpression<A> variable) where A : Expression
         {
             // when we visit a variable we add it to the set
             this.Variables.Add(variable.VariableName);

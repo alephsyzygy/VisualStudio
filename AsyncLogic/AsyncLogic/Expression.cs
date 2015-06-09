@@ -8,7 +8,7 @@ namespace AsyncLogic
 {
     public abstract class Expression
     {
-        public abstract T Visit<T>(IExpressionVisitor<T> visitor);
+        public abstract T Accept<T>(IExpressionVisitor<T> visitor);
 
         public Type Type { get; protected set; }
     }

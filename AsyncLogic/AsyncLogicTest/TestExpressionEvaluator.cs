@@ -57,14 +57,14 @@ namespace AsyncLogicTest
         {
 
             var subst = new VariableSubstituter("n", two);
-            var result = n.Visit(subst);
+            var result = n.Accept(subst);
             Assert.AreEqual("2", testAsync(result, 200).Result);
 
-            result = zero.Visit(subst);
+            result = zero.Accept(subst);
             Assert.AreEqual("0", testAsync(result, 200).Result);
 
             var exists = new NumExists("n", n == n);
-            result = exists.Visit(subst);
+            result = exists.Accept(subst);
             Assert.AreEqual(True, testAsync(result, 200).Result);
 
             var test = new Apply(new LambdaExpression("n", n), two);
@@ -98,18 +98,18 @@ namespace AsyncLogicTest
             SortedSet<string> variables;
             var test = new LambdaExpression("x", x);
             VariableLister<bool> lister = new VariableLister<bool>();
-            test.Visit(lister);
+            test.Accept(lister);
             Assert.AreEqual(1, lister.Variables.Count);
             Assert.IsTrue(lister.Variables.Contains("x"));
 
             test = new LambdaExpression("x", x);
             FreeVariableLister freeLister = new FreeVariableLister();
-            variables = test.Visit(freeLister);
+            variables = test.Accept(freeLister);
             Assert.AreEqual(0, variables.Count);
 
             test = new LambdaExpression("x", logicLoop);
             freeLister = new FreeVariableLister();
-            variables = test.Visit(freeLister);
+            variables = test.Accept(freeLister);
             Assert.AreEqual(0, variables.Count);
         }
 

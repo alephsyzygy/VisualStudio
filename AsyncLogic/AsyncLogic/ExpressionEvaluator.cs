@@ -53,7 +53,7 @@ namespace AsyncLogic
         /// <returns>The task which performs the evaluation</returns>
         public async Task<Value> Run(Expression expr)
         {
-            return await expr.Visit(this);
+            return await expr.Accept(this);
         }
 
         public async Task<Value> Visit(LogicTrue constant)
@@ -71,14 +71,14 @@ namespace AsyncLogic
 
         public async Task<Value> Visit(LogicAnd op)
         {
-            Value[] results = await Task.WhenAll<Value>(op.Left.Visit(this), op.Right.Visit(this));
+            Value[] results = await Task.WhenAll<Value>(op.Left.Accept(this), op.Right.Accept(this));
             return new BoolValue(results.All(b => ((BoolValue)b).Value));
         }
 
         public async Task<Value> Visit(LogicOr op)
         {
-            Task<Value> left = op.Left.Visit(this);
-            Task<Value> right = op.Right.Visit(this);
+            Task<Value> left = op.Left.Accept(this);
+            Task<Value> right = op.Right.Accept(this);
             Task<Value> resultTask = await Task.WhenAny<Value>(left,right);
             BoolValue result = (BoolValue)await resultTask;
             if (result.Value)
@@ -114,7 +114,7 @@ namespace AsyncLogic
 
         public async Task<Value> Visit(NumRelation relation)
         {
-            Value[] results = await Task.WhenAll<Value>(relation.Left.Visit(this), relation.Right.Visit(this));
+            Value[] results = await Task.WhenAll<Value>(relation.Left.Accept(this), relation.Right.Accept(this));
             switch (relation.Relation)
             {
                 case NumRels.GT:
@@ -156,7 +156,7 @@ namespace AsyncLogic
 
         public async Task<Value> Visit(NumBinaryOp op)
         {
-            Value[] results = await Task.WhenAll<Value>(op.Left.Visit(this), op.Right.Visit(this));
+            Value[] results = await Task.WhenAll<Value>(op.Left.Accept(this), op.Right.Accept(this));
             switch (op.Operation)
             {
                 case NumBinOps.Add:
@@ -204,7 +204,7 @@ namespace AsyncLogic
                 nextEvaluator.CancelToken = tokenSource.Token;
 
                 // Add the new evaluator to our list of tasks
-                Task<Value> newTask = expression.Expression.Visit(nextEvaluator);
+                Task<Value> newTask = expression.Expression.Accept(nextEvaluator);
                 runningTasks.Add(newTask);
                 taskDictionary[newTask] = nextNum;
 
@@ -291,7 +291,7 @@ namespace AsyncLogic
                 nextEvaluator.CancelToken = tokenSource.Token;
 
                 // Add the new evaluator to our list of tasks
-                Task<Value> newTask = expression.Expression.Visit(nextEvaluator);
+                Task<Value> newTask = expression.Expression.Accept(nextEvaluator);
                 runningTasks.Add(newTask);
                 taskDictionary[newTask] = nextNum;
 
@@ -338,8 +338,8 @@ namespace AsyncLogic
         public async Task<Value> Visit(PairExpression expression)
         {
             // Don't actually do these, let someone else do them
-            var left = expression.Left.Visit(this);
-            var right = expression.Right.Visit(this);
+            var left = expression.Left.Accept(this);
+            var right = expression.Right.Accept(this);
 
             return new PotentialPairValue<Value,Value>(left, right);
         }
@@ -348,7 +348,7 @@ namespace AsyncLogic
         public async Task<Value> Visit(ProjL expression)
         {
             // idea here is to extract the PairValue then return its left entry.
-            var value = await expression.Expression.Visit(this);
+            var value = await expression.Expression.Accept(this);
             if (value is PotentialPairValue<Value, Value>)
                 return await (value as PotentialPairValue<Value, Value>).Left;
             else
@@ -357,7 +357,7 @@ namespace AsyncLogic
 
         public async Task<Value> Visit(ProjR expression)
         {
-            var value = await expression.Expression.Visit(this);
+            var value = await expression.Expression.Accept(this);
             if (value is PotentialPairValue<Value, Value>)
                 return await (value as PotentialPairValue<Value, Value>).Right;
             else
@@ -379,13 +379,13 @@ namespace AsyncLogic
             // Do we do a syntactic substitution?
 
             // evaluate our lambda until we get an LambdaValue.  Then we substitute and continue.
-            var lambda = await apply.Lambda.Visit(this);
+            var lambda = await apply.Lambda.Accept(this);
             if (lambda is LambdaValue)
             {
                 LambdaValue val = (LambdaValue)lambda;
                 VariableSubstituter subst = new VariableSubstituter(val.VariableName, apply.Expression);
                 var newExpr = subst.Substitute(val.Expression);
-                return await newExpr.Visit(this);
+                return await newExpr.Accept(this);
             }
             else
             {
@@ -395,7 +395,7 @@ namespace AsyncLogic
             throw new NotImplementedException();
         }
 
-        public async Task<Value> VisitRec<A>(IRecExpression<A> rec) where A : Expression
+        public async Task<Value> Visit<A>(IRecExpression<A> rec) where A : Expression
         {
             // A rec has an input, a start, and a step, which itself has two free vars
             // The idea is to find out what value the input is.
@@ -428,7 +428,7 @@ namespace AsyncLogic
         }
 
 
-        public async Task<Value> VisitVariable<A>(IVariableExpression<A> variable) where A : Expression
+        public async Task<Value> Visit<A>(IVariableExpression<A> variable) where A : Expression
         {
             Value result = Context[variable.VariableName];
             if (result == null)

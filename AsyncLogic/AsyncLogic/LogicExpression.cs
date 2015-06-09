@@ -72,7 +72,7 @@ namespace AsyncLogic
             this.Type = Type.SigmaType;
         }
         
-        public override T Visit<T>(IExpressionVisitor<T> visitor)
+        public override T Accept<T>(IExpressionVisitor<T> visitor)
         {
             return visitor.Visit(this);
         }
@@ -89,7 +89,7 @@ namespace AsyncLogic
             this.Type = Type.SigmaType;
         }
 
-        public override T Visit<T>(IExpressionVisitor<T> visitor)
+        public override T Accept<T>(IExpressionVisitor<T> visitor)
         {
             return visitor.Visit(this);
         }
@@ -103,7 +103,7 @@ namespace AsyncLogic
         public LogicExpression Left;
         public LogicExpression Right;
 
-        public override T Visit<T>(IExpressionVisitor<T> visitor)
+        public override T Accept<T>(IExpressionVisitor<T> visitor)
         {
             return visitor.Visit(this);
         }
@@ -131,7 +131,7 @@ namespace AsyncLogic
         public LogicExpression Left;
         public LogicExpression Right;
 
-        public override T Visit<T>(IExpressionVisitor<T> visitor)
+        public override T Accept<T>(IExpressionVisitor<T> visitor)
         {
             return visitor.Visit(this);
         }
@@ -184,7 +184,7 @@ namespace AsyncLogic
             this.Type = Type.SigmaType;
         }
 
-        public override T Visit<T>(IExpressionVisitor<T> visitor)
+        public override T Accept<T>(IExpressionVisitor<T> visitor)
         {
             return visitor.Visit(this);
         }
@@ -205,7 +205,7 @@ namespace AsyncLogic
             //    throw new ArgumentException();
         }
 
-        public override T Visit<T>(IExpressionVisitor<T> visitor)
+        public override T Accept<T>(IExpressionVisitor<T> visitor)
         {
             return visitor.Visit(this);
         }
@@ -224,7 +224,7 @@ namespace AsyncLogic
             //    throw new ArgumentException();
         }
 
-        public override T Visit<T>(IExpressionVisitor<T> visitor)
+        public override T Accept<T>(IExpressionVisitor<T> visitor)
         {
             return visitor.Visit(this);
         }

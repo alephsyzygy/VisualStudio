@@ -68,7 +68,7 @@ namespace AsyncLogic
             this.Value = Value;
         }
 
-        public override T Visit<T>(IExpressionVisitor<T> visitor)
+        public override T Accept<T>(IExpressionVisitor<T> visitor)
         {
             return visitor.Visit(this);
         }
@@ -121,7 +121,7 @@ namespace AsyncLogic
             this.Right = Right;
         }
 
-        public override T Visit<T>(IExpressionVisitor<T> visitor)
+        public override T Accept<T>(IExpressionVisitor<T> visitor)
         {
             return visitor.Visit(this);
         }
@@ -144,7 +144,7 @@ namespace AsyncLogic
             this.Expression = Expression;
         }
 
-        public override T Visit<T>(IExpressionVisitor<T> visitor)
+        public override T Accept<T>(IExpressionVisitor<T> visitor)
         {
             return visitor.Visit(this);
         }

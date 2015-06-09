@@ -19,7 +19,7 @@ namespace AsyncLogic
 
         public Expression Substitute(Expression Expression)
         {
-            return Expression.Visit(this);
+            return Expression.Accept(this);
         }
 
         public Expression Visit(LogicTrue constant)
@@ -34,15 +34,15 @@ namespace AsyncLogic
 
         public Expression Visit(LogicAnd op)
         {
-            var left = (LogicExpression)op.Left.Visit(this);
-            var right = (LogicExpression)op.Right.Visit(this);
+            var left = (LogicExpression)op.Left.Accept(this);
+            var right = (LogicExpression)op.Right.Accept(this);
             return new LogicAnd(left, right);
         }
 
         public Expression Visit(LogicOr op)
         {
-            var left = (LogicExpression)op.Left.Visit(this);
-            var right = (LogicExpression)op.Right.Visit(this);
+            var left = (LogicExpression)op.Left.Accept(this);
+            var right = (LogicExpression)op.Right.Accept(this);
             return new LogicOr(left, right);
         }
 
@@ -53,15 +53,15 @@ namespace AsyncLogic
 
         public Expression Visit(NumBinaryOp op)
         {
-            var left = (NumExpression)op.Left.Visit(this);
-            var right = (NumExpression)op.Right.Visit(this);
+            var left = (NumExpression)op.Left.Accept(this);
+            var right = (NumExpression)op.Right.Accept(this);
             return new NumBinaryOp(op.Operation,left, right);
         }
 
         public Expression Visit(NumRelation relation)
         {
-            var left = (NumExpression)relation.Left.Visit(this);
-            var right = (NumExpression)relation.Right.Visit(this);
+            var left = (NumExpression)relation.Left.Accept(this);
+            var right = (NumExpression)relation.Right.Accept(this);
             return new NumRelation(relation.Relation, left, right);
         }
 
@@ -71,7 +71,7 @@ namespace AsyncLogic
                 return expression; // variable is shadowed
             else
             {
-                var expr = (LogicExpression)expression.Expression.Visit(this);
+                var expr = (LogicExpression)expression.Expression.Accept(this);
                 return new NumExists(expression.VariableName, expr);
             }
         }
@@ -82,27 +82,27 @@ namespace AsyncLogic
                 return expression; // variable is shadowed
             else
             {
-                var expr = (LogicExpression)expression.Expression.Visit(this);
+                var expr = (LogicExpression)expression.Expression.Accept(this);
                 return new NumThe(expression.VariableName, expr);
             }
         }
 
         public Expression Visit(PairExpression expression)
         {
-            var left = expression.Left.Visit(this);
-            var right = expression.Right.Visit(this);
+            var left = expression.Left.Accept(this);
+            var right = expression.Right.Accept(this);
             return new PairExpression(left, right);
         }
 
         public Expression Visit(ProjL pair)
         {
-            var expr = (PairExpression)pair.Expression.Visit(this);
+            var expr = (PairExpression)pair.Expression.Accept(this);
             return new ProjL(expr);
         }
 
         public Expression Visit(ProjR pair)
         {
-            var expr = (PairExpression)pair.Expression.Visit(this);
+            var expr = (PairExpression)pair.Expression.Accept(this);
             return new ProjR(expr);
         }
 
@@ -112,26 +112,26 @@ namespace AsyncLogic
                 return lambda; // variable is shadowed
             else
             {
-                var expr = lambda.Expression.Visit(this);
+                var expr = lambda.Expression.Accept(this);
                 return new LambdaExpression(lambda.VariableName, expr);
             }
         }
 
         public Expression Visit(Apply apply)
         {
-            var lambda = (LambdaExpression)apply.Lambda.Visit(this);
-            var expr = apply.Expression.Visit(this);
+            var lambda = (LambdaExpression)apply.Lambda.Accept(this);
+            var expr = apply.Expression.Accept(this);
             return new Apply(lambda, expr);
         }
 
 
-        public Expression VisitRec<A>(IRecExpression<A> rec) where A : Expression
+        public Expression Visit<A>(IRecExpression<A> rec) where A : Expression
         {
-            var input = (NumExpression)rec.Input.Visit(this);
-            var start = (A)rec.Start.Visit(this);
+            var input = (NumExpression)rec.Input.Accept(this);
+            var start = (A)rec.Start.Accept(this);
             if (rec.NumVariableName != VariableName && rec.AccVariableName != VariableName)
             {
-                var step = (A)rec.Step.Visit(this);
+                var step = (A)rec.Step.Accept(this);
                 return rec.Construct(input, start, rec.NumVariableName, rec.AccVariableName, step);
             }
             else  // our variable is shadowed by one of the two binders in rec
@@ -139,7 +139,7 @@ namespace AsyncLogic
         }
 
 
-        public Expression VisitVariable<A>(IVariableExpression<A> variable) where A : Expression
+        public Expression Visit<A>(IVariableExpression<A> variable) where A : Expression
         {
             if (variable.VariableName == VariableName)
                 return Expression;

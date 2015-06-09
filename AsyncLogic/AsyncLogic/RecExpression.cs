@@ -40,9 +40,9 @@ namespace AsyncLogic
             this.AccVariableName = AccVariableName;
         }
 
-        public override T Visit<T>(IExpressionVisitor<T> visitor)
+        public override T Accept<T>(IExpressionVisitor<T> visitor)
         {
-            return visitor.VisitRec(this);
+            return visitor.Visit(this);
         }
 
 
@@ -70,9 +70,9 @@ namespace AsyncLogic
             this.AccVariableName = AccVariableName;
         }
 
-        public override T Visit<T>(IExpressionVisitor<T> visitor)
+        public override T Accept<T>(IExpressionVisitor<T> visitor)
         {
-            return visitor.VisitRec(this);
+            return visitor.Visit(this);
         }
 
 
@@ -100,9 +100,9 @@ namespace AsyncLogic
             this.AccVariableName = AccVariableName;
         }
 
-        public override T Visit<T>(IExpressionVisitor<T> visitor)
+        public override T Accept<T>(IExpressionVisitor<T> visitor)
         {
-            return visitor.VisitRec(this);
+            return visitor.Visit(this);
         }
 
 
@@ -130,9 +130,9 @@ namespace AsyncLogic
             this.AccVariableName = AccVariableName;
         }
 
-        public override T Visit<T>(IExpressionVisitor<T> visitor)
+        public override T Accept<T>(IExpressionVisitor<T> visitor)
         {
-            return visitor.VisitRec(this);
+            return visitor.Visit(this);
         }
 
 

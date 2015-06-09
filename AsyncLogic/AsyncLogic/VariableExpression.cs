@@ -23,9 +23,9 @@ namespace AsyncLogic
         /// </summary>
         public string VariableName { get; private set; }
 
-        public override T Visit<T>(IExpressionVisitor<T> visitor)
+        public override T Accept<T>(IExpressionVisitor<T> visitor)
         {
-            return visitor.VisitVariable(this);
+            return visitor.Visit(this);
         }
 
         /// <summary>
@@ -58,9 +58,9 @@ namespace AsyncLogic
         /// </summary>
         public string VariableName { get; private set; }
 
-        public override T Visit<T>(IExpressionVisitor<T> visitor)
+        public override T Accept<T>(IExpressionVisitor<T> visitor)
         {
-            return visitor.VisitVariable(this);
+            return visitor.Visit(this);
         }
 
         /// <summary>
@@ -93,9 +93,9 @@ namespace AsyncLogic
         /// </summary>
         public string VariableName { get; private set; }
 
-        public override T Visit<T>(IExpressionVisitor<T> visitor)
+        public override T Accept<T>(IExpressionVisitor<T> visitor)
         {
-            return visitor.VisitVariable(this);
+            return visitor.Visit(this);
         }
 
         /// <summary>
@@ -128,9 +128,9 @@ namespace AsyncLogic
         /// </summary>
         public string VariableName { get; private set; }
 
-        public override T Visit<T>(IExpressionVisitor<T> visitor)
+        public override T Accept<T>(IExpressionVisitor<T> visitor)
         {
-            return visitor.VisitVariable(this);
+            return visitor.Visit(this);
         }
 
         /// <summary>

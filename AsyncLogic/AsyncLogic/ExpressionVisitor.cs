@@ -26,7 +26,7 @@ namespace AsyncLogic
         T Visit(ProjR pair);
         T Visit(LambdaExpression lambda);
         T Visit(Apply apply);
-        T VisitRec<A>(IRecExpression<A> rec) where A : Expression;
-        T VisitVariable<A>(IVariableExpression<A> variable) where A : Expression;
+        T Visit<A>(IRecExpression<A> rec) where A : Expression;
+        T Visit<A>(IVariableExpression<A> variable) where A : Expression;
     }
 }

@@ -15,7 +15,7 @@ namespace AsyncLogic
 
         public SortedSet<string> Run (Expression Expr)
         {
-            return Expr.Visit(this);
+            return Expr.Accept(this);
         }
 
         private SortedSet<T> JoinSets<T>(SortedSet<T> FirstSet, SortedSet<T> SecondSet)
@@ -129,7 +129,7 @@ namespace AsyncLogic
         }
 
 
-        public SortedSet<string> VisitRec<A>(IRecExpression<A> rec) where A : Expression
+        public SortedSet<string> Visit<A>(IRecExpression<A> rec) where A : Expression
         {
             // First find free variables in the step
             var vars = Run(rec.Step);
@@ -145,7 +145,7 @@ namespace AsyncLogic
         }
 
 
-        public SortedSet<string> VisitVariable<A>(IVariableExpression<A> variable) where A : Expression
+        public SortedSet<string> Visit<A>(IVariableExpression<A> variable) where A : Expression
         {
             return new SortedSet<string> { variable.VariableName };
         }
