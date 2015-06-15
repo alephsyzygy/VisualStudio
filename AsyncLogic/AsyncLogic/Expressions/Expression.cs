@@ -4,13 +4,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AsyncLogic
+namespace AsyncLogic.Expressions
 {
+    public abstract class Expression
+    {
+        public abstract T Accept<T>(IExpressionVisitor<T> visitor);
+
+        public Type Type { get; protected set; }
+    }
+
     /// <summary>
     /// Visitor interface to visit an Expression
     /// </summary>
     /// <typeparam name="T">The return type</typeparam>
-    public interface IExpressionVisitor<out T> 
+    public interface IExpressionVisitor<out T>
     {
         T Visit(LogicTrue constant);
         T Visit(LogicFalse constant);

@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using AsyncLogic.Expressions;
 
 #pragma warning disable 1998
 
-namespace AsyncLogic
+namespace AsyncLogic.Visitors
 {
     /// <summary>
     /// A visitor to evaluate a LogicExpression.

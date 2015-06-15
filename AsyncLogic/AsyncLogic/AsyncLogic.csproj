@@ -45,21 +45,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Expression.cs" />
-    <Compile Include="ExpressionEvaluator.cs" />
-    <Compile Include="ExpressionVisitor.cs" />
-    <Compile Include="FreeVariableLister.cs" />
-    <Compile Include="LambdaExpression.cs" />
-    <Compile Include="LogicExpression.cs" />
-    <Compile Include="NumExpression.cs" />
-    <Compile Include="PairExpression.cs" />
+    <Compile Include="Expressions\Expression.cs" />
+    <Compile Include="Visitors\ExpressionEvaluator.cs" />
+    <Compile Include="Visitors\FreeVariableLister.cs" />
+    <Compile Include="Expressions\LambdaExpression.cs" />
+    <Compile Include="Expressions\LogicExpression.cs" />
+    <Compile Include="Expressions\NumExpression.cs" />
+    <Compile Include="Expressions\PairExpression.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RecExpression.cs" />
-    <Compile Include="Types.cs" />
+    <Compile Include="Expressions\RecExpression.cs" />
+    <Compile Include="Type.cs" />
     <Compile Include="Value.cs" />
-    <Compile Include="VariableExpression.cs" />
-    <Compile Include="VariableLister.cs" />
-    <Compile Include="VariableSubstituter.cs" />
+    <Compile Include="Expressions\VariableExpression.cs" />
+    <Compile Include="Visitors\VariableLister.cs" />
+    <Compile Include="Visitors\VariableSubstituter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

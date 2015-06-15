@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AsyncLogic.Expressions;
 
-namespace AsyncLogic
+namespace AsyncLogic.Visitors
 {
     /// <summary>
     /// A visitor object to construct the set of all variables

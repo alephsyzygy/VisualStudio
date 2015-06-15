@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AsyncLogic
+namespace AsyncLogic.Expressions
 {
     public interface IRecExpression<T> where T : Expression
     {

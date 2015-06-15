@@ -3,6 +3,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using AsyncLogic;
 using System.Linq;
 using System.Collections.Generic;
+using AsyncLogic.Expressions;
+using AsyncLogic.Visitors;
 
 // Hide some of the warnings to do with self comparison
 #pragma warning disable 1718

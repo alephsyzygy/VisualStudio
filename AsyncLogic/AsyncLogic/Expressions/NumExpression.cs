@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AsyncLogic
+namespace AsyncLogic.Expressions
 {
     /// <summary>
     /// A NumExpressions is an abstract syntax tree representing a

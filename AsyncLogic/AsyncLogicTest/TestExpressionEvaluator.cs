@@ -5,6 +5,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Diagnostics;
+using AsyncLogic.Expressions;
+using AsyncLogic.Visitors;
 
 // Hide some of the warnings to do with self comparison
 #pragma warning disable 1718
