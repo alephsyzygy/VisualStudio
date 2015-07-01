@@ -167,7 +167,7 @@ namespace AsyncLogic.Expressions
 
         public AbstractLambdaExpression Self()
         {
-            return this;
+            return (AbstractLambdaExpression)this;
         }
 
         public override string ToString()

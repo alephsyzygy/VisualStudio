@@ -77,8 +77,8 @@ namespace AsyncLogicTest
             result = exists.Accept(subst);
             Assert.AreEqual(True, testAsync(result, 200).Result);
 
-            var test = new Apply(new LambdaExpression("n", n), two);
-            Assert.AreEqual("2", testAsync(test, 200).Result);
+            var test = new Apply(new LambdaExpression("n", n == n), two);
+            Assert.AreEqual(True, testAsync(test, 200).Result);
 
             // test that substitution avoids explosions
             var test2 = new Apply(new LambdaExpression("x", logicTrue), logicLoop);

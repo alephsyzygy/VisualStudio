@@ -91,8 +91,15 @@ namespace AsyncLogic.Parser
                select new NumExists(var, expr)).Named("Num Exists");
                //.Token();
 
+        public static readonly Parser<LogicExpression> Apply
+            = (from lambda in Parse.Ref(() => LambdaExpr)
+               from at in Parse.Char('@')
+               from expr in Parse.Ref(() => Expr)
+               select new Apply(lambda, expr)).Named("Application").Token();
+
         public static readonly Parser<LogicExpression> LogOperand
-            = (from lparen in Parse.Char('(')
+            = //Apply.Or
+              (from lparen in Parse.Char('(')
                from expr in Parse.Ref(() => LogExpr)  // Parse.ref delays evaluation of NumExpr in case it is null
                from rparen in Parse.Char(')')
                select expr).Named("Logic Expression")
@@ -100,6 +107,7 @@ namespace AsyncLogic.Parser
               .XOr(LogExists)
               .XOr(LogConstant)
               .XOr(LogicVar)
+              //.XOr(Apply)
               .Token();
 
         public static readonly Parser<LogicExpression> LogTerm
@@ -109,13 +117,34 @@ namespace AsyncLogic.Parser
         public static readonly Parser<LogicExpression> LogExpr2
             = Parse.ChainOperator(LogOr, LogTerm, (ignore, a, b) => new LogicOr(a, b));
 
-        public static readonly Parser<LogicExpression> LogExpr = LogNumRel.Or(LogExpr2);
+
+
+        public static readonly Parser<LogicExpression> LogExpr = Apply.Or(LogNumRel).Or(LogExpr2);
+
+        public static readonly Parser<LambdaExpression> Lambda
+            = (from lambdaString in Parse.String("Lambda").Token()
+               from var in Identifier
+               from dot in Parse.Char('.')
+               from expr in Parse.Ref(() => LogExpr)
+               select new LambdaExpression(var, expr)).Named("Lambda").Token();
+
+        public static readonly Parser<AbstractLambdaExpression> LambdaTerm
+            = (from lparen in Parse.Char('(')
+               from expr in Parse.Ref(() => LambdaExpr)  // Parse.ref delays evaluation of NumExpr in case it is null
+               from rparen in Parse.Char(')')
+               select expr).Named("Lambda Expression").Token();
+
+        public static readonly Parser<AbstractLambdaExpression> LambdaExpr = Lambda.XOr(LambdaVar).XOr(LambdaTerm);
+
+
+
+        //public static readonly Parser<PairExpression> PairExpr = 
+
+        public static readonly Parser<Expression> Expr = LogExpr.Or<Expression>(NumExpr).Or(LambdaExpr)/*.Or(PairExpr)*/;
     }
 
 
     // TODO: 
-    //  Logic: Apply
-    //  Lambda: Lambda
-    //  Pair: Pair, ProjL, ProjR
+    //  Pair: Pair, {ProjL, ProjR : these of all types}
     //  Rec: All
 }

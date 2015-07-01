@@ -17,9 +17,9 @@ namespace AsyncLogic.Expressions
     public class LambdaExpression : AbstractLambdaExpression
     {
         public string VariableName;
-        public Expression Expression;
+        public LogicExpression Expression;
 
-        public LambdaExpression(string VariableName, Expression Expression)
+        public LambdaExpression(string VariableName, LogicExpression Expression)
         {
             this.VariableName = VariableName;
             this.Expression = Expression;

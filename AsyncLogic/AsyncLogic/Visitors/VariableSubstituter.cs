@@ -113,7 +113,7 @@ namespace AsyncLogic.Visitors
                 return lambda; // variable is shadowed
             else
             {
-                var expr = lambda.Expression.Accept(this);
+                var expr = (LogicExpression)lambda.Expression.Accept(this);
                 return new LambdaExpression(lambda.VariableName, expr);
             }
         }

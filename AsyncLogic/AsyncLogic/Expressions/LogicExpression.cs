@@ -268,10 +268,10 @@ namespace AsyncLogic.Expressions
 
     public class Apply : LogicExpression
     {
-        public LambdaExpression Lambda;
+        public AbstractLambdaExpression Lambda;
         public Expression Expression;
 
-        public Apply(LambdaExpression Lambda, Expression Expression)
+        public Apply(AbstractLambdaExpression Lambda, Expression Expression)
         {
             this.Lambda = Lambda;
             this.Expression = Expression;

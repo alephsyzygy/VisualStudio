@@ -8,6 +8,23 @@ namespace AsyncLogicTest
     [TestClass]
     public class TestParser
     {
+
+        [TestMethod]
+        public void TestLambdaParser()
+        {
+            string input = "Lambda x. x == x";
+            var result = ExpressionParser.LambdaExpr.Parse(input);
+            Assert.AreEqual("Lambda x. (x == x)", result.ToString());
+
+            input = "(Lambda x. x == x) @ 3";
+            var result2 = ExpressionParser.LogExpr.Parse(input);
+            Assert.AreEqual("(Lambda x. (x == x) @ 3)", result2.ToString());
+
+            input = "(Lambda x. Lambda y. x == x @ 4) @ 3";
+            result2 = ExpressionParser.LogExpr.Parse(input);
+            Assert.AreEqual("(Lambda x. (Lambda y. (x == x) @ 4) @ 3)", result2.ToString());
+        }
+
         [TestMethod]
         public void TestNumParser()
         {
