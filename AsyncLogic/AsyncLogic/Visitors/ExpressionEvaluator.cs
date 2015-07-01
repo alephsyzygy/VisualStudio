@@ -181,8 +181,12 @@ namespace AsyncLogic.Visitors
             int nextNum = 0;
             bool foundValue = false;
             List<Task<Value>> runningTasks = new List<Task<Value>>();
-            // Have a list of cancelTokens so that we can cancel once we have succeeded
+
+            // Setup a new token source so we can cancel all the tasks we have created
             CancellationTokenSource tokenSource = new CancellationTokenSource();
+            // When this task is cancelled make sure all the descendent ones are cancelled too
+            if (CancelToken != null)
+                CancelToken.Register(() => tokenSource.Cancel());
 
             // Store a mapping of tasks to their values
             Dictionary<Task<Value>,int> taskDictionary = new Dictionary<Task<Value>,int>();
@@ -270,8 +274,12 @@ namespace AsyncLogic.Visitors
             int nextNum = 0;
             bool foundValue = false;
             List<Task<Value>> runningTasks = new List<Task<Value>>();
-            // Have a list of cancelTokens so that we can cancel once we have succeeded
+            
+            // Setup a new token source so we can cancel all the tasks we have created
             CancellationTokenSource tokenSource = new CancellationTokenSource();
+            // When this task is cancelled make sure all the descendent ones are cancelled too
+            if (CancelToken != null)
+                CancelToken.Register(() => tokenSource.Cancel());
 
             // Store a mapping of tasks to their values
             Dictionary<Task<Value>, int> taskDictionary = new Dictionary<Task<Value>, int>();
@@ -283,6 +291,7 @@ namespace AsyncLogic.Visitors
                 {
                     tokenSource.Cancel();
                 }
+
                 // Clone the context
                 Dictionary<string, Value> newContext = (from x in Context
                                                         select x).ToDictionary(x => x.Key, x => x.Value);
@@ -412,9 +421,10 @@ namespace AsyncLogic.Visitors
                 else
                 {
                     // this looks bad.  Fix it
-                    NumValue newNum = new NumValue(num.Value - 1);
-                    VariableSubstituter substNum = new VariableSubstituter(rec.NumVariableName, new NumConstant(num.Value));
-                    Expression newRec = rec.Construct(new NumConstant(num.Value - 1), rec.Start, rec.NumVariableName,
+                    int predecessor = num.Value - 1;
+                    NumValue newNum = new NumValue(predecessor);
+                    VariableSubstituter substNum = new VariableSubstituter(rec.NumVariableName, new NumConstant(predecessor));
+                    Expression newRec = rec.Construct(new NumConstant(predecessor), rec.Start, rec.NumVariableName,
                         rec.AccVariableName, rec.Step);
                     VariableSubstituter substAcc = new VariableSubstituter(rec.AccVariableName, newRec);
                     Expression temp = substNum.Substitute(rec.Step);

@@ -49,6 +49,11 @@ namespace AsyncLogic.Expressions
         {
             return this;
         }
+
+        public override string ToString()
+        {
+            return VariableName;
+        }
     }
 
     public class NumVariable : NumExpression, IVariableExpression<NumExpression>
@@ -83,6 +88,11 @@ namespace AsyncLogic.Expressions
         public NumExpression Self()
         {
             return this;
+        }
+
+        public override string ToString()
+        {
+            return VariableName;
         }
     }
 
@@ -119,6 +129,11 @@ namespace AsyncLogic.Expressions
         {
             return this;
         }
+
+        public override string ToString()
+        {
+            return VariableName;
+        }
     }
 
     public class LambdaVariable : AbstractLambdaExpression, IVariableExpression<AbstractLambdaExpression>
@@ -153,6 +168,11 @@ namespace AsyncLogic.Expressions
         public AbstractLambdaExpression Self()
         {
             return this;
+        }
+
+        public override string ToString()
+        {
+            return VariableName;
         }
     }
 

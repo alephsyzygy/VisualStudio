@@ -72,6 +72,11 @@ namespace AsyncLogic.Expressions
         {
             return visitor.Visit(this);
         }
+
+        public override string ToString()
+        {
+            return Value.ToString();
+        }
     }
 
     //public enum NumUnOps
@@ -125,6 +130,25 @@ namespace AsyncLogic.Expressions
         {
             return visitor.Visit(this);
         }
+
+        public override string ToString()
+        {
+            string op;
+            switch (Operation)
+            {
+                case NumBinOps.Add:
+                    op = " + ";
+                    break;
+                case NumBinOps.Mul:
+                    op = " * ";
+                    break;
+                default:
+                    op = "";
+                    break;
+            }
+        
+            return "(" + Left.ToString() + op  + Right.ToString() + ")";
+        }
     }
 
     /// <summary>
@@ -147,6 +171,11 @@ namespace AsyncLogic.Expressions
         public override T Accept<T>(IExpressionVisitor<T> visitor)
         {
             return visitor.Visit(this);
+        }
+
+        public override string ToString()
+        {
+            return "The " + VariableName + ". " + Expression.ToString();
         }
     }
 

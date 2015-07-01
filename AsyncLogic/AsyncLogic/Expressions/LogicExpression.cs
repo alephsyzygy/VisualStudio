@@ -77,6 +77,11 @@ namespace AsyncLogic.Expressions
             return visitor.Visit(this);
         }
 
+        public override string ToString()
+        {
+            return "T";
+        }
+
     }
 
     /// <summary>
@@ -92,6 +97,11 @@ namespace AsyncLogic.Expressions
         public override T Accept<T>(IExpressionVisitor<T> visitor)
         {
             return visitor.Visit(this);
+        }
+
+        public override string ToString()
+        {
+            return "F";
         }
     }
 
@@ -121,6 +131,11 @@ namespace AsyncLogic.Expressions
             //    throw new ArgumentException();
             this.Type = Type.SigmaType;
         }
+
+        public override string ToString()
+        {
+            return "(" + Left.ToString() + " & " + Right.ToString() + ")";
+        }
     }
 
     /// <summary>
@@ -148,6 +163,11 @@ namespace AsyncLogic.Expressions
             //if (LeftExpression.Type != Type.SigmaType || RightExpression.Type != Type.SigmaType)
             //    throw new ArgumentException();
             this.Type = Type.SigmaType;
+        }
+
+        public override string ToString()
+        {
+            return "(" + Left.ToString() + " | " + Right.ToString() + ")";
         }
     }
 
@@ -189,6 +209,36 @@ namespace AsyncLogic.Expressions
             return visitor.Visit(this);
         }
 
+        public override string ToString()
+        {
+            string rel;
+            switch (Relation)
+            {
+                case NumRels.GT:
+                    rel = " > ";
+                    break;
+                case NumRels.LT:
+                    rel = " < ";
+                    break;
+                case NumRels.EQ:
+                    rel = " == ";
+                    break;
+                case NumRels.NEQ:
+                    rel = " != ";
+                    break;
+                case NumRels.GTE:
+                    rel = " >= ";
+                    break;
+                case NumRels.LTE:
+                    rel = " <= ";
+                    break;
+                default:
+                    rel = "";
+                    break;
+            }
+            return "(" + Left.ToString() + rel + Right.ToString() + ")";
+        }
+
     }
 
     public class NumExists : LogicExpression
@@ -209,6 +259,11 @@ namespace AsyncLogic.Expressions
         {
             return visitor.Visit(this);
         }
+
+        public override string ToString()
+        {
+            return "Exists " + VariableName + ". " + Expression.ToString();
+        }
     }
 
     public class Apply : LogicExpression
@@ -227,6 +282,11 @@ namespace AsyncLogic.Expressions
         public override T Accept<T>(IExpressionVisitor<T> visitor)
         {
             return visitor.Visit(this);
+        }
+
+        public override string ToString()
+        {
+            return "(" + Lambda.ToString() + " @ " + Expression.ToString() + ")";
         }
     }
    

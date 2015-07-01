@@ -29,6 +29,11 @@ namespace AsyncLogic.Expressions
         {
             return visitor.Visit(this);
         }
+
+        public override string ToString()
+        {
+            return "Lambda " + VariableName + ". " + Expression.ToString();
+        }
     }
 
 

@@ -18,6 +18,7 @@ namespace AsyncLogicTest
     {
         const int defaultTimeout = 500;  // 0.5 seconds
         static NumExpression n = new NumVariable("n");
+        static NumExpression m = new NumVariable("m");
         static LogicExpression logicTrue = new LogicTrue();
         static LogicExpression logicFalse = new LogicFalse();
         static LogicExpression logicLoop = new NumExists("n", n < n); // this expression loops forever
@@ -52,6 +53,13 @@ namespace AsyncLogicTest
             logStep = x | logicTrue;
             logRec = new RecLogicExpression(zero, logicFalse, "n", "x", logStep);
             Assert.AreEqual(False, testAsync(logRec, 200).Result);
+
+            // Something a bit more complicated: 6 is the smallest number greater than 5
+            // i.e 6 is the n such that n > 5 and forall m < n we have m <=5
+            var step2 = x & m <= new NumConstant(5);
+            var rec2 = new RecLogicExpression(n, logicTrue, "m", "x", step2);
+            var testLog = new NumConstant(6) == new NumThe("n", n > new NumConstant(5) & rec2);
+            Assert.AreEqual(True, testAsync(testLog, 10000).Result);
         }
 
         [TestMethod]
@@ -299,6 +307,8 @@ namespace AsyncLogicTest
 
             test = new NumThe("n", (n == new NumConstant(50) | logicFalse));
             Assert.AreEqual("50", testAsync(test, 1000).Result);
+
+
         }
 
 

@@ -29,6 +29,11 @@ namespace AsyncLogic.Expressions
         {
             return visitor.Visit(this);
         }
+
+        public override string ToString()
+        {
+            return "<" + Left.ToString() + ", " + Right.ToString() + ">";
+        }
     }
 
 
@@ -45,6 +50,11 @@ namespace AsyncLogic.Expressions
         {
             return visitor.Visit(this);
         }
+
+        public override string ToString()
+        {
+            return "Fst " + Expression.ToString();
+        }
     }
 
     public class ProjR : Expression
@@ -59,6 +69,11 @@ namespace AsyncLogic.Expressions
         public override T Accept<T>(IExpressionVisitor<T> visitor)
         {
             return visitor.Visit(this);
+        }
+
+        public override string ToString()
+        {
+            return "Snd " + Expression.ToString();
         }
     }
 
