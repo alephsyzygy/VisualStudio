@@ -139,13 +139,13 @@ namespace AsyncLogicTest
             var loopTest = new PairExpression(logicLoop, logicTrue);
             Assert.AreEqual(False, testAsync(loopTest, 500).Result);
 
-            var pairTest = new ProjL(trueTest);
+            var pairTest = new LogicProjL(trueTest);
             Assert.AreEqual(True, testAsync(pairTest, 500).Result);
 
-            var pairLoop = new ProjR(loopTest);
+            var pairLoop = new LogicProjR(loopTest);
             Assert.AreEqual(True, testAsync(pairLoop, 500).Result);
 
-            var pairLoop2 = new ProjL(loopTest);
+            var pairLoop2 = new LogicProjL(loopTest);
             Assert.AreEqual(Loop, testAsync(pairLoop2, 500).Result);
         }
 

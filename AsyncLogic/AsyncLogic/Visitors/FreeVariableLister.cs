@@ -102,12 +102,12 @@ namespace AsyncLogic.Visitors
         }
 
 
-        public SortedSet<string> Visit(ProjL expression)
+        public SortedSet<string> Visit<A>(IProjL<A> expression) where A : Expression
         {
             return Run(expression.Expression);
         }
 
-        public SortedSet<string> Visit(ProjR expression)
+        public SortedSet<string> Visit<A>(IProjR<A> expression) where A : Expression
         {
             return Run(expression.Expression);
         }

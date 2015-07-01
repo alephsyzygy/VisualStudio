@@ -95,16 +95,16 @@ namespace AsyncLogic.Visitors
             return new PairExpression(left, right);
         }
 
-        public Expression Visit(ProjL pair)
+        public Expression Visit<A>(IProjL<A> pair) where A : Expression
         {
-            var expr = (PairExpression)pair.Expression.Accept(this);
-            return new ProjL(expr);
+            var expr = (AbstractPairExpression)pair.Expression.Accept(this);
+            return pair.Construct(expr);
         }
 
-        public Expression Visit(ProjR pair)
+        public Expression Visit<A>(IProjR<A> pair) where A : Expression
         {
-            var expr = (PairExpression)pair.Expression.Accept(this);
-            return new ProjR(expr);
+            var expr = (AbstractPairExpression)pair.Expression.Accept(this);
+            return pair.Construct(expr);
         }
 
         public Expression Visit(LambdaExpression lambda) 

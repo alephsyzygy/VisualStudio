@@ -96,13 +96,13 @@ namespace AsyncLogic.Visitors
         }
 
 
-        public T Visit(ProjL expression)
+        public T Visit<A>(IProjL<A> expression) where A : Expression
         {
             expression.Expression.Accept(this);
             return default(T);
         }
 
-        public T Visit(ProjR expression)
+        public T Visit<A>(IProjR<A> expression) where A : Expression
         {
             expression.Expression.Accept(this);
             return default(T);

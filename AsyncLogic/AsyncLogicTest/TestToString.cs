@@ -36,7 +36,7 @@ namespace AsyncLogicTest
             Assert.AreEqual("(Lambda x. (x | T) @ Exists n. (n < n))", test5.ToString());
 
             var loopTest = new PairExpression(logicLoop, logicTrue);
-            var pairLoop = new ProjR(loopTest);
+            var pairLoop = new LogicProjR(loopTest);
 
             Assert.AreEqual("Snd <Exists n. (n < n), T>", pairLoop.ToString());
         }

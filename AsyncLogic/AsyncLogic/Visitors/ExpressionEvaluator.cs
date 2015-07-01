@@ -355,7 +355,7 @@ namespace AsyncLogic.Visitors
         }
 
 
-        public async Task<Value> Visit(ProjL expression)
+        public async Task<Value> Visit<A>(IProjL<A> expression) where A : Expression
         {
             // idea here is to extract the PairValue then return its left entry.
             var value = await expression.Expression.Accept(this);
@@ -365,7 +365,7 @@ namespace AsyncLogic.Visitors
                 throw new ArgumentException("Not a pair value");
         }
 
-        public async Task<Value> Visit(ProjR expression)
+        public async Task<Value> Visit<A>(IProjR<A> expression) where A : Expression
         {
             var value = await expression.Expression.Accept(this);
             if (value is PotentialPairValue<Value, Value>)
