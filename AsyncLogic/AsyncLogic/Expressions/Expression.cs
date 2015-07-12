@@ -11,6 +11,7 @@ namespace AsyncLogic.Expressions
         public abstract T Accept<T>(IExpressionVisitor<T> visitor);
 
         public Type Type { get; protected set; }
+
     }
 
     /// <summary>
@@ -28,12 +29,14 @@ namespace AsyncLogic.Expressions
         T Visit(NumRelation relation);
         T Visit(NumExists expression);
         T Visit(NumThe expression);
-        T Visit(PairExpression expression);
         T Visit(LambdaExpression lambda);
         T Visit(Apply apply);
         T Visit<A>(IProjL<A> pair) where A : Expression;
         T Visit<A>(IProjR<A> pair) where A : Expression;
         T Visit<A>(IRecExpression<A> rec) where A : Expression;
         T Visit<A>(IVariableExpression<A> variable) where A : Expression;
+        T Visit<A,B>(PairExpression<A,B> expression)
+            where A : Expression
+            where B : Expression;
     }
 }

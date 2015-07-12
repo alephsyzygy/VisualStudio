@@ -30,12 +30,4 @@ namespace FileRenamerTest.IO
         }
     }
 
-    [TestClass]
-    public class TestIOMove
-    {
-        [TestMethod]
-        public void TestMethod1()
-        {
-        }
-    }
 }

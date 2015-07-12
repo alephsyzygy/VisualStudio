@@ -88,7 +88,9 @@ namespace AsyncLogic.Visitors
 
 
 
-        public T Visit(PairExpression expression)
+        public T Visit<A, B>(PairExpression<A, B> expression)
+            where A : Expression
+            where B : Expression
         {
             expression.Left.Accept(this);
             expression.Right.Accept(this);
@@ -139,5 +141,7 @@ namespace AsyncLogic.Visitors
             this.Variables.Add(variable.VariableName);
             return default(T);
         }
+
+
     }
 }

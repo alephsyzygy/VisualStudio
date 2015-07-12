@@ -14,12 +14,14 @@ namespace AsyncLogic.Expressions
     /// </summary>
     /// <typeparam name="A">The left type of a pair</typeparam>
     /// <typeparam name="B">The right type of a pair</typeparam>
-    public class PairExpression : AbstractPairExpression
+    public class PairExpression<A,B> : AbstractPairExpression 
+        where A : Expression
+        where B : Expression
     {
-        public Expression Left;
-        public Expression Right;
+        public A Left;
+        public B Right;
 
-        public PairExpression(Expression Left, Expression Right)
+        public PairExpression(A Left, B Right)
         {
             this.Left = Left;
             this.Right = Right;

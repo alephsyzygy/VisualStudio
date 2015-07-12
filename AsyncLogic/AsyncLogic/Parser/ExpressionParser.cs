@@ -136,11 +136,25 @@ namespace AsyncLogic.Parser
 
         public static readonly Parser<AbstractLambdaExpression> LambdaExpr = Lambda.XOr(LambdaVar).XOr(LambdaTerm);
 
+        public static Parser<PairExpression<A,B>> GetPairParse<A,B>(Parser<A> AParse, Parser<B> BParse)
+            where A : Expression
+            where B : Expression
+        {
+            return (from lbracket in Parse.Char('<')
+                    from left in AParse
+                    from comma in Parse.Char(',')
+                    from right in BParse
+                    from rbracket in Parse.Char('>')
+                    select new PairExpression<A,B>(left,right)).Named("Pair Expression").Token();
+        }
 
-
-        //public static readonly Parser<PairExpression> PairExpr = 
+        //public static readonly Parser<PairExpression<A,B>> PairExpr<A,B> = Parse.Char('.').Return(null); 
 
         public static readonly Parser<Expression> Expr = LogExpr.Or<Expression>(NumExpr).Or(LambdaExpr)/*.Or(PairExpr)*/;
+
+
+
+
     }
 
 

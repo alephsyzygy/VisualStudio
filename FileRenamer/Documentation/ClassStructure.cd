@@ -1,0 +1,342 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Comment CommentText="">
+    <Position X="1.259" Y="5.525" Height="0.75" Width="1.7" />
+  </Comment>
+  <Class Name="FileRenamer.IO.RenameCommand" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="8.25" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAQRAAAAAABQAAAAAIAAAAgAABAAAIAAAAAAAAAAI=</HashCode>
+      <FileName>IO\IOCommand.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="FileRenamer.IO.RenameAllCommand" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="4.75" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQAAAAAAABAQAAQAAAAAAAAAAAAAAAAYAABAEAgI=</HashCode>
+      <FileName>IO\IOCommand.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="FileRenamer.IO.IOMove" Collapsed="true">
+    <Position X="3.25" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAIAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>IO\IOMove.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="FileRenamer.Model.EXIFData" Collapsed="true">
+    <Position X="4.5" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAgAAAAAAABAAAAAAAAAAA=</HashCode>
+      <FileName>Model\EXIFData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FileRenamer.Model.FileMetaData" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="1.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAIBBAAAAAAAAAABAAAAQCAAICAgQAAAAgEAAREAA=</HashCode>
+      <FileName>Model\FileMetaData.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="FileRenamer.Model.FileModel" Collapsed="true">
+    <Position X="8" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACgAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Model\FileModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FileRenamer.Model.ID3Tag" Collapsed="true">
+    <Position X="4.5" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAEBAAAAEAAAAIAAAAgAIAAAAAAAAAACAAAAAA=</HashCode>
+      <FileName>Model\ID3Tag.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FileRenamer.Model.RenamerModel">
+    <Position X="2" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAJhAAAAAIABAAAAAgAAAAAAAAAECAACAAAgAAAAIII=</HashCode>
+      <FileName>Model\RenamerModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FileRenamer.Model.RenameClashException" Collapsed="true">
+    <Position X="6.25" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Model\RenamerModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FileRenamer.Strategies.CaseChangingStrategy" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="7.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAACQAQAAAAAAAACAMAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Strategies\CaseChangingStrategy.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="FileRenamer.Strategies.DateInserterStrategy" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="9.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAQAAAAAgAACAAAAAAAEAIAAgIAAAgAAkAAA=</HashCode>
+      <FileName>Strategies\DateInserterStrategy.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="FileRenamer.Strategies.IdentityStrategy" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="11" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Strategies\FileRenamerStrategy.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="FileRenamer.Strategies.InsertTextStrategy" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="7.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAQAAAAAgAAGBAAAAAAEAAAAIAAAAiAAgAAA=</HashCode>
+      <FileName>Strategies\InsertTextStrategy.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="FileRenamer.Strategies.MP3Strategy" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="9.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAQAAIAAAAACAAAAAAAAAAIAAAAAAAAAAAAA=</HashCode>
+      <FileName>Strategies\MP3Strategy.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="FileRenamer.Strategies.NameExtensionHelper" Collapsed="true">
+    <Position X="2.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAIEAQAABAAAGAAMAAgSQgAIAAAQgIAAAAGAAAACA=</HashCode>
+      <FileName>Strategies\NameExtensionHelper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FileRenamer.Strategies.NameHelper" Collapsed="true">
+    <Position X="4.5" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAQAAAIAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Strategies\NameExtensionHelper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FileRenamer.Strategies.ExtensionHelper" Collapsed="true">
+    <Position X="3.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAQAAAIAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Strategies\NameExtensionHelper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FileRenamer.Strategies.BothHelper" Collapsed="true">
+    <Position X="4.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAQAAAIAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Strategies\NameExtensionHelper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FileRenamer.Strategies.NumberingStrategy" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="11" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIABAAAgSAAgAAIAACAAAAAAAAAIAAIAACgCAAAAAI=</HashCode>
+      <FileName>Strategies\NumberingStrategy.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="FileRenamer.Strategies.StringNumberConversions">
+    <Position X="11" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQAQAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Strategies\NumberingStrategy.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FileRenamer.Strategies.RemoveCharactersStrategy" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="7.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIhAAAAAQCAAAAEAACAAAAAEAEAAAAAAQAAAAAgAAA=</HashCode>
+      <FileName>Strategies\RemoveCharactersStrategy.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="FileRenamer.Strategies.SearchReplaceStrategy" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="9.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAgAgAAQAAAAIAAACAQIAAAAAAIAAAIAIAAAAAAAA=</HashCode>
+      <FileName>Strategies\SearchReplaceStrategy.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="FileRenamer.ViewModel.ViewModelBase" Collapsed="true">
+    <Position X="14" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAACAAAAAAIAAAAQAQgAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModel\ViewModelBase.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="FileRenamer.ViewModel.CaseChangingViewModel" Collapsed="true">
+    <Position X="7.25" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACIAAAAAAAAAAQACAEAAAAAAAAgAAAAAAAAABAEAAA=</HashCode>
+      <FileName>ViewModel\CaseChangingViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="FileRenamer.ViewModel.CommandViewModel" Collapsed="true">
+    <Position X="23" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModel\CommandViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FileRenamer.ViewModel.DateInserterViewModel" Collapsed="true">
+    <Position X="16.25" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAAAAAAgCAEAAEAAAAAgIAAgAAQAghAkAAA=</HashCode>
+      <FileName>ViewModel\DateInserterViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="FileRenamer.ViewModel.FileListViewModel" Collapsed="true">
+    <Position X="2.75" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAAIABAAQAAAAIAAAAAAAQABAAAAAAAAAAAQA=</HashCode>
+      <FileName>ViewModel\FileListViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FileRenamer.ViewModel.FileViewModel" Collapsed="true">
+    <Position X="20.75" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACgAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAEAA=</HashCode>
+      <FileName>ViewModel\FileViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FileRenamer.ViewModel.InsertTextViewModel" Collapsed="true">
+    <Position X="11.75" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAAAAAAgCAEBAEAAAAAgAAAAAAQAiBAkCAQ=</HashCode>
+      <FileName>ViewModel\InsertTextViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="FileRenamer.ViewModel.MainWindowViewModel" Collapsed="true">
+    <Position X="25.25" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAALAAAACAAQgIAAQAgICABAAAAAAAARBIAUA=</HashCode>
+      <FileName>ViewModel\MainWindowViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FileRenamer.ViewModel.MP3ViewModel" Collapsed="true">
+    <Position X="5" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAACAEAAAAAAAAgAIAAAAAAABAEAAA=</HashCode>
+      <FileName>ViewModel\MP3ViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="FileRenamer.ViewModel.NumberingViewModel" Collapsed="true">
+    <Position X="9.5" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAIAACAAAAAICAEAAAAAAAAwAAAAAACACBAEAAg=</HashCode>
+      <FileName>ViewModel\NumberingViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="FileRenamer.ViewModel.RemoveCharactersViewModel" Collapsed="true">
+    <Position X="14" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAhACAAAACAAAAACAEAAEAAEAAgAAAAAQQAABAkAAA=</HashCode>
+      <FileName>ViewModel\RemoveCharactersViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="FileRenamer.ViewModel.SearchReplaceViewModel" Collapsed="true">
+    <Position X="18.5" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAAAAAAACAEAQIAAAAAgAAAAAAIAABAEAAA=</HashCode>
+      <FileName>ViewModel\SearchReplaceViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="FileRenamer.ViewModel.StrategyViewModel" Collapsed="true">
+    <Position X="11.75" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAA=</HashCode>
+      <FileName>ViewModel\StrategyViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="FileRenamer.IO.IIOCommand" Collapsed="true">
+    <Position X="6" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>IO\IOCommand.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="FileRenamer.IO.IIOMove" Collapsed="true">
+    <Position X="0.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IO\IOMove.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="FileRenamer.Model.IFileMetaData" Collapsed="true">
+    <Position X="1.75" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAABAAAAAAAAAAABAAAAQCAAAAAAQAAAAAEAABAAA=</HashCode>
+      <FileName>Model\FileMetaData.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="FileRenamer.Strategies.IFileRenamerStrategy" Collapsed="true">
+    <Position X="7.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Strategies\FileRenamerStrategy.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="FileRenamer.IO.RenameFailureBehaviour" Collapsed="true">
+    <Position X="6.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABCAAAAAAAAAAAAAAAAAAEAAAAAAAUAA=</HashCode>
+      <FileName>IO\IOCommand.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="FileRenamer.Strategies.CaseTypes" Collapsed="true">
+    <Position X="7.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAIAAAAAAAACAABAAAAA=</HashCode>
+      <FileName>Strategies\CaseChangingStrategy.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="FileRenamer.Strategies.DateTimeType" Collapsed="true">
+    <Position X="9.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAABCAAAAAAAAAAAQAIAAAAAAAAAA=</HashCode>
+      <FileName>Strategies\DateInserterStrategy.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="FileRenamer.Strategies.NameExtensionBehaviour" Collapsed="true">
+    <Position X="11" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQAAAAAAAAAAAAEAAAAAAAAAAAAAAACAAAAAAAAAA=</HashCode>
+      <FileName>Strategies\NameExtensionHelper.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="FileRenamer.Strategies.NumberingFormat" Collapsed="true">
+    <Position X="7.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAkAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAADAAAAA=</HashCode>
+      <FileName>Strategies\NumberingStrategy.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="FileRenamer.Strategies.NumberingTextFormat" Collapsed="true">
+    <Position X="9.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAEABAAAAAAAAAAAACAAAAAAAAABA=</HashCode>
+      <FileName>Strategies\NumberingStrategy.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

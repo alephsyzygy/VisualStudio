@@ -345,7 +345,9 @@ namespace AsyncLogic.Visitors
         }
 
 
-        public async Task<Value> Visit(PairExpression expression)
+        public async Task<Value> Visit<A, B>(PairExpression<A, B> expression)
+            where A : Expression
+            where B : Expression
         {
             // Don't actually do these, let someone else do them
             var left = expression.Left.Accept(this);

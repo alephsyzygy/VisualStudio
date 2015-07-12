@@ -52,6 +52,11 @@
     <Compile Include="Expressions\Expression.cs" />
     <Compile Include="Expressions\LogicExpressionExtensions.cs" />
     <Compile Include="Parser\ExpressionParser.cs" />
+    <Compile Include="Parser\ExpressionParser2.cs" />
+    <Compile Include="Parser\ParserExpression.cs" />
+    <Compile Include="Parser\ParserType.cs" />
+    <Compile Include="Parser\Sequent.cs" />
+    <Compile Include="Parser\TypeVisitor.cs" />
     <Compile Include="Visitors\ExpressionEvaluator.cs" />
     <Compile Include="Visitors\FreeVariableLister.cs" />
     <Compile Include="Expressions\LambdaExpression.cs" />

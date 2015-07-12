@@ -88,11 +88,13 @@ namespace AsyncLogic.Visitors
             }
         }
 
-        public Expression Visit(PairExpression expression)
+        public Expression Visit<A, B>(PairExpression<A, B> expression)
+            where A : Expression
+            where B : Expression
         {
-            var left = expression.Left.Accept(this);
-            var right = expression.Right.Accept(this);
-            return new PairExpression(left, right);
+            var left = (A)expression.Left.Accept(this);
+            var right = (B)expression.Right.Accept(this);
+            return new PairExpression<A,B>(left, right);
         }
 
         public Expression Visit<A>(IProjL<A> pair) where A : Expression

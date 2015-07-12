@@ -130,13 +130,13 @@ namespace AsyncLogicTest
             Value pair = new PairValue<NumValue, NumValue>(valueTwo, valueTwo);
             Assert.AreEqual("< 2 , 2 >", pair.ToString());
 
-            Expression test = new PairExpression(two, two);
+            Expression test = new PairExpression<NumExpression,NumExpression>(two, two);
             Assert.AreEqual("< 2 , 2 >", testAsync(test, 500).Result);
 
-            var trueTest = new PairExpression(logicTrue, logicTrue);
+            var trueTest = new PairExpression<LogicExpression, LogicExpression>(logicTrue, logicTrue);
             Assert.AreEqual("< True , True >", testAsync(trueTest, 500).Result);
 
-            var loopTest = new PairExpression(logicLoop, logicTrue);
+            var loopTest = new PairExpression<LogicExpression, LogicExpression>(logicLoop, logicTrue);
             Assert.AreEqual(False, testAsync(loopTest, 500).Result);
 
             var pairTest = new LogicProjL(trueTest);

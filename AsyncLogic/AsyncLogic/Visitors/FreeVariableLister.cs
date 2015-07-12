@@ -94,7 +94,9 @@ namespace AsyncLogic.Visitors
         }
 
 
-        public SortedSet<string> Visit(PairExpression expression)
+        public SortedSet<string> Visit<A, B>(PairExpression<A, B> expression)
+            where A : Expression
+            where B : Expression
         {
             var vars = Run(expression.Left);
             vars.UnionWith(Run(expression.Right));
