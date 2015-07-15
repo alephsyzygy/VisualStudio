@@ -116,7 +116,7 @@ namespace FileRenamer.ViewModel
             {
                 new CommandViewModel(
                     "Quit",
-                    new RelayCommand(param => this.Quit())),
+                    new RelayCommand(param => this.CloseWindow(param))),
                 new CommandViewModel(
                     "Rename Files",
                     new RelayCommand(param => this.RenameFiles()))
@@ -221,7 +221,17 @@ namespace FileRenamer.ViewModel
 
         void Quit()
         {
-            Application.Current.Shutdown();
+            //Application.Current.Shutdown();
+            //this.
+        }
+
+        // close this window
+        private void CloseWindow(object window)
+        {
+            if (window != null && window is Window)
+            {
+                ((Window)window).Close();
+            }
         }
 
         void Move(Tuple<int,int> Pair)

@@ -19,6 +19,22 @@ namespace FileRenamer
     /// </summary>
     public partial class App : Application
     {
+        private bool StartedFromExtension = false;
+        private IEnumerable<string> FileNames;
+
+        public void StartFromExtension(IEnumerable<string> FileNames)
+        {
+            StartedFromExtension = true;
+            //this.FileNames = FileNames;
+            //this.Run();
+
+            MainWindowViewModel renamerModel = new MainWindowViewModel(FileNames.ToArray());
+            MainWindow window = new MainWindow();
+            window.DataContext = renamerModel;
+            window.Show();
+
+        }
+
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
@@ -28,13 +44,34 @@ namespace FileRenamer
 
             string[] args = Environment.GetCommandLineArgs();
 
-            if (args.Count() > 1)
+            using (TextWriter logger = File.CreateText("output.log"))
             {
-                // We are given some command line arguments
-                MainWindowViewModel renamerModel = 
-                    new MainWindowViewModel(args.Skip(1)
-                        .Select(file => Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + file)
-                        .ToArray());
+                foreach (var arg in args)
+                    logger.WriteLine("{0}", arg);
+            }
+
+            if (StartedFromExtension)
+            {
+                //MainWindowViewModel renamerModel = new MainWindowViewModel(FileNames.ToArray());
+                //MainWindow window = new MainWindow();
+                //window.DataContext = renamerModel;
+                //window.Show();
+            }
+            else if (args.Count() > 1)
+            {
+                MainWindowViewModel renamerModel;
+                // We are given some command line arguments, check to see if they are local or not
+                if (args[1].Contains(":"))
+                {
+                    renamerModel = new MainWindowViewModel(args.Skip(1).ToArray());
+                }
+                else
+                {
+                    renamerModel =
+                        new MainWindowViewModel(args.Skip(1)
+                            .Select(file => Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + file)
+                            .ToArray());
+                }
                 MainWindow window = new MainWindow();
                 window.DataContext = renamerModel;
                 window.Show();
