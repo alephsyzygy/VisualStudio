@@ -14,13 +14,16 @@ namespace FizzBuzz
         /// </summary>
         public static void Main()
         {
+            // Helper lambda in order to make tuples
+            Func<int,string,Tuple<int,string>> makeTuple = (a, b) => new Tuple<int, string>(a, b);
+
             // Our standard FizzBuzz mapping:
             //   if a number is divisible by 3, print "Fizz"
             //   if a number is divisible by 5, print "Buzz"
             var mapping = new List<Tuple<int, string>> {
-				new Tuple<int,string>(3, "Fizz"),
-				new Tuple<int,string>(5, "Buzz")
-				//, new Tuple<int,string>(7, "Baz")
+				makeTuple(3, "Fizz"),
+				makeTuple(5, "Buzz")
+				//, makeTuple(7, "Baz")
 			};
 
             // In C# 6 the following should work, but in VS2013 it does not
@@ -63,13 +66,13 @@ namespace FizzBuzz
     public class FizzBuzzEnumerator : IEnumerable<string>
     {
         /// <summary>
-        /// Gets or sets the length.
+        /// Gets or sets the length of the enumeration
         /// </summary>
         /// <value>The length</value>
         public int Length { get; set; }
 
         /// <summary>
-        /// Gets or sets the FizzBuzzMappings mappings.
+        /// Gets or sets the FizzBuzzMappings mappings
         /// </summary>
         /// <value>The mappings</value>
 
@@ -79,7 +82,7 @@ namespace FizzBuzz
 
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FizzBuzz.FizzBuzzEnumerator"/> class.
+        /// Initializes a new instance of the <see cref="FizzBuzz.FizzBuzzEnumerator"/> class
         /// </summary>
         /// <param name="length">Length of the enumeration to generate</param>
         /// <param name="fizzBuzzMappings">Fizz buzz mappings</param>
