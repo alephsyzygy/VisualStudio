@@ -179,17 +179,34 @@ namespace AsyncLogic.Parser
 
         public ParserType Visit(ParserRec rec)
         {
-            throw new NotImplementedException();
+            var inputType = rec.Input.Accept(this);
+            var startType = rec.Start.Accept(this);
+            var newCtx = CloneContext();
+            newCtx[rec.NumVariableName] = new ParserNumType();
+            newCtx[rec.AccVariableName] = rec.AccType;
         }
 
         public ParserType Visit(ParserPair pair)
         {
-            throw new NotImplementedException();
+            var leftType = pair.Left.Accept(this);
+            var rightType = pair.Right.Accept(this);
+
+            return new ParserProdType(leftType, rightType);
         }
 
         public ParserType Visit(ParserApp app)
         {
-            throw new NotImplementedException();
+            var lambdaType = app.Lambda.Accept(this);
+            var expr = app.Expression.Accept(this);
+
+            if (!(lambdaType is ParserLambdaType))
+                throw new ArgumentException("In an application left expression must be a lambda");
+
+            ParserLambdaType lambda = lambdaType as ParserLambdaType;
+            if (lambda.InputType.Typ != expr.Typ)
+                throw new ArgumentException("In an application the type of the right expression must match the type of the bound variable");
+
+            return new ParserLogicType();
         }
     }
 }

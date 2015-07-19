@@ -129,10 +129,9 @@ namespace AsyncLogic.Parser
                from rparen in Parse.Char(')')
                select expr).Named("Expression")
              .XOr(True)
-             .XOr(False)
              .XOr(Pair)
              .XOr(Rec)
-             .XOr(ParseUnary)
+             .XOr(ParseUnary.Or(False)) // Both involve the letter F
              .XOr(NumConstant)
              .XOr(Var)
              .Token();

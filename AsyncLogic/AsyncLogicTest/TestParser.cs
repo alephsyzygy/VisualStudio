@@ -23,6 +23,28 @@ namespace AsyncLogicTest
             visitor = new TypeVisitor();
             Assert.AreEqual("Sigma", ExpressionParser2.Expr.Parse(input).Accept(visitor).ToString());
 
+            input = "<T,3>";
+            visitor = new TypeVisitor();
+            Assert.AreEqual("(Sigma * Nat)", ExpressionParser2.Expr.Parse(input).Accept(visitor).ToString());
+
+            input = "Lambda x: Nat * Sigma. (Fst x) == 2";
+            visitor = new TypeVisitor();
+            var temp = ExpressionParser2.Expr.Parse(input);
+            Assert.AreEqual("[(Nat * Sigma), Sigma]", ExpressionParser2.Expr.Parse(input).Accept(visitor).ToString());
+
+            input = "(Lambda x: Nat. x == 3) @ 4";
+            visitor = new TypeVisitor();
+            Assert.AreEqual("Sigma", ExpressionParser2.Expr.Parse(input).Accept(visitor).ToString());
+
+            input = "Lambda phi: [Nat, Sigma]. Exists x:Nat. phi @ x";
+            visitor = new TypeVisitor();
+            temp = ExpressionParser2.Expr.Parse(input);
+            Assert.AreEqual("[[Nat, Sigma], Sigma]", ExpressionParser2.Expr.Parse(input).Accept(visitor).ToString());
+
+            input = "(Lambda phi: [Nat, Sigma]. Exists x:Nat. phi @ x) @ (Lambda x: Nat. x == 2)";
+            visitor = new TypeVisitor();
+            temp = ExpressionParser2.Expr.Parse(input);
+            Assert.AreEqual("Sigma", ExpressionParser2.Expr.Parse(input).Accept(visitor).ToString());
         }
 
         [TestMethod]
@@ -38,6 +60,14 @@ namespace AsyncLogicTest
             ExpressionParser2.Expr.Parse(input).Accept(visitor).ToString();
 
             input = "T * 2";
+            visitor = new TypeVisitor();
+            ExpressionParser2.Expr.Parse(input).Accept(visitor).ToString();
+
+            input = "Lambda x:Nat. x == T";
+            visitor = new TypeVisitor();
+            ExpressionParser2.Expr.Parse(input).Accept(visitor).ToString();
+
+            input = "(Lambda x:Nat. x == 3) @ T";
             visitor = new TypeVisitor();
             ExpressionParser2.Expr.Parse(input).Accept(visitor).ToString();
         }
