@@ -193,7 +193,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="Documentation\ClassStructure.cd" />
+    <None Include="Documentation\ViewModelClassStructure.cd" />
     <None Include="Key.snk" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -205,7 +205,9 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Documentation\ClassStructure.md" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

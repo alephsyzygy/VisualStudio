@@ -22,6 +22,16 @@ namespace FileRenamer.IO
 
     public class IOMove : IIOMove
     {
+        public IIOMove IIOMove
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+            set
+            {
+            }
+        }
         /// <summary>
         /// Move a file from one place to another.
         /// This just calls the static method File.Move

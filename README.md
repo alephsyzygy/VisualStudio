@@ -12,13 +12,13 @@ Not all of the code is mine, some of it has been taken from the internet, such a
 
 This project also experiments with Ninject, for dependency inversion, and Moq, for mocking.
 
-### Use
+#### Use
 
 When starting up FileRenamer a select file dialog box should appear.  Multiple files can be selected using Ctrl-Click or Shift-Click.  Once `Open` is selected the main window will appear.  The main window consists of a two-column list of file names and their new names.  This list can be rearranged using drag and drop. Below this is a tab control with different ways of renaming the files.  Finally there are two buttons at the bottom, one to close the application and the other to begin renaming the files.
 
 The application will warn the user if it can detect that renaming the files will lead to an error.  However it cannot detect all such errors, so while renaming the files an error may occur.  There are a number of options to recover from this error: skip once, skip all errors, undo everything, or abort.
 
-### Using from File Explorer
+#### Using from File Explorer
 
 I haven't managed to get the shell extension working properly.  Under testing conditions it is fine, but under normal use the program only runs once.  Until I get this working correctly there is no way to install FileRenamer as a shell extension.
 
