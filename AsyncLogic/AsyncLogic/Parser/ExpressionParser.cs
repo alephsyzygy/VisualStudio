@@ -39,7 +39,7 @@ namespace AsyncLogic.Parser
         public static readonly Parser<ParserType> ParseType = Parse.ChainOperator(Parse.String("*").Token().Return(true),
             Exp, (op,a,b) => new ParserProdType(a,b));
     }
-    public static class ExpressionParser2
+    public static class ExpressionParser
     {
         public static readonly Parser<int> Number = Parse.Decimal.Token().Select(s => int.Parse(s));
         public static readonly Parser<string> Identifier = Parse.Identifier(Parse.Lower, Parse.Letter).Token();
@@ -163,7 +163,7 @@ namespace AsyncLogic.Parser
     public static class SequentParser
     {
         public static readonly Parser<Tuple<string, ParserType>> ParsePair
-            = (from ident in ExpressionParser2.Identifier
+            = (from ident in ExpressionParser.Identifier
                from colon in Parse.Char(':')
                from type in TypeParser.ParseType
                select new Tuple<string, ParserType>(ident, type)).Named("Variable declaration").Token();
@@ -183,7 +183,7 @@ namespace AsyncLogic.Parser
         public static readonly Parser<Sequent> ParseSequent
             = (from ctx in ParseContext
                from symb in Parse.String("|-")
-               from expr in ExpressionParser2.Expr
+               from expr in ExpressionParser.Expr
                select new Sequent(ctx, expr)).Named("Sequent");
     }
 }

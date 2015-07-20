@@ -15,7 +15,7 @@ namespace AsyncLogicTest
             int testNo = 0;
             Action<string, string> Test = (input, expected) =>
             {
-                var parserExpr = ExpressionParser2.Expr.Parse(input);
+                var parserExpr = ExpressionParser.Expr.Parse(input);
                 var visitor = new ToExpressionVisitor();
                 var output = visitor.Run(parserExpr);
                 Assert.AreEqual(expected, output.ToString(), testNo.ToString());
@@ -43,7 +43,7 @@ namespace AsyncLogicTest
             Action<string, string> Test = (input, expected) =>
                 {
                     var visitor = new TypeVisitor();
-                    Assert.AreEqual(expected, ExpressionParser2.Expr.Parse(input).Accept(visitor).ToString(), testNo.ToString());
+                    Assert.AreEqual(expected, ExpressionParser.Expr.Parse(input).Accept(visitor).ToString(), testNo.ToString());
                     testNo++;
                 };
 
@@ -68,7 +68,7 @@ namespace AsyncLogicTest
             Action<string> Test = (input) =>
             {
                 var visitor = new TypeVisitor();
-                ExpressionParser2.Expr.Parse(input).Accept(visitor).ToString();
+                ExpressionParser.Expr.Parse(input).Accept(visitor).ToString();
             };
             Test("2 & F");
             Test("T == F");
@@ -98,7 +98,7 @@ namespace AsyncLogicTest
             int testNo = 0;
             Action<string, string> Test = (input, expected) =>
             {
-                Assert.AreEqual(expected, ExpressionParser2.Expr.Parse(input).ToString(),testNo.ToString());
+                Assert.AreEqual(expected, ExpressionParser.Expr.Parse(input).ToString(),testNo.ToString());
                 testNo++;
             };
             
