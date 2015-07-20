@@ -51,7 +51,6 @@
   <ItemGroup>
     <Compile Include="Expressions\Expression.cs" />
     <Compile Include="Expressions\LogicExpressionExtensions.cs" />
-    <Compile Include="Parser\ExpressionParser.cs" />
     <Compile Include="Parser\ExpressionParser2.cs" />
     <Compile Include="Parser\ParserExpression.cs" />
     <Compile Include="Parser\ParserType.cs" />
