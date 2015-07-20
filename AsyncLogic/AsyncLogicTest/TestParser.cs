@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using AsyncLogic.Parser;
 using Sprache;
+using AsyncLogic.Expressions;
 
 namespace AsyncLogicTest
 {
@@ -9,67 +10,70 @@ namespace AsyncLogicTest
     public class TestParser
     {
         [TestMethod]
+        public void TestToExpression()
+        {
+            int testNo = 0;
+            Action<string, string> Test = (input, expected) =>
+            {
+                var parserExpr = ExpressionParser2.Expr.Parse(input);
+                var visitor = new ToExpressionVisitor();
+                var output = visitor.Run(parserExpr);
+                Assert.AreEqual(expected, output.ToString(), testNo.ToString());
+                testNo++;
+            };
+
+            Test("3 + 4", "(3 + 4)");
+            Test("Lambda x:Nat. x == x", "Lambda x. (x == x)");
+            Test("T & F | (3 == 2)", "((T & F) | (3 == 2))");
+            Test("Exists x:Nat. x == x","Exists x. (x == x)");
+            Test("Rec(0,0,n.x:Nat.0)", "Rec(0, 0, n.x. 0)");
+            Test("Rec(0,T,n.x:Sigma.x&T)", "Rec(0, T, n.x. (x & T))");
+            Test("(Lambda x:Sigma. x) @ T", "(Lambda x. x @ T)");
+            Test("<T,3>", "<T, 3>");
+            Test("Lambda phi: Nat * [Nat,Sigma]. Rec(Fst phi,F,n.x:Sigma.x & (Snd phi)@(Fst phi))", 
+                "Lambda phi. Rec(Fst phi, F, n.x. (x & (Snd phi @ Fst phi)))");
+
+
+        }
+
+        [TestMethod]
         public void TestTypeChecker()
         {
-            string input = "3 + 4";
-            var visitor = new TypeVisitor();
-            Assert.AreEqual("Nat", ExpressionParser2.Expr.Parse(input).Accept(visitor).ToString());
+            Action<string, string> Test = (input, expected) =>
+                {
+                    var visitor = new TypeVisitor();
+                    Assert.AreEqual(expected, ExpressionParser2.Expr.Parse(input).Accept(visitor).ToString());
+                };
 
-            input = "Lambda x:Nat. x == x";
-            visitor = new TypeVisitor();
-            Assert.AreEqual("[Nat, Sigma]", ExpressionParser2.Expr.Parse(input).Accept(visitor).ToString());
-
-            input = "T & F | (3 == 2)";
-            visitor = new TypeVisitor();
-            Assert.AreEqual("Sigma", ExpressionParser2.Expr.Parse(input).Accept(visitor).ToString());
-
-            input = "<T,3>";
-            visitor = new TypeVisitor();
-            Assert.AreEqual("(Sigma * Nat)", ExpressionParser2.Expr.Parse(input).Accept(visitor).ToString());
-
-            input = "Lambda x: Nat * Sigma. (Fst x) == 2";
-            visitor = new TypeVisitor();
-            var temp = ExpressionParser2.Expr.Parse(input);
-            Assert.AreEqual("[(Nat * Sigma), Sigma]", ExpressionParser2.Expr.Parse(input).Accept(visitor).ToString());
-
-            input = "(Lambda x: Nat. x == 3) @ 4";
-            visitor = new TypeVisitor();
-            Assert.AreEqual("Sigma", ExpressionParser2.Expr.Parse(input).Accept(visitor).ToString());
-
-            input = "Lambda phi: [Nat, Sigma]. Exists x:Nat. phi @ x";
-            visitor = new TypeVisitor();
-            temp = ExpressionParser2.Expr.Parse(input);
-            Assert.AreEqual("[[Nat, Sigma], Sigma]", ExpressionParser2.Expr.Parse(input).Accept(visitor).ToString());
-
-            input = "(Lambda phi: [Nat, Sigma]. Exists x:Nat. phi @ x) @ (Lambda x: Nat. x == 2)";
-            visitor = new TypeVisitor();
-            temp = ExpressionParser2.Expr.Parse(input);
-            Assert.AreEqual("Sigma", ExpressionParser2.Expr.Parse(input).Accept(visitor).ToString());
+            Test("3 + 4", "Nat");
+            Test("Lambda x:Nat. x == x" ,"[Nat, Sigma]");
+            Test("T & F | (3 == 2)" ,"Sigma");
+            Test("<T,3>" ,"(Sigma * Nat)");
+            Test("Lambda x: Nat * Sigma. (Fst x) == 2" ,"[(Nat * Sigma), Sigma]");
+            Test("(Lambda x: Nat. x == 3) @ 4" ,"Sigma");
+            Test("Lambda phi: [Nat, Sigma]. Exists x:Nat. phi @ x" ,"[[Nat, Sigma], Sigma]");
+            Test("(Lambda phi: [Nat, Sigma]. Exists x:Nat. phi @ x) @ (Lambda x: Nat. x == 2)" ,"Sigma");
+            Test("Rec(0,0,n.x:Nat.x+1)" ,"Nat");
+            Test("Rec(0,0,n.x:Nat.n+1)" ,"Nat");
+            Test("Lambda phi: Nat * [Nat,Sigma]. Rec(Fst phi,F,n.x:Sigma.x & (Snd phi)@(Fst phi))" ,"[(Nat * [Nat, Sigma]), Sigma]");
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void TestTypeCheckerFailure()
         {
-            var input = "2 & F";
-            var visitor = new TypeVisitor();
-            ExpressionParser2.Expr.Parse(input).Accept(visitor).ToString();
+            Action<string> Test = (input) =>
+            {
+                var visitor = new TypeVisitor();
+                ExpressionParser2.Expr.Parse(input).Accept(visitor).ToString();
+            };
+            Test("2 & F");
+            Test("T == F");
+            Test("T * 2");
+            Test("Lambda x:Nat. x == T");
+            Test("(Lambda x:Nat. x == 3) @ T");
+            Test("Rec(0,0,n.x:Nat.s+1)");
 
-            input = "T == F";
-            visitor = new TypeVisitor();
-            ExpressionParser2.Expr.Parse(input).Accept(visitor).ToString();
-
-            input = "T * 2";
-            visitor = new TypeVisitor();
-            ExpressionParser2.Expr.Parse(input).Accept(visitor).ToString();
-
-            input = "Lambda x:Nat. x == T";
-            visitor = new TypeVisitor();
-            ExpressionParser2.Expr.Parse(input).Accept(visitor).ToString();
-
-            input = "(Lambda x:Nat. x == 3) @ T";
-            visitor = new TypeVisitor();
-            ExpressionParser2.Expr.Parse(input).Accept(visitor).ToString();
         }
 
         [TestMethod]

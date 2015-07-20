@@ -10,6 +10,7 @@ the IO that this program uses.  Finally there is the strategies directory which 
 for the various renaming strategies that this program implements.
 
 In order to extend this program with another renaming strategy the following must be done:
+
 1. Add a new class to the Strategies directory which implements `IFileRenamerStrategy`
 2. Add a viewmodel to the ViewModel directory which implements `StrategyViewModel, IDataErrorInfo`
 3. Add a view to the View directory, this should be a usercontrol

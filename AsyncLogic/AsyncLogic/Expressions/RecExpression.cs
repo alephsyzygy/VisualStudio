@@ -54,7 +54,7 @@ namespace AsyncLogic.Expressions
         public override string ToString()
         {
 
-            return "Rec(" + Input.ToString() + "," + Start.ToString() + "," + NumVariableName + "." + AccVariableName + ". "
+            return "Rec(" + Input.ToString() + ", " + Start.ToString() + ", " + NumVariableName + "." + AccVariableName + ". "
                 + Step.ToString() + ")";
         }
     }
@@ -128,7 +128,7 @@ namespace AsyncLogic.Expressions
         public override string ToString()
         {
 
-            return "Rec(" + Input.ToString() + "," + Start.ToString() + "," + NumVariableName + "." + AccVariableName + ". "
+            return "Rec(" + Input.ToString() + ", " + Start.ToString() + ", " + NumVariableName + "." + AccVariableName + ". "
                 + Step.ToString() + ")";
         }
     }
@@ -165,7 +165,7 @@ namespace AsyncLogic.Expressions
         public override string ToString()
         {
 
-            return "Rec(" + Input.ToString() + "," + Start.ToString() + "," + NumVariableName + "." + AccVariableName + ". "
+            return "Rec(" + Input.ToString() + ", " + Start.ToString() + ", " + NumVariableName + "." + AccVariableName + ". "
                 + Step.ToString() + ")";
         }
     }
