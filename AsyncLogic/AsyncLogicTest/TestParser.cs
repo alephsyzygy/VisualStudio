@@ -9,13 +9,30 @@ namespace AsyncLogicTest
     [TestClass]
     public class TestParser
     {
+        // This holds the testcontext
+        public TestContext TestContext { get; set; }
+
+        private static TestContext _testContext;
+
+        // Store the testcontext when the tests are started
+        [ClassInitialize]
+        public static void SetupTests(TestContext testContext)
+        {
+            _testContext = testContext;
+        }
+
         [TestMethod]
-        public void TestToExpression()
+        public void ToExpression()
         {
             int testNo = 0;
             Action<string, string> Test = (input, expected) =>
             {
-                var parserExpr = ExpressionParser.Expr.Parse(input);
+                var result = ExpressionParser.Expr.TryParse(input);
+                if (!result.Remainder.AtEnd && result.WasSuccessful)
+                    Assert.Fail("Parse not successful: " + testNo.ToString()  +  "; Output: " + result.Value.ToString() );
+                if (!result.Remainder.AtEnd)
+                    Assert.Fail("Parse not successful: " + testNo.ToString() /* +  "; Output: " + result.Value.ToString() */);
+                var parserExpr = result.Value;
                 var visitor = new ToExpressionVisitor();
                 var output = visitor.Run(parserExpr);
                 Assert.AreEqual(expected, output.ToString(), testNo.ToString());
@@ -24,68 +41,67 @@ namespace AsyncLogicTest
 
             Test("3 + 4", "(3 + 4)");
             Test("Lambda x:Nat. x == x", "Lambda x. (x == x)");
-            Test("T & F | (3 == 2)", "((T & F) | (3 == 2))");
+            Test("True & False | (3 == 2)", "((True & False) | (3 == 2))");
             Test("Exists x:Nat. x == x","Exists x. (x == x)");
             Test("Rec(0,0,n.x:Nat.0)", "Rec(0, 0, n.x. 0)");
-            Test("Rec(0,T,n.x:Sigma.x&T)", "Rec(0, T, n.x. (x & T))");
-            Test("(Lambda x:Sigma. x) @ T", "(Lambda x. x @ T)");
-            Test("<T,3>", "<T, 3>");
-            Test("Lambda phi: Nat * [Nat,Sigma]. Rec(Fst phi,F,n.x:Sigma.x & (Snd phi)@(Fst phi))", 
-                "Lambda phi. Rec(Fst phi, F, n.x. (x & (Snd phi @ Fst phi)))");
-
+            Test("Rec(0,True,n.x:Sigma.x&True)", "Rec(0, True, n.x. (x & True))");
+            Test("(Lambda x:Sigma. x) @ True", "(Lambda x. x @ True)");
+            Test("<True,3>", "<True, 3>");
+            Test("Lambda phi: Nat * [Nat,Sigma]. Rec(Fst phi,False,n.x:Sigma.x & (Snd phi)@(Fst phi))", 
+                "Lambda phi. Rec(Fst phi, False, n.x. (x & (Snd phi @ Fst phi)))");
+            Test("6 == 3", "(6 == 3)");
+            Test("6 == (The n:Nat. (n == n))", "(6 == The n. (n == n))");
+            Test("6 == (The n:Nat. ((n > 5) & Rec(n, True, m.x:Sigma. (x & (m <= 5)))))", "(6 == The n. ((n > 5) & Rec(n, True, m.x. (x & (m <= 5)))))");
 
         }
 
         [TestMethod]
-        public void TestTypeChecker()
+        public void TypeChecker()
         {
             int testNo = 0;
             Action<string, string> Test = (input, expected) =>
                 {
                     var visitor = new TypeVisitor();
-                    Assert.AreEqual(expected, ExpressionParser.Expr.Parse(input).Accept(visitor).ToString(), testNo.ToString());
+                    var temp = ExpressionParser.Expr.TryParse(input);
+                    Assert.AreEqual(expected, temp.Value.Accept(visitor).ToString(), testNo.ToString());
                     testNo++;
                 };
 
             Test("3 + 4", "Nat");
             Test("Lambda x:Nat. x == x" ,"[Nat, Sigma]");
-            Test("T & F | (3 == 2)" ,"Sigma");
-            Test("<T,3>" ,"(Sigma * Nat)");
+            Test("True & False | (3 == 2)", "Sigma");
+            Test("<True,3>", "(Sigma * Nat)");
             Test("Lambda x: Nat * Sigma. (Fst x) == 2" ,"[(Nat * Sigma), Sigma]");
             Test("(Lambda x: Nat. x == 3) @ 4" ,"Sigma");
             Test("Lambda phi: [Nat, Sigma]. Exists x:Nat. phi @ x" ,"[[Nat, Sigma], Sigma]");
             Test("(Lambda phi: [Nat, Sigma]. Exists x:Nat. phi @ x) @ (Lambda x: Nat. x == 2)" ,"Sigma");
             Test("Rec(0,0,n.x:Nat.x+1)" ,"Nat");
             Test("Rec(0,0,n.x:Nat.n+1)" ,"Nat");
-            Test("Lambda phi: Nat * [Nat,Sigma]. Rec(Fst phi,F,n.x:Sigma.x & (Snd phi)@(Fst phi))" ,"[(Nat * [Nat, Sigma]), Sigma]");
+            Test("Lambda phi: Nat * [Nat,Sigma]. Rec(Fst phi,False,n.x:Sigma.x & (Snd phi)@(Fst phi))" ,"[(Nat * [Nat, Sigma]), Sigma]");
         }
 
         [TestMethod]
+        [DeploymentItem("Data\\ParserFailure.csv")]
+        [DataSource("Microsoft.VisualStudio.TestTools.DataSource.CSV", "ParserFailure.csv", 
+            "ParserFailure#csv", DataAccessMethod.Sequential)]
         [ExpectedException(typeof(ArgumentException))]
-        public void TestTypeCheckerFailure()
+        public void TypeCheckerFailure()
         {
+            var row = TestContext.DataRow;
+            string expr = row["Expression"].ToString();
             
-            Action<string> Test = (input) =>
-            {
-                var visitor = new TypeVisitor();
-                ExpressionParser.Expr.Parse(input).Accept(visitor).ToString();
-            };
-            Test("2 & F");
-            Test("T == F");
-            Test("T * 2");
-            Test("Lambda x:Nat. x == T");
-            Test("(Lambda x:Nat. x == 3) @ T");
-            Test("Rec(0,0,n.x:Nat.s+1)");
+            var visitor = new TypeVisitor();
+            ExpressionParser.Expr.Parse(expr).Accept(visitor).ToString();
 
         }
 
         [TestMethod]
-        public void TestSequentParser()
+        public void SequentParser()
         {
             int testNo = 0;
             Action<string, string> Test = (input, expected) =>
                 {
-                    Assert.AreEqual(expected, SequentParser.ParseSequent.Parse(input).ToString(), testNo.ToString());
+                    Assert.AreEqual(expected, AsyncLogic.Parser.SequentParser.ParseSequent.Parse(input).ToString(), testNo.ToString());
                     testNo++;
                 };
 
@@ -93,7 +109,7 @@ namespace AsyncLogicTest
         }
 
         [TestMethod]
-        public void TestSecondParser()
+        public void SecondParser()
         {
             int testNo = 0;
             Action<string, string> Test = (input, expected) =>

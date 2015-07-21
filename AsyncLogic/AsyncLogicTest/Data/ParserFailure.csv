@@ -1,0 +1,7 @@
+﻿Ignore,ID,Expression
+,0,2 & False
+,1,True == False
+,2,True * 2
+,3,Lambda x:Nat. x == True
+,4,(Lambda x:Nat. x == 3) @ True
+,5,"Rec(0,0,n.x:Nat.s+1)"

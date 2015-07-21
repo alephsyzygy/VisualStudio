@@ -68,8 +68,8 @@ namespace AsyncLogic.Parser
                                                                    select new ParserNumConstant(number);
 
         // Logic constants
-        public static readonly Parser<ParserExpression> True = Parse.String("T").Token().Return(new ParserStringConstant("T"));
-        public static readonly Parser<ParserExpression> False = Parse.String("F").Token().Return(new ParserStringConstant("F"));
+        public static readonly Parser<ParserExpression> True = Parse.String("True").Token().Return(new ParserStringConstant("T"));
+        public static readonly Parser<ParserExpression> False = Parse.String("False").Token().Return(new ParserStringConstant("F"));
 
         // variables
         public static readonly Parser<ParserExpression> Var = from ident in Identifier select new ParserVariable(ident);
@@ -144,7 +144,7 @@ namespace AsyncLogic.Parser
             = Parse.ChainOperator(Add, ParseMul, (op, a, b) => new ParserBinaryOp(op, a, b));
 
         public static readonly Parser<ParserExpression> ParseOrder
-            = Parse.ChainOperator(LT.Or(GT).Or(LTE).Or(GTE), ParseAdd, (op, a, b) => new ParserBinaryOp(op, a, b));
+            = Parse.ChainOperator(LTE.Or(GTE).Or(LT).Or(GT), ParseAdd, (op, a, b) => new ParserBinaryOp(op, a, b));
         public static readonly Parser<ParserExpression> ParseEQ
             = Parse.ChainOperator(EQ.Or(NEQ), ParseOrder, (op, a, b) => new ParserBinaryOp(op, a, b));
 

@@ -46,7 +46,17 @@ namespace AsyncLogic.Parser
 
         public ParserType Visit(ParserVariable variable)
         {
-            ParserType output = Context[variable.VariableName];
+            ParserType output;
+            try
+            {
+                output = Context[variable.VariableName];
+            }
+            catch (KeyNotFoundException)
+            {
+                // If the variable is not found in the context we will throw our own exception
+                throw new ArgumentException("Variable not found in context. Name: " + variable.VariableName);
+            }
+
             if (output == null)
                 throw new ArgumentException("Variable Not Found in Context: " + variable.VariableName);
 

@@ -30,15 +30,15 @@ namespace AsyncLogicTest
             var rec2 = new RecLogicExpression(n, logicTrue, "m", "x", step2);
             var testLog = new NumConstant(6) == new NumThe("n", n > new NumConstant(5) & rec2);
 
-            Assert.AreEqual("(6 == The n. ((n > 5) & Rec(n, T, m.x. (x & (m <= 5)))))", testLog.ToString());
+            Assert.AreEqual("(6 == The n. ((n > 5) & Rec(n, True, m.x. (x & (m <= 5)))))", testLog.ToString());
 
             var test5 = new Apply(new LambdaExpression("x", x | logicTrue), logicLoop);
-            Assert.AreEqual("(Lambda x. (x | T) @ Exists n. (n < n))", test5.ToString());
+            Assert.AreEqual("(Lambda x. (x | True) @ Exists n. (n < n))", test5.ToString());
 
             var loopTest = new PairExpression<LogicExpression,LogicExpression>(logicLoop, logicTrue);
             var pairLoop = new LogicProjR(loopTest);
 
-            Assert.AreEqual("Snd <Exists n. (n < n), T>", pairLoop.ToString());
+            Assert.AreEqual("Snd <Exists n. (n < n), True>", pairLoop.ToString());
         }
     }
 }

@@ -79,7 +79,7 @@ namespace AsyncLogic.Expressions
 
         public override string ToString()
         {
-            return "T";
+            return "True";
         }
 
     }
@@ -101,7 +101,7 @@ namespace AsyncLogic.Expressions
 
         public override string ToString()
         {
-            return "F";
+            return "False";
         }
     }
 
